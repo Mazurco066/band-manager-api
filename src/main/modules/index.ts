@@ -1,3 +1,6 @@
 export * from './infra.module'
 export * from './account.module'
 export * from './auth.module'
+export * from './band.module'
+export * from './show.module'
+export * from './song.module'
