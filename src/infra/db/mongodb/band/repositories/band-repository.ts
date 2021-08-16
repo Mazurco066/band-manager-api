@@ -16,12 +16,22 @@ export class BandRepository implements IBandRepository {
   ) {}
   
   async find(params: Filter): Promise<Band[] | null> {
-    const r = await this.connection.find({ ...params })
+    const r = await this.connection
+      .find({ ...params })
+      .populate('owner')
+      .populate('members')
+      .populate('directory')
+      .populate('admins')
     return r
   }
 
   async findOne(params: Filter): Promise<Band | null> {
-    const r = await this.connection.findOne({ ...params })
+    const r = await this.connection
+      .findOne({ ...params })
+      .populate('owner')
+      .populate('members')
+      .populate('directory')
+      .populate('admins')
     return r
   }
 
@@ -42,7 +52,7 @@ export class BandRepository implements IBandRepository {
   }
 
   async save(target: any): Promise<Band> {
-    const r = await this.connection.create({ ...target })
+    const r = await (await this.connection.create({ ...target }))
     return r
   }
 

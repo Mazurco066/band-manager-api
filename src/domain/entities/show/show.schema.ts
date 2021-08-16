@@ -24,6 +24,9 @@ export class Show {
 
   @Prop({ type: [ObjectId], ref: 'Song', default: [] })
   songs: ObjectId[]
+
+  @Prop({ type: String, ref: 'Band' })
+  band!: ObjectId
 }
 
 export const ShowSchema = SchemaFactory.createForClass(Show)

@@ -22,20 +22,17 @@ export class Band {
   @Prop({ required: true, type: String })
   description!: string
 
-  @Prop({ type: [ObjectId], ref: 'Song', default: [] })
-  directory: ObjectId[]
-
   @Prop({ type: String, ref: 'Account' })
   owner!: ObjectId
+
+  @Prop({ type: [ObjectId], ref: 'Song', default: [] })
+  directory: ObjectId[]
 
   @Prop({ type: [ObjectId], ref: 'Account', default: [] })
   admins: ObjectId[]
 
   @Prop({ type: [ObjectId], ref: 'Account', default: [] })
   members: ObjectId[]
-
-  @Prop({ type: [ObjectId], ref: 'Show', default: [] })
-  shows: ObjectId[]
 }
 
 export const BandSchema = SchemaFactory.createForClass(Band)

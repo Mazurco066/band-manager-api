@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
 // Resolvers
+import { BandResolvers } from '@/presentation/resolvers'
 
 // Commands & Queries
 import { BandCommandHandlers, BandQueriesHandlers } from '@/data/usecases'
@@ -13,11 +14,16 @@ import { BandPersistenceProviders } from '@/infra/db/mongodb'
 // Schemas
 import { Band, BandSchema } from '@/domain/entities/band'
 
+// External modules
+import { AccountModule } from './account.module'
+
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Band.name, schema: BandSchema }])
+    MongooseModule.forFeature([{ name: Band.name, schema: BandSchema }]),
+    AccountModule
   ],
   providers: [
+    ...BandResolvers,
     ...BandCommandHandlers,
     ...BandQueriesHandlers,
     ...BandPersistenceProviders
