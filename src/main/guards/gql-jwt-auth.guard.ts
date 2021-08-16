@@ -40,7 +40,7 @@ export class GqlJwtAuthGuard extends AuthGuard('jwt') {
       headers: { authorization }
     } = this.getRequest(context)
 
-    if (authorization.split(' ')[0] !== 'Bearer')
+    if (authorization?.split(' ')[0] !== 'Bearer')
       throw new PreconditionFailedException(
         'Requests where authentication is bypassed must not contain token verification'
       )

@@ -4,10 +4,22 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 // Types
-import { AddAccountInput, AccountType, LoadAccountByIdInput } from '@/domain/protocols'
+import {
+  AddAccountInput,
+  AccountType,
+  LoadAccountByIdInput,
+  UpdateAccountInput,
+  RemoveAccountByIdInput
+} from '@/domain/protocols'
 
 // Commands & Queries
-import { AddAccountCommand, LoadAccountByIdQuery, TokenPayload } from '@/data/protocols'
+import {
+  AddAccountCommand,
+  LoadAccountByIdQuery,
+  TokenPayload,
+  UpdateAccountCommand,
+  RemoveAccountCommand
+} from '@/data/protocols'
 
 // Authenticator
 import { SkipAuth, Roles, Role, GqlUserDecorator } from '@/main/decorators' 
@@ -48,4 +60,30 @@ export class AccountResolver {
   ): Promise<Account> {
     return this.commandBus.execute(new AddAccountCommand({ ...params }))
   }
+
+  /**
+   * Update Account Resolver
+   * @param params - Check UpdateAccountInput for details
+   */
+   @Mutation(() => AccountType)
+   @Roles(Role.player, Role.master)
+   async updateAccount(
+     @Args(UpdateAccountInput.name) params: UpdateAccountInput,
+     @GqlUserDecorator() payload: TokenPayload
+   ): Promise<Account> {
+     return this.commandBus.execute(new UpdateAccountCommand({ ...params }, payload))
+   }
+
+   /**
+   * Remove Account Resolver
+   * @param params - Check RemoveAccountByIdInput for details
+   */
+    @Mutation(() => AccountType)
+    @Roles(Role.player, Role.master)
+    async removeAccount(
+      @Args(RemoveAccountByIdInput.name) params: RemoveAccountByIdInput,
+      @GqlUserDecorator() payload: TokenPayload
+    ): Promise<Account> {
+      return this.commandBus.execute(new RemoveAccountCommand({ ...params }, payload))
+    }
 }

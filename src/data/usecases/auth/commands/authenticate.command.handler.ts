@@ -50,9 +50,9 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
 
   // Check if account exists
   async checkAccountByEmail(command: AuthenticateCommand): Promise<Account> {
-    const { params: { email } } = command
-    const r = await this.accountRepository.findOne({ email })
-    if (!r) throw new ApolloError('Esse endereço de E-mail não pertence a nenhuma conta cadastrada', '404')
+    const { params: { username } } = command
+    const r = await this.accountRepository.findOne({ username })
+    if (!r) throw new ApolloError('Esse usuário não pertence a nenhuma conta cadastrada', '404')
     return r
   }
 

@@ -1,14 +1,13 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsEmail, IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator'
 
 @InputType()
 export class AuthenticateInput {
 	@Field()
-	@IsString({ message: 'Campo "email" deve ser do tipo String' })
-  @IsNotEmpty({ message: 'Campo "email" não deve ser vazio' })
-  @IsEmail({}, { message: 'Campo "email" deve conter um E-mail válido' })
-	email!: string;
+	@IsString({ message: 'Campo "username" deve ser do tipo String' })
+  @IsNotEmpty({ message: 'Campo "username" não deve ser vazio' })
+	username!: string;
 
 	@Field()
 	@IsString({ message: 'Campo "password" deve ser do tipo String' })

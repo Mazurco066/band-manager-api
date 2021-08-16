@@ -13,11 +13,11 @@ export class AccountType {
   role!: string
 
   @Field(() => String)
-  email!: string
+  name!: string
 
   @Field(() => String)
-  created_at!: string
+  createdAt!: string
 
   @Field(() => String)
-  updated_at!: string
+  updatedAt!: string
 }

@@ -51,4 +51,23 @@ export class AccountRepository implements IAccountRepository {
     })
     return account
   }
+
+  async update(target: any, id: string): Promise<Account> {
+    try {
+
+      const encrypter = new BcryptAdapter()
+      const encodedPasswd = target.password ? await encrypter.encrypt(target.password) : ''
+      const account = await this.connection.findOneAndUpdate({ id }, encodedPasswd ? {
+        ...target, password: encodedPasswd
+      } : { ...target }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return account
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao atualizar conta', '500')
+    }
+  }
 }

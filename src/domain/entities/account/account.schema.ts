@@ -19,13 +19,13 @@ export class Account {
   @Prop({ immutable: true, required: true, type: String, index: true, default: () => new UniqueEntityID() })
   readonly id!: string
 
-  @Prop({ required: true, index: true, type: String })
+  @Prop({ required: true, index: true, type: String, unique: true })
   username!: string
 
   @Prop({ required: true, type: String, default: RoleEnum.player })
   role!: RoleEnum
 
-  @Prop({ required: true, type: String, unique: true })
+  @Prop({ required: true, type: String })
   name!: string
 
   @Prop({ type: String, required: true })
