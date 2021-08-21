@@ -26,6 +26,11 @@ export class BandRepository implements IBandRepository {
   }
 
   async findOne(params: Filter): Promise<Band | null> {
+    const r = await this.connection.findOne({ ...params })
+    return r
+  }
+
+  async findOnePopulated(params: Filter): Promise<Band | null> {
     const r = await this.connection
       .findOne({ ...params })
       .populate('owner')
@@ -69,6 +74,58 @@ export class BandRepository implements IBandRepository {
     } catch(ex) {
       console.error(ex)
       throw new ApolloError('Erro ao atualizar banda', '500')
+    }
+  }
+
+  async addMember(members: string[], newMember: string, id: string): Promise<Band> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id }, {
+        $set: {
+          members: [ ...members, newMember ]
+        }
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return r
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao adicionar membro na banda', '500')
+    }
+  }
+
+  async promoteMember(admins: string[], newAdmin: string, id: string): Promise<Band> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id }, {
+        $set: {
+          admins: [ ...admins, newAdmin ]
+        }
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return r
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao adicionar membro na banda', '500')
+    }
+  }
+
+  async removeMember(admins: string[], members: string[], id: string): Promise<Band> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id }, {
+        $set: { admins, members }
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return r
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao adicionar membro na banda', '500')
     }
   }
 }

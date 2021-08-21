@@ -22,11 +22,11 @@ export class Show {
   @Prop({ required: true, type: String })
   description!: string
 
-  @Prop({ type: [ObjectId], ref: 'Song', default: [] })
-  songs: ObjectId[]
+  @Prop({ type: [String], ref: 'Song', default: [] })
+  songs: string[]
 
   @Prop({ type: String, ref: 'Band' })
-  band!: ObjectId
+  band!: string
 }
 
 export const ShowSchema = SchemaFactory.createForClass(Show)

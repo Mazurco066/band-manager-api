@@ -35,7 +35,7 @@ export class LoadBandByIdHandler implements IQueryHandler<LoadBandByIdQuery> {
   // Fetch band from database
   async fetchBand(command: LoadBandByIdQuery): Promise<Band | null> {
     const { params: { id } } = command
-    const r = await this.accountRepository.findOne({ id })
+    const r = await this.accountRepository.findOnePopulated({ id })
     return r
   }
 }

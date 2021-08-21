@@ -1,4 +1,7 @@
 export * from './add-band.input'
+export * from './add-member.input'
 export * from './update-band.input'
 export * from './remove-band.input'
 export * from './load-band-by-id.input'
+export * from './promote-member.input'
+export * from './remove-member.input'
