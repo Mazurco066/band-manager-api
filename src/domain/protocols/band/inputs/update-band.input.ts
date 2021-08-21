@@ -1,9 +1,14 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString, MinLength, MaxLength, IsOptional } from 'class-validator'
+import { IsString, MinLength, MaxLength, IsOptional, IsNotEmpty, IsUUID } from 'class-validator'
 
 @InputType()
 export class UpdateBandInput {
+  @Field(() => String)
+	@IsNotEmpty({ message: 'Campo "id" não deve ser vazio' })
+	@IsUUID('4', { message: 'Campo "id" deve ser do tipo UUID versão 4' })
+	id: string
+
 	@Field(() => String)
   @IsOptional()
 	@IsString({ message: 'Campo "title" deve ser do tipo String' })

@@ -9,6 +9,9 @@ import {
   AddMemberInput,
   PromoteMemberInput,
   RemoveMemberInput,
+  DemoteMemberInput,
+  RemoveBandByIdInput,
+  UpdateBandInput,
   BandType,
   BaseBandType,
   LoadBandByIdInput
@@ -20,6 +23,9 @@ import {
   AddMemberCommand,
   PromoteMemberCommand,
   RemoveMemberCommand,
+  DemoteMemberCommand,
+  RemoveBandCommand,
+  UpdateBandCommand,
   TokenPayload,
   LoadBandByIdQuery
 } from '@/data/protocols'
@@ -66,6 +72,32 @@ export class BandResolver {
   }
 
   /**
+   * Update Band Resolver
+   * @param params - Check UpdateBandInput for details
+   */
+  @Mutation(() => BaseBandType)
+  @Roles(Role.player, Role.master)
+  async updateBand(
+    @Args(UpdateBandInput.name) params: UpdateBandInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Band> {
+    return this.commandBus.execute(new UpdateBandCommand({ ...params }, payload))
+  }
+
+  /**
+   * Remove Band Resolver
+   * @param params - Check RemoveBandByIdInput for details
+   */
+  @Mutation(() => BaseBandType)
+  @Roles(Role.player, Role.master)
+  async removeBand(
+    @Args(RemoveBandByIdInput.name) params: RemoveBandByIdInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Band> {
+    return this.commandBus.execute(new RemoveBandCommand({ ...params }, payload))
+  }
+
+  /**
    * Add Band Member Resolver
    * @param params - Check AddMemberInput for details
    */
@@ -102,5 +134,18 @@ export class BandResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<Band> {
     return this.commandBus.execute(new RemoveMemberCommand({ ...params }, payload))
+  }
+
+  /**
+   * Demote Band Member Resolver
+   * @param params - Check DemoteMemberInput for details
+   */
+  @Mutation(() => BaseBandType)
+  @Roles(Role.player, Role.master)
+  async demoteBandMember(
+    @Args(DemoteMemberInput.name) params: DemoteMemberInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Band> {
+    return this.commandBus.execute(new DemoteMemberCommand({ ...params }, payload))
   }
 }
