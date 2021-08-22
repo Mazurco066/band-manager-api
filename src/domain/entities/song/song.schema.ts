@@ -8,7 +8,7 @@ import { UniqueEntityID, UniqueObjectID } from '@/domain/shared'
 
 export type SongDocument = Song & Document
 
-@Schema({ autoCreate: true, autoIndex: true, collection: 'Song' })
+@Schema({ autoCreate: true, autoIndex: true, timestamps: true, collection: 'Song' })
 export class Song {
   @Prop({ type: String, default: () => new UniqueObjectID(), required: false })
   readonly _id: ObjectId
@@ -20,10 +20,13 @@ export class Song {
   title!: string
 
   @Prop({ required: true, type: String })
-  url!: string
+  writter!: string
 
-  @Prop({ required: false, type: String })
-  tone: string
+  @Prop({ required: true, type: String })
+  body!: string
+
+  @Prop({ type: String, ref: 'Band' })
+  band!: string
 }
 
 export const SongSchema = SchemaFactory.createForClass(Song)
