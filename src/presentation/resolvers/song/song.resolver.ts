@@ -8,7 +8,10 @@ import {
   AddSongInput,
   RemoveSongByIdInput,
   UpdateSongInput,
-  BaseSongType
+  LoadSongByIdInput,
+  ListSongsInput,
+  BaseSongType,
+  SongType
 } from '@/domain/protocols'
 
 // Commands & Queries
@@ -16,6 +19,8 @@ import {
   AddSongCommand,
   RemoveSongCommand,
   UpdateSongCommand,
+  LoadSongQuery,
+  ListSongsQuery,
   TokenPayload
 } from '@/data/protocols'
 
@@ -71,5 +76,31 @@ export class SongResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<Song> {
     return this.commandBus.execute(new UpdateSongCommand({ ...params }, payload))
+  }
+
+  /**
+   * Loads a song from a band
+   * @param params - Check LoadSongByIdInput for details
+   */
+  @Query(() => SongType)
+  @Roles(Role.player, Role.master)
+  async song(
+    @Args(LoadSongByIdInput.name) params: LoadSongByIdInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<SongType> {
+    return this.queryBus.execute(new LoadSongQuery({ ...params }, payload))
+  }
+
+  /**
+   * Loads songs from a band
+   * @param params - Check ListSongsInput for details
+   */
+  @Query(() => [SongType])
+  @Roles(Role.player, Role.master)
+  async songs(
+    @Args(ListSongsInput.name) params: ListSongsInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Song[]> {
+    return this.queryBus.execute(new ListSongsQuery({ ...params }, payload))
   }
 }

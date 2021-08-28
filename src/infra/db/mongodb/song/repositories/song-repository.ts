@@ -5,7 +5,7 @@ import { ApolloError } from 'apollo-server-express'
 
 // Domain
 import { Song, SongDocument } from '@/domain/entities/song'
-import { Filter, IBaseRepository } from '@/domain/shared'
+import { Filter, Paging, IBaseRepository } from '@/domain/shared'
 
 // Interfaces
 export type ISongRepository = IBaseRepository<Song>
@@ -15,13 +15,32 @@ export class SongRepository implements ISongRepository {
     @InjectModel(Song.name) private readonly connection: Model<SongDocument>
   ) {}
   
-  async find(params: Filter): Promise<Song[] | null> {
-    const r = await this.connection.find({ ...params })
+  async find(params: Filter, pagingOptions?: Paging): Promise<Song[] | null> {
+    const r = await this.connection
+      .find({ ...params })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+    return r
+  }
+
+  async findPopulated(params: Filter, pagingOptions?: Paging): Promise<Song[] | null> {
+    const r = await this.connection
+      .find({ ...params })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .populate('band')
     return r
   }
 
   async findOne(params: Filter): Promise<Song | null> {
     const r = await this.connection.findOne({ ...params })
+    return r
+  }
+
+  async findOnePopulated(params: Filter): Promise<Song | null> {
+    const r = await this.connection
+      .findOne({ ...params })
+      .populate('band')
     return r
   }
 
