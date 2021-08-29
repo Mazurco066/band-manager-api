@@ -8,6 +8,8 @@ import {
   AddCategoryInput,
   RemoveCategoryByIdInput,
   UpdateCategoryInput,
+  LoadCategoryByIdInput,
+  ListCategoriesInput,
   BaseCategoryType,
   CategoryType
 } from '@/domain/protocols'
@@ -17,6 +19,8 @@ import {
   AddCategoryCommand,
   RemoveCategoryCommand,
   UpdateCategoryCommand,
+  LoadCategoryQuery,
+  ListCategoriesQuery,
   TokenPayload
 } from '@/data/protocols'
 
@@ -72,5 +76,31 @@ export class CategoryResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<Category> {
     return this.commandBus.execute(new UpdateCategoryCommand({ ...params }, payload))
+  }
+
+  /**
+   * Loads a category from a band
+   * @param params - Check LoadCategoryByIdInput for details
+   */
+  @Query(() => CategoryType)
+  @Roles(Role.player, Role.master)
+  async category(
+    @Args(LoadCategoryByIdInput.name) params: LoadCategoryByIdInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Category> {
+    return this.queryBus.execute(new LoadCategoryQuery({ ...params }, payload))
+  }
+ 
+  /**
+   * Loads categories from a band
+   * @param params - Check ListCategoriesInput for details
+   */
+  @Query(() => [CategoryType])
+  @Roles(Role.player, Role.master)
+  async categories(
+    @Args(ListCategoriesInput.name) params: ListCategoriesInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Category[]> {
+    return this.queryBus.execute(new ListCategoriesQuery({ ...params }, payload))
   }
 }
