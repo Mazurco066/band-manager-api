@@ -24,7 +24,7 @@ export class AddSongInput {
 	body!: string
 
   @Field(() => String)
-  @IsNotEmpty({ message: 'Campo "bandId" não deve ser vazio' })
-	@IsUUID('4', { message: 'Campo "bandId" deve ser do tipo UUID versão 4' })
+  @IsNotEmpty({ message: 'Campo "band" não deve ser vazio' })
+	@IsUUID('4', { message: 'Campo "band" deve ser do tipo UUID versão 4' })
 	band?: string
 }
