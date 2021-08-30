@@ -27,6 +27,9 @@ export class Song {
 
   @Prop({ type: String, ref: 'Band' })
   band!: string
+
+  @Prop({ type: String, ref: 'Category' })
+  category!: string
 }
 
 export const SongSchema = SchemaFactory.createForClass(Song)

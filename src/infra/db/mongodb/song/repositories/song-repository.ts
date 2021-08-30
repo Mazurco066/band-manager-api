@@ -29,6 +29,7 @@ export class SongRepository implements ISongRepository {
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
+      .populate('category')
     return r
   }
 
@@ -41,6 +42,7 @@ export class SongRepository implements ISongRepository {
     const r = await this.connection
       .findOne({ ...params })
       .populate('band')
+      .populate('category')
     return r
   }
 

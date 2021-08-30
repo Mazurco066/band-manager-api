@@ -7,10 +7,10 @@ import { ApolloError } from 'apollo-server-express'
 import { UpdateSongCommand } from '@/data/protocols'
 
 // Repositories and Schemas
-import { BandRepository, SongRepository, AccountRepository } from '@/infra/db/mongodb'
+import { BandRepository, SongRepository, AccountRepository, CategoryRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
-import { Account, Band, Song } from '@/domain/entities'
+import { Account, Band, Song, Category } from '@/domain/entities'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -20,6 +20,7 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
   // Dependencies injection
   constructor(
     private readonly songRepository: SongRepository,
+    private readonly categoryRepository: CategoryRepository,
     @Inject('BandRepository') private readonly bandRepository: BandRepository,
     @Inject('AccountRepository') private readonly accountRepository: AccountRepository
   ) {}
@@ -27,7 +28,7 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
   // Execute action handler
   async execute(command: UpdateSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { params: { id, category }, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -41,11 +42,15 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
     const currentBand = await this.fetchBand(currentSong)
     if (!currentBand) throw new ApolloError(`Banda na qual a música está vinculada não foi encontrada!`)
 
+    // Step 4 - Retrieve category
+    const currentCategory = await this.fetchCategory(command)
+    if (category && !currentCategory) throw new ApolloError(`Categoria de id ${category} não encontrada!`)
+
     // Step 4 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Add member to band
-    return await this.updateSong(command)
+    return await this.updateSong(command, currentCategory)
   }
 
   // Fetch account from database
@@ -68,6 +73,15 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
     return r
   }
 
+  // Fetch category from database
+  async fetchCategory(command: UpdateSongCommand): Promise<Category | null> {
+    const { params: { category } } = command
+    const r = category
+      ? await this.categoryRepository.findOne({ id: category })
+      : null
+    return r
+  }
+
   // Validates if is user is master
   validateRole(command: UpdateSongCommand, band: Band, account: Account): void {
     const { payload: { role } } = command
@@ -82,13 +96,13 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
   }
 
   // Updates song from band
-  async updateSong(command: UpdateSongCommand): Promise<Song | null> {
-    const { params: { id, title, writter, body } } = command
-    if (!title && !writter && !body)
+  async updateSong(command: UpdateSongCommand, updatedCategory?: Category): Promise<Song | null> {
+    const { params: { id, title, writter, body, category } } = command
+    if (!title && !writter && !body && !category)
       throw new ApolloError('Nenhum dado foi informado para realizar a atualização da música!')
-    const r = await this.songRepository.update({ 
-      title, writter, body 
-    }, id)
+    const r = await this.songRepository.update(updatedCategory ? {
+      title, writter, body, category: updatedCategory._id.toString()
+    } : {  title, writter, body }, id)
     return r
   }
 }

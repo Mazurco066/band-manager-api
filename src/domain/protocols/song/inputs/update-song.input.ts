@@ -27,4 +27,9 @@ export class UpdateSongInput {
   @IsOptional()
 	@IsString({ message: 'Campo "body" deve ser do tipo String' })
 	body?: string
+
+  @Field(() => String)
+  @IsOptional()
+	@IsUUID('4', { message: 'Campo "category" deve ser do tipo UUID versão 4' })
+	category?: string
 }

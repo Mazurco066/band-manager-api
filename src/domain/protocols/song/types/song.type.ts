@@ -3,6 +3,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql'
 
 // Join types
 import { BaseBandType } from '../../band'
+import { BaseCategoryType } from './category.type'
 
 @ObjectType()
 export class SongType {
@@ -23,6 +24,9 @@ export class SongType {
 
   @Field(() => BaseBandType)
   band!: BaseBandType
+
+  @Field(() => BaseCategoryType)
+  category!: BaseCategoryType
 
   @Field(() => String)
   createdAt!: string

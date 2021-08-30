@@ -7,16 +7,17 @@ import { ApolloError } from 'apollo-server-express'
 import { AddSongCommand } from '@/data/protocols'
 
 // Repositories and Schemas
-import { BandRepository, AccountRepository, SongRepository } from '@/infra/db/mongodb'
+import { BandRepository, AccountRepository, SongRepository, CategoryRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
-import { Account, Band, Song } from '@/domain/entities'
+import { Account, Band, Song, Category } from '@/domain/entities'
 
 @CommandHandler(AddSongCommand)
 export class AddSongHandler implements ICommandHandler<AddSongCommand> {
   // Dependencies injection
   constructor(
     private readonly songRepository: SongRepository,
+    private readonly categoryRepository: CategoryRepository,
     @Inject('BandRepository') private readonly bandRepository: BandRepository,
     @Inject('AccountRepository') private readonly accountRepository: AccountRepository
   ) {}
@@ -24,7 +25,7 @@ export class AddSongHandler implements ICommandHandler<AddSongCommand> {
   // Execute action handler
   async execute(command: AddSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { band: bandId } } = command
+    const { params: { band: bandId, category: categoryId } } = command
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
@@ -34,8 +35,12 @@ export class AddSongHandler implements ICommandHandler<AddSongCommand> {
     const band = await this.fetchBand(command)
     if (!band) throw new ApolloError(`Band de id ${bandId} não encontrada!`)
 
-    // Step 3 - Create song
-    return await this.createSong(command, band)
+    // Step 3 - Get desired category
+    const category = await this.fetchCategory(command)
+    if (!category) throw new ApolloError(`Categoria de id ${categoryId} não encontrada!`)
+
+    // Step 4 - Create song
+    return await this.createSong(command, band, category)
   }
 
   // Fetch account from database
@@ -52,13 +57,22 @@ export class AddSongHandler implements ICommandHandler<AddSongCommand> {
     return r
   }
 
+  // Fetch category from database
+  async fetchCategory(command: AddSongCommand): Promise<Category | null> {
+    const { params: { category } } = command
+    const r = await this.categoryRepository.findOne({ id: category })
+    return r
+  }
+
   // Creates song into database
-  async createSong(command: AddSongCommand, band: Band): Promise<Song | null> {
+  async createSong(command: AddSongCommand, band: Band, category: Category): Promise<Song | null> {
     const { _id  } = band
+    const { _id: _cid } = category
     const { params } = command
     const r = await this.songRepository.save({ 
       ...params, 
-      band: _id.toString()
+      band: _id.toString(),
+      category: _cid.toString()
     })
     return r
   }
