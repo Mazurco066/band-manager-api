@@ -1,10 +1,11 @@
 {
-  "name": "band-manager-backend",
+  "name": "playliter-backend",
   "version": "1.0.0",
   "private": true,
-  "authors": [
-    "Gabriel Mazurco <mazurco066@gmail.com>"
-  ],
+  "author": {
+    "name": "Gabriel Mazurco",
+    "email": "mazurco066@gmail.com"
+  },
   "main": "index.js",
   "license": "MIT",
   "scripts": {

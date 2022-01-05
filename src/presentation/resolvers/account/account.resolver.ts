@@ -16,6 +16,7 @@ import {
 import {
   AddAccountCommand,
   LoadAccountByIdQuery,
+  LoadMeQuery,
   TokenPayload,
   UpdateAccountCommand,
   RemoveAccountCommand
@@ -48,6 +49,17 @@ export class AccountResolver {
   ): Promise<AccountType> {
     return this.queryBus.execute(new LoadAccountByIdQuery({ ...params }, payload))
   }
+
+  /**
+   * Loads current id
+   * @param params - Check LoadAccountByIdInput for details
+   */
+   @Query(() => AccountType)
+   async me(
+     @GqlUserDecorator() payload: TokenPayload
+   ): Promise<AccountType> {
+     return this.queryBus.execute(new LoadMeQuery(payload))
+   }
 
   /**
    * Create Account Resolver
