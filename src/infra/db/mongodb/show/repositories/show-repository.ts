@@ -5,7 +5,7 @@ import { ApolloError } from 'apollo-server-express'
 
 // Domain
 import { Show, ShowDocument } from '@/domain/entities/show'
-import { Filter, IBaseRepository } from '@/domain/shared'
+import { Filter, Paging, IBaseRepository } from '@/domain/shared'
 
 // Interfaces
 export type IShowRepository = IBaseRepository<Show>
@@ -15,13 +15,34 @@ export class ShowRepository implements IShowRepository {
     @InjectModel(Show.name) private readonly connection: Model<ShowDocument>
   ) {}
   
-  async find(params: Filter): Promise<Show[] | null> {
-    const r = await this.connection.find({ ...params })
+  async find(params: Filter, pagingOptions?: Paging): Promise<Show[] | null> {
+    const r = await this.connection
+      .find({ ...params })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+    return r
+  }
+
+  async findPopulated(params: Filter, pagingOptions?: Paging): Promise<Show[] | null> {
+    const r = await this.connection
+      .find({ ...params })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .populate('band')
+      .populate('songs')
     return r
   }
 
   async findOne(params: Filter): Promise<Show | null> {
     const r = await this.connection.findOne({ ...params })
+    return r
+  }
+
+  async findOnePopulated(params: Filter): Promise<Show | null> {
+    const r = await this.connection
+      .findOne({ ...params })
+      .populate('band')
+      .populate('songs')
     return r
   }
 
@@ -59,6 +80,37 @@ export class ShowRepository implements IShowRepository {
     } catch(ex) {
       console.error(ex)
       throw new ApolloError('Erro ao atualizar show', '500')
+    }
+  }
+
+  async addSong(songs: string[], newSong: string, id: string): Promise<Show> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id }, {
+        $set: {
+          songs: [ ...songs, newSong ]
+        }
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return r
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao adicionar música na apresentação', '500')
+    }
+  }
+
+  async removeSong(songs: string[], id: string): Promise<Show> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id }, {
+        $set: { songs }
+      }, { new: true, useFindAndModify: false })
+      return r
+
+    } catch(ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao remover música da apresentação', '500')
     }
   }
 }

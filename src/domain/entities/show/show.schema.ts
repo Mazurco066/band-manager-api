@@ -8,7 +8,7 @@ import { UniqueEntityID, UniqueObjectID } from '@/domain/shared'
 
 export type ShowDocument = Show & Document
 
-@Schema({ autoCreate: true, autoIndex: true, collection: 'Show' })
+@Schema({ autoCreate: true, autoIndex: true, timestamps: true, collection: 'Show' })
 export class Show {
   @Prop({ type: String, default: () => new UniqueObjectID(), required: false })
   readonly _id: ObjectId
