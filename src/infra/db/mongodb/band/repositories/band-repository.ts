@@ -5,7 +5,7 @@ import { ApolloError } from 'apollo-server-express'
 
 // Domain
 import { Band, BandDocument } from '@/domain/entities/band'
-import { Filter, IBaseRepository } from '@/domain/shared'
+import { Filter, IBaseRepository, Paging } from '@/domain/shared'
 
 // Interfaces
 export type IBandRepository = IBaseRepository<Band>
@@ -15,9 +15,25 @@ export class BandRepository implements IBandRepository {
     @InjectModel(Band.name) private readonly connection: Model<BandDocument>
   ) {}
   
-  async find(params: Filter): Promise<Band[] | null> {
+  async find(params: Filter, pagingOptions?: Paging): Promise<Band[] | null> {
+    const options = pagingOptions ? pagingOptions : { limit: 0, offset: 0 }
     const r = await this.connection
       .find({ ...params })
+      .limit(options.limit || 0)
+      .skip(options.offset || 0)
+      .populate('owner')
+      .populate('members')
+      .populate('directory')
+      .populate('admins')
+    return r
+  }
+
+  async findPopulated(params: Filter, pagingOptions?: Paging): Promise<Band[] | null> {
+    const options = pagingOptions ? pagingOptions : { limit: 0, offset: 0 }
+    const r = await this.connection
+      .find({ ...params })
+      .limit(options.limit || 0)
+      .skip(options.offset || 0)
       .populate('owner')
       .populate('members')
       .populate('directory')

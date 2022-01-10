@@ -14,6 +14,7 @@ import {
   UpdateBandInput,
   BandType,
   BaseBandType,
+  ListBandsInput,
   LoadBandByIdInput
 } from '@/domain/protocols'
 
@@ -27,6 +28,7 @@ import {
   RemoveBandCommand,
   UpdateBandCommand,
   TokenPayload,
+  ListBandsQuery,
   LoadBandByIdQuery
 } from '@/data/protocols'
 
@@ -57,6 +59,19 @@ export class BandResolver {
   ): Promise<BandType> {
     return this.queryBus.execute(new LoadBandByIdQuery({ ...params }, payload))
   }
+
+  /**
+   * List bands
+   * @param params - Check LoadBandByIdInput for details
+   */
+   @Query(() => [BandType])
+   @Roles(Role.player, Role.master)
+   async bands(
+     @Args(ListBandsInput.name) params: ListBandsInput,
+     @GqlUserDecorator() payload: TokenPayload
+   ): Promise<BandType> {
+     return this.queryBus.execute(new ListBandsQuery({ ...params }, payload))
+   }
 
   /**
    * Create Band Resolver

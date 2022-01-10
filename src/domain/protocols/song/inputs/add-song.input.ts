@@ -19,6 +19,11 @@ export class AddSongInput {
 	writter!: string
 
   @Field(() => String!)
+	@IsString({ message: 'Campo "tone" deve ser do tipo String' })
+  @IsNotEmpty({ message: 'Campo "tone" não deve ser vazio' })
+	tone!: string
+
+  @Field(() => String!)
 	@IsString({ message: 'Campo "body" deve ser do tipo String' })
   @IsNotEmpty({ message: 'Campo "body" não deve ser vazio' })
 	body!: string

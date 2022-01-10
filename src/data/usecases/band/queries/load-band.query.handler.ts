@@ -8,9 +8,6 @@ import { LoadBandByIdQuery } from '@/data/protocols'
 // Domain Entities
 import { Band } from '@/domain/entities'
 
-// Domain Protocols
-import { RoleEnum } from '@/domain/protocols'
-
 // Repositories
 import { BandRepository } from 'infra/db/mongodb'
 

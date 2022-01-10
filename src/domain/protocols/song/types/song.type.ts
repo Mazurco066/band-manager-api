@@ -20,6 +20,9 @@ export class SongType {
   description!: string
 
   @Field(() => String)
+  tone!: string
+
+  @Field(() => String)
   body!: string
 
   @Field(() => BaseBandType)
@@ -48,6 +51,9 @@ export class BaseSongType {
 
   @Field(() => String)
   description!: string
+
+  @Field(() => String)
+  tone!: string
 
   @Field(() => String)
   body!: string

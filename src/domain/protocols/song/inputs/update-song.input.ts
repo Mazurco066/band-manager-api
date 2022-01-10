@@ -18,6 +18,11 @@ export class UpdateSongInput {
 
   @Field(() => String)
   @IsOptional()
+	@IsString({ message: 'Campo "tone" deve ser do tipo String' })
+	tone?: string
+
+  @Field(() => String)
+  @IsOptional()
   @IsString({ message: 'Campo "writter" deve ser do tipo String' })
   @MinLength(2, { message: 'Campo "writter" deve conter no mínimo 2 caracteres' })
   @MaxLength(256, { message: 'Campo "writter" deve conter no máximo 256 caracteres' })

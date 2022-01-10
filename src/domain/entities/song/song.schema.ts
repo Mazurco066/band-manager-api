@@ -23,6 +23,9 @@ export class Song {
   writter!: string
 
   @Prop({ required: true, type: String })
+  tone!: string
+
+  @Prop({ required: true, type: String })
   body!: string
 
   @Prop({ type: String, ref: 'Band' })
