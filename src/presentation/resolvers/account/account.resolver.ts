@@ -7,6 +7,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   AddAccountInput,
   AccountType,
+  LoadAccountByEmailInput,
   LoadAccountByIdInput,
   UpdateAccountInput,
   RemoveAccountByIdInput
@@ -15,6 +16,7 @@ import {
 // Commands & Queries
 import {
   AddAccountCommand,
+  LoadAccountByEmailQuery,
   LoadAccountByIdQuery,
   LoadMeQuery,
   TokenPayload,
@@ -48,6 +50,19 @@ export class AccountResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<AccountType> {
     return this.queryBus.execute(new LoadAccountByIdQuery({ ...params }, payload))
+  }
+
+  /**
+   * Loads account by email
+   * @param params - Check LoadAccountByEmailInput for details
+   */
+  @Query(() => AccountType)
+  @Roles(Role.player, Role.master)
+  async accountByEmail(
+    @Args(LoadAccountByEmailInput.name) params: LoadAccountByEmailInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<AccountType> {
+    return this.queryBus.execute(new LoadAccountByEmailQuery({ ...params }, payload))
   }
 
   /**
