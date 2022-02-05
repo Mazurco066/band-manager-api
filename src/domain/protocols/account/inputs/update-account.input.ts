@@ -18,22 +18,22 @@ export class UpdateAccountInput {
 
   @Field(() => String)
   @IsOptional()
-	@IsString({ message: 'Campo "oldPassword" deve ser do tipo String' })
-  @MinLength(2, { message: 'Campo "oldPassword" deve conter no mínimo 2 caracteres' })
-  @MaxLength(50, { message: 'Campo "oldPassword" deve conter no máximo 50 caracteres' })
+	// @IsString({ message: 'Campo "oldPassword" deve ser do tipo String' })
+  // @MinLength(2, { message: 'Campo "oldPassword" deve conter no mínimo 2 caracteres' })
+  // @MaxLength(50, { message: 'Campo "oldPassword" deve conter no máximo 50 caracteres' })
 	oldPassword?: string
 
 	@Field(() => String)
   @IsOptional()
-	@IsString({ message: 'Campo "password" deve ser do tipo String' })
-  @MinLength(2, { message: 'Campo "password" deve conter no mínimo 2 caracteres' })
-  @MaxLength(50, { message: 'Campo "password" deve conter no máximo 50 caracteres' })
+	// @IsString({ message: 'Campo "password" deve ser do tipo String' })
+  // @MinLength(2, { message: 'Campo "password" deve conter no mínimo 2 caracteres' })
+  // @MaxLength(50, { message: 'Campo "password" deve conter no máximo 50 caracteres' })
 	password?: string
 
   @Field(() => String)
   @IsOptional()
-	@IsString({ message: 'Campo "confirmPassword" deve ser do tipo String' })
-  @MinLength(2, { message: 'Campo "confirmPassword" deve conter no mínimo 2 caracteres' })
-  @MaxLength(50, { message: 'Campo "confirmPassword" deve conter no máximo 50 caracteres' })
+	// @IsString({ message: 'Campo "confirmPassword" deve ser do tipo String' })
+  // @MinLength(2, { message: 'Campo "confirmPassword" deve conter no mínimo 2 caracteres' })
+  // @MaxLength(50, { message: 'Campo "confirmPassword" deve conter no máximo 50 caracteres' })
 	confirmPassword?: string
 }
