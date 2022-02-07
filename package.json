@@ -18,6 +18,9 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
+  "engines": {
+    "node": "16.13.1"
+  },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
     "@types/bcrypt": "^5.0.0",
