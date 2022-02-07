@@ -30,6 +30,7 @@ const app = async () => {
     // Start Application
     await app.listen(options.PORT, '127.0.0.1')
     Logger.log(`App is listening at http://localhost:${options.PORT}`)
+    console.log('[app bootstraped with]', options)
 
   } catch (error) {
     console.log(error)
