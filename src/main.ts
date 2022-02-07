@@ -1,6 +1,7 @@
 // Dependencies
 import { NestFactory } from '@nestjs/core'
 import { Logger, ValidationPipe } from '@nestjs/common'
+import { options } from 'main/config'
 
 // Module
 import { MainModule } from './main.module'
@@ -27,8 +28,8 @@ const app = async () => {
     app.useGlobalFilters(new MongoExceptionFilter())
 
     // Start Application
-    await app.listen(3000, '127.0.0.1')
-    Logger.log('App is listening at http://localhost:3000')
+    await app.listen(options.PORT, '127.0.0.1')
+    Logger.log(`App is listening at http://localhost:${options.PORT}`)
 
   } catch (error) {
     console.log(error)
