@@ -28,7 +28,7 @@ const app = async () => {
     app.useGlobalFilters(new MongoExceptionFilter())
 
     // Start Application
-    await app.listen(options.PORT)
+    await app.listen(process.env.PORT)
     Logger.log(`App is listening at http://localhost:${options.PORT}`)
 
   } catch (error) {
