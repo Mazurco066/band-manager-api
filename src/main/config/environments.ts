@@ -20,7 +20,7 @@ const configs = {
     API_EXPLORER_PATH: process.env.APP_API_EXPLORER_PATH || '/api',
     // Server
     HOST: process.env.APP_HOST || '127.0.0.1',
-    PORT: process.env.APP_PORT || 8080,
+    PORT: process.env.PORT || process.env.APP_PORT || 8080,
     // MONGO
     MONGO_URI: process.env.MONGO_URI || 'mongodb://root:bandmanager@localhost:27017',
     // JWT
@@ -29,7 +29,7 @@ const configs = {
   },
   development: {},
   production: {
-    PORT: process.env.APP_PORT || 8080
+    PORT: process.env.PORT || process.env.APP_PORT || 8080
   },
   test: {
     port: 3001
