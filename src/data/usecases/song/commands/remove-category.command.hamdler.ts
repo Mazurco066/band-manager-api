@@ -47,7 +47,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
 
     // Validate if category is not in use
     const categorySongs = await this.fetchSongs(retrievedCategory)
-    if (categorySongs.length > 1) {
+    if (categorySongs.length >= 1) {
       throw new ApolloError(`Essa categoria esta sendo usada por 1 ou mais músicas. Remova as músicas antes de deletar a categoria!`)
     }
 
