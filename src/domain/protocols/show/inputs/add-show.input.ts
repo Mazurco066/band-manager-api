@@ -1,6 +1,6 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsDateString } from 'class-validator'
 
 @InputType()
 export class AddShowInput {
@@ -22,4 +22,9 @@ export class AddShowInput {
   @IsNotEmpty({ message: 'Campo "band" não deve ser vazio' })
 	@IsUUID('4', { message: 'Campo "band" deve ser do tipo UUID versão 4' })
 	band: string
+
+  @Field(() => String!)
+  @IsDateString({}, { message: 'Campo "date" deve ser do formato YYYY-MM-DD' })
+  @IsNotEmpty({ message: 'Campo "date" não deve ser vazio!' })
+  date: string
 }

@@ -75,7 +75,11 @@ export class AddShowHandler implements ICommandHandler<AddShowCommand> {
   async createShow(command: AddShowCommand, band: Band): Promise<Show | null> {
     const { _id  } = band
     const { params } = command
-    const r = await this.showRepository.save({ ...params, band: _id.toString() })
+    const r = await this.showRepository.save({
+      ...params,
+      band: _id.toString(),
+      date: new Date(params.date)
+    })
     return r
   }
 }

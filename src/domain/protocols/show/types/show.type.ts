@@ -19,6 +19,9 @@ export class ShowType {
   @Field(() => BaseBandType)
   band!: BaseBandType
 
+  @Field(() => Date)
+  date!: string
+
   @Field(() => [BaseSongType])
   songs!: [BaseSongType]
 
@@ -42,6 +45,9 @@ export class BaseShowType {
 
   @Field(() => String)
   band!: string
+
+  @Field(() => Date)
+  date!: string
 
   @Field(() => [String])
   songs!: string[]

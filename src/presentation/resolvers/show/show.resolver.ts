@@ -25,7 +25,8 @@ import {
   RemoveShowCommand,
   TokenPayload,
   UnlinkSongCommand,
-  UpdateShowCommand
+  UpdateShowCommand,
+  LoadPendingShowsQuery
 } from '@/data/protocols'
 
 // Authenticator
@@ -55,6 +56,15 @@ export class ShowResolver {
   ): Promise<ShowType> {
     return this.queryBus.execute(new LoadShowQuery({ ...params }, payload))
   }
+
+  /**
+   * Loads pending shows from all bands
+   */
+   @Query(() => [ShowType])
+   @Roles(Role.player, Role.master)
+   async pendingShows(@GqlUserDecorator() payload: TokenPayload): Promise<ShowType[]> {
+     return this.queryBus.execute(new LoadPendingShowsQuery(payload))
+   }
 
   /**
    * Loads songs from a band

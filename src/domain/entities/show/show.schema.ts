@@ -22,6 +22,9 @@ export class Show {
   @Prop({ required: true, type: String })
   description!: string
 
+  @Prop({ required: true, type: Date })
+  date: Date
+
   @Prop({ type: [String], ref: 'Song', default: [] })
   songs: string[]
 

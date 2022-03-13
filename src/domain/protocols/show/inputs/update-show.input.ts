@@ -1,6 +1,6 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsOptional } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsOptional, IsDateString } from 'class-validator'
 
 @InputType()
 export class UpdateShowInput {
@@ -22,4 +22,9 @@ export class UpdateShowInput {
   @MinLength(2, { message: 'Campo "description" deve conter no mínimo 2 caracteres' })
   @MaxLength(256, { message: 'Campo "description" deve conter no máximo 256 caracteres' })
 	description!: string
+
+  @Field(() => String!)
+  @IsOptional()
+  @IsDateString({}, { message: 'Campo "date" deve ser do formato YYYY-MM-DD' })
+  date: string
 }

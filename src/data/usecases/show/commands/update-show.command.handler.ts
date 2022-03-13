@@ -83,10 +83,12 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
 
   // Updates show from band
   async updateShow(command: UpdateShowCommand): Promise<Show | null> {
-    const { params: { id, title, description, } } = command
+    const { params: { id, title, description, date } } = command
+    const payload = { title, description }
+    if (date) payload['date'] = new Date(date)
     if (!title && !description)
       throw new ApolloError('Nenhum dado foi informado para realizar a atualização da música!')
-    const r = await this.showRepository.update({ title, description }, id)
+    const r = await this.showRepository.update(payload, id)
     return r
   }
 }
