@@ -7,10 +7,10 @@ import { ApolloError } from 'apollo-server-express'
 import { RemoveCategoryCommand } from '@/data/protocols'
 
 // Repositories and Schemas
-import { BandRepository, AccountRepository, CategoryRepository } from '@/infra/db/mongodb'
+import { BandRepository, AccountRepository, CategoryRepository, SongRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
-import { Account, Band, Category } from '@/domain/entities'
+import { Account, Band, Category, Song } from '@/domain/entities'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -20,6 +20,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
   // Dependencies injection
   constructor(
     private readonly categoryRepository: CategoryRepository,
+    private readonly songRepository: SongRepository,
     @Inject('BandRepository') private readonly bandRepository: BandRepository,
     @Inject('AccountRepository') private readonly accountRepository: AccountRepository
   ) {}
@@ -43,6 +44,12 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
+
+    // Validate if category is not in use
+    const categorySongs = await this.fetchSongs(retrievedCategory)
+    if (categorySongs.length > 1) {
+      throw new ApolloError(`Essa categoria esta sendo usada por 1 ou mais músicas. Remova as músicas antes de deletar a categoria!`)
+    }
 
     // Step 4 - Add member to band
     const result = await this.removeCategory(command)
@@ -68,6 +75,13 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
     const { band } = category
     const r = await this.bandRepository.findOne({ _id: band })
     return r
+  }
+
+  // Fetch category songs
+  async fetchSongs(category: Category): Promise<Song[]> {
+    const { _id } = category
+    const songs = await this.songRepository.find({ category: _id.toString() })
+    return songs
   }
 
   // Validates if is user is master
