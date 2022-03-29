@@ -11,6 +11,7 @@ import {
   LinkSongInput,
   ListShowsInput,
   RemoveShowByIdInput,
+  ReorderShowInput,
   ShowType,
   UnlinkSongInput,
   UpdateShowInput
@@ -23,6 +24,7 @@ import {
   ListShowsQuery,
   LoadShowQuery,
   RemoveShowCommand,
+  ReorderShowCommand,
   TokenPayload,
   UnlinkSongCommand,
   UpdateShowCommand,
@@ -103,6 +105,19 @@ export class ShowResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<Song> {
     return this.commandBus.execute(new UpdateShowCommand({ ...params }, payload))
+  }
+
+  /**
+   * Reorder Show Resolver
+   * @param params - Check ReorderShowInput for details
+   */
+  @Mutation(() => BaseShowType)
+  @Roles(Role.player, Role.master)
+  async reorderShow(
+    @Args(ReorderShowInput.name) params: ReorderShowInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Song> {
+    return this.commandBus.execute(new ReorderShowCommand({ ...params }, payload))
   }
 
   /**

@@ -1,5 +1,6 @@
 export * from './add-show.command.impl'
 export * from './link-song.command.impl'
 export * from './remove-show.command.impl'
+export * from './reorder.command.impl'
 export * from './unlink-song.command.impl'
 export * from './update-show.command.impl'
