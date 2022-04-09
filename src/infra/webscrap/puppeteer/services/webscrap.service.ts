@@ -17,7 +17,12 @@ export class WebscrapService implements IBaseWebscrap {
     try {
 
       // Retrieve div content from cifra club
-      const browser = await puppeteer.launch()
+      const browser = await puppeteer.launch({
+        'args' : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      })
       const page  = await browser.newPage()
       await page.goto(url)
       const songElement = await page.$('.cifra_cnt pre')
@@ -40,7 +45,12 @@ export class WebscrapService implements IBaseWebscrap {
     try {
 
       // Retrieve div content from cifra club
-      const browser = await puppeteer.launch()
+      const browser = await puppeteer.launch({
+        'args' : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      })
       const page  = await browser.newPage()
       await page.goto(url)
       const songElement = await page.$('#core')
