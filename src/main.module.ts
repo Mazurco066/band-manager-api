@@ -2,7 +2,15 @@
 import { Module } from '@nestjs/common'
 
 // Modules
-import { AccountModule, InfraModule, AuthModule, BandModule, SongModule, ShowModule } from '@/main/modules'
+import {
+  AccountModule,
+  InfraModule,
+  AuthModule,
+  BandModule,
+  HelperModule,
+  SongModule,
+  ShowModule
+} from '@/main/modules'
 
 // Controllers
 import { MainController } from './main.controller'
@@ -13,6 +21,7 @@ import { MainController } from './main.controller'
     AccountModule,
     AuthModule,
     BandModule,
+    HelperModule,
     SongModule,
     ShowModule
   ],

@@ -1,6 +1,7 @@
 export * from './aggregate-root'
 export * from './base-domain-entity'
 export * from './base-response'
+export * from './base-webscrap'
 export * from './entity'
 export * from './identifier'
 export * from './result'
