@@ -18,7 +18,7 @@ export class WebscrapService implements IBaseWebscrap {
 
       // Retrieve div content from cifra club
       const browser = await puppeteer.launch({
-        'args' : [
+        args : [
           '--no-sandbox',
           '--disable-setuid-sandbox'
         ]
@@ -46,7 +46,7 @@ export class WebscrapService implements IBaseWebscrap {
 
       // Retrieve div content from cifra club
       const browser = await puppeteer.launch({
-        'args' : [
+        args : [
           '--no-sandbox',
           '--disable-setuid-sandbox'
         ]
