@@ -9,7 +9,12 @@ import { ScrapSongCommand } from '@/data/protocols'
 import { WebscrapService } from '@/infra/webscrap'
 
 // Return interface
-interface ScrapReturn { loot: string }
+interface ScrapReturn {
+  loot: string
+  title: string
+  writter: string
+  tone: string
+}
 
 @CommandHandler(ScrapSongCommand)
 export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
@@ -29,14 +34,24 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
       // Retrieve song from cifra club
       const r = await this.webscrapService.scrapCifraClubSong(url)
       if (r.status.code !== 200) throw new ApolloError(r.status.message, `${r.status.code}`)
-      return { loot: r.data?.text || '' }
+      return {
+        loot: r.data?.text || '',
+        tone: r.data?.tone || '',
+        writter: r.data?.writter || '',
+        title: r.data?.title || ''
+      }
 
     } else if (url.includes('cifras.com.br')) {
 
       // Retrieve song from cifras
       const r = await this.webscrapService.scrapCifrasSong(url)
       if (r.status.code !== 200) throw new ApolloError(r.status.message, `${r.status.code}`)
-      return { loot: r.data?.text || '' }
+      return {
+        loot: r.data?.text || '',
+        tone: r.data?.tone || '',
+        writter: r.data?.writter || '',
+        title: r.data?.title || ''
+      }
 
     } else {
       throw new ApolloError('Invalid URL', '400')

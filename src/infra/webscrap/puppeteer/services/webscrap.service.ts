@@ -25,11 +25,34 @@ export class WebscrapService implements IBaseWebscrap {
       })
       const page  = await browser.newPage()
       await page.goto(url)
+
+      // Retrieve song body
       const songElement = await page.$('.cifra_cnt pre')
       const songAsText = await page.evaluate(el => el.textContent, songElement)
+
+      // Retrieve song title
+      const titleElement = await page.$('.t1')
+      const titleAsText = await page.evaluate(el => el.textContent, titleElement)
+
+      // Retrieve song writter
+      const writterElement = await page.$('.t3')
+      const writterAsText = await page.evaluate(el => el.textContent, writterElement)
+
+      // Retrieve song writter
+      const toneElement = await page.$('#cifra_tom a')
+      const toneAsText = await page.evaluate(el => el.textContent, toneElement)
+
+      // Close browser
       await browser.close()
       if (!songAsText) baseResponse(404, `Song from "${url}" was not found!`)
-      return baseResponse(200, 'URL Successfully scraped', { text: songAsText })
+      
+      // Return scrapped data
+      return baseResponse(200, 'URL Successfully scraped', {
+        writter: writterAsText,
+        text: songAsText,
+        tone: toneAsText,
+        title: titleAsText
+      })
 
     } catch (err) {
       return baseResponse(500, err.message || 'A Webscrap error ocourred. Try again later.')
@@ -53,11 +76,34 @@ export class WebscrapService implements IBaseWebscrap {
       })
       const page  = await browser.newPage()
       await page.goto(url)
+
+      // Retrieve song body
       const songElement = await page.$('#core')
       const songAsText = await page.evaluate(el => el.textContent, songElement)
+
+      // Retrieve song title
+      const titleElement = await page.$('.info-art h1')
+      const titleAsText = await page.evaluate(el => el.textContent, titleElement)
+
+      // Retrieve song writter
+      const writterElement = await page.$('.info-art h2')
+      const writterAsText = await page.evaluate(el => el.textContent, writterElement)
+
+      // Retrieve song writter
+      const toneElement = await page.$('#tom_atual')
+      const toneAsText = await page.evaluate(el => el.textContent, toneElement)
+
+      // Close browser
       await browser.close()
       if (!songAsText) baseResponse(404, `Song from "${url}" was not found!`)
-      return baseResponse(200, 'URL Successfully scraped', { text: songAsText })
+    
+      // Return scrapped data
+      return baseResponse(200, 'URL Successfully scraped', {
+        writter: writterAsText,
+        text: songAsText,
+        tone: toneAsText,
+        title: titleAsText
+      })
 
     } catch (err) {
       return baseResponse(500, err.message || 'A Webscrap error ocourred. Try again later.')
