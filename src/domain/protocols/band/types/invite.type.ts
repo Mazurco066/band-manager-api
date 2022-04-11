@@ -19,10 +19,10 @@ export class InviteType {
   @Field(() => String)
   response: string
 
-  @Field(() => String)
+  @Field(() => Date)
   createdAt!: string
 
-  @Field(() => String)
+  @Field(() => Date)
   updatedAt!: string
 }
 
@@ -34,9 +34,9 @@ export class BaseInviteType {
   @Field(() => String)
   response: string
 
-  @Field(() => String)
+  @Field(() => Date)
   createdAt!: string
 
-  @Field(() => String)
+  @Field(() => Date)
   updatedAt!: string
 }
