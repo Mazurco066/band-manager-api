@@ -12,14 +12,17 @@ import { BandCommandHandlers, BandQueriesHandlers } from '@/data/usecases'
 import { BandPersistenceProviders } from '@/infra/db/mongodb'
 
 // Schemas
-import { Band, BandSchema } from '@/domain/entities/band'
+import { Band, BandSchema, Invite, InviteSchema } from '@/domain/entities/band'
 
 // External modules
 import { AccountModule } from './account.module'
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Band.name, schema: BandSchema }]),
+    MongooseModule.forFeature([
+      { name: Band.name, schema: BandSchema },
+      { name: Invite.name, schema: InviteSchema }
+    ]),
     AccountModule
   ],
   providers: [

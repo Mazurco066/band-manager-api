@@ -7,19 +7,20 @@ import { ApolloError } from 'apollo-server-express'
 import { AddMemberCommand } from '@/data/protocols'
 
 // Repositories and Schemas
-import { BandRepository, AccountRepository } from '@/infra/db/mongodb'
+import { AccountRepository, BandRepository, InviteRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
-import { Account, Band } from '@/domain/entities'
+import { Account, Band, Invite } from '@/domain/entities'
 
 // Domain Protocols
-import { RoleEnum } from '@/domain/protocols'
+import { RoleEnum, ResponseEnum } from '@/domain/protocols'
 
 @CommandHandler(AddMemberCommand)
 export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
   // Dependencies injection
   constructor(
     private readonly bandRepository: BandRepository,
+    private readonly inviteRepository: InviteRepository,
     @Inject('AccountRepository') private readonly accountRepository: AccountRepository
   ) {}
 
@@ -43,9 +44,14 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     // Step 4 - Validate Role and membership
     this.validateRole(command, retrievedBand, currentAccount)
     this.validateMember(retrievedBand, retrievedAccount)
+    await this.validateInvite(retrievedAccount, retrievedBand)
 
     // Step 5 - Add member to band
-    return await this.addMember(retrievedBand, retrievedAccount)
+    const invite =  this.addMember(retrievedBand, retrievedAccount)
+    if (!invite) throw new ApolloError(`Erro ao enviar convite para a conta: "${accountId}"`)
+
+    // Return band
+    return retrievedBand
   }
 
   // Fetch account from database
@@ -83,10 +89,25 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     }
   }
 
+  // Validate if member is already invited
+  async validateInvite(account: Account, band: Band) {
+    const invite = await this.inviteRepository.findOne({
+      account: account._id.toString(),
+      band: band._id.toString()
+    })
+    if (invite && invite.response === ResponseEnum.pending) {
+      throw new ApolloError(`A conta de id ${account.id} já possuí um convite ativo!`)
+    }
+  }
+
   // Adds member to the band
-  async addMember(band: Band, account: Account): Promise<Band | null> {
-    const { members, id } = band
-    const r = await this.bandRepository.addMember(members, account._id.toString(), id)
+  async addMember(band: Band, account: Account): Promise<Invite | null> {
+    const { _id: bandId } = band
+    const { _id: accountId } = account
+    const r = await this.inviteRepository.save({
+        account: accountId.toString(),
+        band: bandId.toString()
+    })
     return r
   }
 }
