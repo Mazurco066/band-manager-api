@@ -1,5 +1,6 @@
 // Song
 export * from './add-song.input'
+export * from './list-public-songs.input'
 export * from './list-songs.input'
 export * from './load-song.input'
 export * from './remove-song.input'

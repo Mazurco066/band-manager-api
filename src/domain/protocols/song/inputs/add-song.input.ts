@@ -1,6 +1,6 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsBoolean, IsOptional } from 'class-validator'
 
 @InputType()
 export class AddSongInput {
@@ -37,4 +37,9 @@ export class AddSongInput {
   @IsNotEmpty({ message: 'Campo "category" não deve ser vazio' })
 	@IsUUID('4', { message: 'Campo "category" deve ser do tipo UUID versão 4' })
 	category!: string
+
+  @Field(() => Boolean)
+  @IsOptional()
+  @IsBoolean({ message: 'Campo "isPublic" deve ser do tipo booleano' })
+  isPublic: boolean
 }

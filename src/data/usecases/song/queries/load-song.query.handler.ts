@@ -29,20 +29,24 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
     // Destruct params
     const { params: { bandId, id }, payload: { account } } = command
 
-    // Step 1 - Retrieve current Account
-    const currentAccount = await this.fetchAccount(account)
+    // Step 1 - Retrieve current Account, band and song
+    const [ currentAccount, currentBand, currentSong ] = await Promise.all([
+      this.fetchAccount(account),
+      this.fetchBand(bandId),
+      this.loadSong(command)
+    ])
+
+    // Step 2 - Verify if all data is persisted
     if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-
-    // Step 2 - Retrieve band
-    const currentBand = await this.fetchBand(bandId)
     if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
-
-    // Step 3 - Validate Role and membership
-    this.validateRole(command, currentBand, currentAccount)
-
-    // Step 4 - Load a song from a band
-    const currentSong = await this.loadSong(command)
     if (!currentSong) throw new ApolloError(`Música de id ${id} não foi encontrada!`)
+
+    // Step 3 - Validate Role and membership if song is not public
+    if (!currentSong.isPublic) {
+      this.validateRole(command, currentBand, currentAccount)
+    }
+    
+    // Step 4 - Load a song from a band
     return currentSong
   }
 

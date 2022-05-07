@@ -33,6 +33,9 @@ export class Song {
 
   @Prop({ type: String, ref: 'Category' })
   category!: string
+
+  @Prop({ type: Boolean, default: false })
+  isPublic!: boolean
 }
 
 export const SongSchema = SchemaFactory.createForClass(Song)

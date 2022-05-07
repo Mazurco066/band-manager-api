@@ -10,6 +10,7 @@ import {
   UpdateSongInput,
   LoadSongByIdInput,
   ListSongsInput,
+  ListPublicSongsInput,
   BaseSongType,
   SongType
 } from '@/domain/protocols'
@@ -21,6 +22,7 @@ import {
   UpdateSongCommand,
   LoadSongQuery,
   ListSongsQuery,
+  ListPublicSongsQuery,
   TokenPayload
 } from '@/data/protocols'
 
@@ -103,4 +105,16 @@ export class SongResolver {
   ): Promise<Song[]> {
     return this.queryBus.execute(new ListSongsQuery({ ...params }, payload))
   }
+
+  /**
+   * Loads songs from a band
+   * @param params - Check ListPublicSongsInput for details
+   */
+   @Query(() => [SongType])
+   async publicSongs(
+     @Args(ListPublicSongsInput.name) params: ListPublicSongsInput,
+     @GqlUserDecorator() payload: TokenPayload
+   ): Promise<Song[]> {
+     return this.queryBus.execute(new ListPublicSongsQuery({ ...params }, payload))
+   }
 }

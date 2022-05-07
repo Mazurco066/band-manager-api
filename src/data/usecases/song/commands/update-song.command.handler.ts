@@ -30,21 +30,21 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
     // Destruct params
     const { params: { id, category }, payload: { account } } = command
 
-    // Step 1 - Retrieve current Account
-    const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
+    // Step 1 - Retrieve current Account, cateogry and song
+    const [ currentAccount, currentSong, currentCategory ] = await Promise.all([
+      this.fetchAccount(account),
+      this.fetchSong(command),
+      this.fetchCategory(command)
+    ])
 
-    // Step 2 - Retrieve current song
-    const currentSong = await this.fetchSong(command)
+    // Step 2 - Validate retrieved data
+    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
     if (!currentSong) throw new ApolloError(`Música de id ${id} não encontrada!`)
+    if (category && !currentCategory) throw new ApolloError(`Categoria de id ${category} não encontrada!`)
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(currentSong)
     if (!currentBand) throw new ApolloError(`Banda na qual a música está vinculada não foi encontrada!`)
-
-    // Step 4 - Retrieve category
-    const currentCategory = await this.fetchCategory(command)
-    if (category && !currentCategory) throw new ApolloError(`Categoria de id ${category} não encontrada!`)
 
     // Step 4 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -97,12 +97,14 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
 
   // Updates song from band
   async updateSong(command: UpdateSongCommand, updatedCategory?: Category): Promise<Song | null> {
-    const { params: { id, title, writter, body, category } } = command
+    const { params: { id, title, writter, body, category, isPublic } } = command
     if (!title && !writter && !body && !category)
       throw new ApolloError('Nenhum dado foi informado para realizar a atualização da música!')
-    const r = await this.songRepository.update(updatedCategory ? {
-      title, writter, body, category: updatedCategory._id.toString()
-    } : {  title, writter, body }, id)
+    const payload = updatedCategory 
+      ? { title, writter, body, category: updatedCategory._id.toString() } 
+      : {  title, writter, body }
+    if (isPublic !== undefined) payload['isPublic'] = isPublic
+    const r = await this.songRepository.update(payload, id)
     return r
   }
 }

@@ -33,6 +33,23 @@ export class SongRepository implements ISongRepository {
     return r
   }
 
+  async findPublicPopulated(params: string, pagingOptions?: Paging, sorting?: string): Promise<Song[] | null> {
+    const r = await this.connection
+      .find({
+        $or: [
+          { title: new RegExp(params) },
+          { writter: new RegExp(params) }
+        ],
+        isPublic: true
+      })
+      .sort(sorting || 'title')
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .populate('band')
+      .populate('category')
+    return r
+  }
+
   async findOne(params: Filter): Promise<Song | null> {
     const r = await this.connection.findOne({ ...params })
     return r

@@ -31,6 +31,9 @@ export class SongType {
   @Field(() => BaseCategoryType)
   category!: BaseCategoryType
 
+  @Field(() => Boolean)
+  isPublic: boolean
+
   @Field(() => String)
   createdAt!: string
  
@@ -57,6 +60,9 @@ export class BaseSongType {
 
   @Field(() => String)
   body!: string
+
+  @Field(() => Boolean)
+  isPublic: boolean
 
   @Field(() => String)
   createdAt!: string
