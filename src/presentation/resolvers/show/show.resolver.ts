@@ -22,6 +22,7 @@ import {
   AddShowCommand,
   LinkSongCommand,
   ListShowsQuery,
+  ListShowsByAccountQuery,
   LoadShowQuery,
   RemoveShowCommand,
   ReorderShowCommand,
@@ -58,6 +59,15 @@ export class ShowResolver {
   ): Promise<ShowType> {
     return this.queryBus.execute(new LoadShowQuery({ ...params }, payload))
   }
+
+  /**
+   * Loads account shows from all bounded bands
+   */
+   @Query(() => [ShowType])
+   @Roles(Role.player, Role.master)
+   async accountShows(@GqlUserDecorator() payload: TokenPayload): Promise<ShowType[]> {
+     return this.queryBus.execute(new ListShowsByAccountQuery(payload))
+   }
 
   /**
    * Loads pending shows from all bands

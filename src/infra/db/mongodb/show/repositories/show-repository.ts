@@ -33,6 +33,16 @@ export class ShowRepository implements IShowRepository {
     return r
   }
 
+  async findShowsByBandPopulated(ids: string[], pagingOptions?: Paging): Promise<Show[] | null> {
+    const r = await this.connection
+      .find({ band: { $in: ids } })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .populate('band')
+      .populate('songs')
+    return r
+  }
+
   async findPendingPopulated(ids: string[], pagingOptions?: Paging): Promise<Show[] | null> {
     const r = await this.connection
       .find({
