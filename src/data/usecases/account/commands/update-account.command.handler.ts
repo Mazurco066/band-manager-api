@@ -61,16 +61,21 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Verify if data was modified
   verifyChanges(command: UpdateAccountCommand, account: Account) : boolean {
-    const { params: { name, password, oldPassword, confirmPassword } } = command
-    if (name !== account.name || (password && oldPassword && confirmPassword)) return true
+    const { params: { avatar, name, password, oldPassword, confirmPassword } } = command
+    console.log('here', avatar, account.avatar)
+    if (
+      name !== account.name ||
+      avatar !== account.avatar ||
+      (password && oldPassword && confirmPassword)
+    ) return true
     return false
   }
 
   // Convert data into schema
   async convertData(command: UpdateAccountCommand, account: Account): Promise<object> {
     const encrypter = new BcryptAdapter()
-    const { params: { name, password, oldPassword, confirmPassword }, payload: { role } } = command
-    let payload = { name }
+    const { params: { name, password, oldPassword, confirmPassword, avatar }, payload: { role } } = command
+    let payload = { name, avatar }
     if (oldPassword) {
       const pwdCompare = role === RoleEnum.master ? true : await encrypter.compare(oldPassword, account.password)
       if (!pwdCompare) throw new ApolloError('Senha atual informada não corresponde a armazenada', '400')

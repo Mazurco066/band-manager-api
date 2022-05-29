@@ -10,6 +10,9 @@ export class AccountType {
   username!: string
 
   @Field(() => String)
+  avatar?: string
+
+  @Field(() => String)
   role!: string
 
   @Field(() => String)

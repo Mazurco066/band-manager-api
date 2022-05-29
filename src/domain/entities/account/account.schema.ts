@@ -19,6 +19,9 @@ export class Account {
   @Prop({ immutable: true, required: true, type: String, index: true, default: () => new UniqueEntityID() })
   readonly id!: string
 
+  @Prop({ required: false, type: String, default: 'https://res.cloudinary.com/r4kta/image/upload/v1653764198/playliter/avatar/ozzy_vhyg2e.jpg' })
+  avatar?: string
+
   @Prop({ required: true, index: true, type: String, unique: true })
   username!: string
 
