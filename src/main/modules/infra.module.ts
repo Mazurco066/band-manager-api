@@ -18,6 +18,7 @@ import { options } from '../config'
 @Module({
   imports: [
     CqrsModule,
+    PassportModule,
     MongooseModule.forRoot(options.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -39,7 +40,28 @@ import { options } from '../config'
       secret: options.SECRET,
       signOptions: { expiresIn: options.EXPIRATION }
     }),
-    PassportModule
+    // * Uncomment this if you wish to use SMTP E-mail servers
+    // MailerModule.forRoot({
+    //   transport: {
+    //     host: options.SENDGRID_HOST,
+    //     port: options.SENDGRID_PORT,
+    //     secure: options.SENDGRID_PORT === 465,
+    //     auth: {
+    //       user: options.SENDGRID_USER,
+    //       pass: options.SENDGRID_KEY
+    //     }
+    //   },
+    //   defaults: {
+    //     from: `"No Reply" <${options.MAIL_USER}>`
+    //   },
+    //   template: {
+    //     dir: join(process.cwd(), 'dist/assets/templates'),
+    //     adapter: new PugAdapter(),
+    //     options: {
+    //       strict: true
+    //     }
+    //   }
+    // })
   ],
   providers: [...GuardsResolvers],
   exports: [CqrsModule, GraphQLModule, JwtModule, PassportModule]

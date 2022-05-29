@@ -1,5 +1,6 @@
 export * from './aggregate-root'
 export * from './base-domain-entity'
+export * from './base-mailer'
 export * from './base-response'
 export * from './base-webscrap'
 export * from './entity'

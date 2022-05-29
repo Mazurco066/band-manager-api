@@ -14,6 +14,9 @@ import { AccountPersistenceProviders } from '@/infra/db/mongodb'
 // Schemas
 import { Account, AccountSchema } from '@/domain/entities/account'
 
+// Infrastructure services
+import { SendGridService } from '@/infra/mail'
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }])
@@ -22,7 +25,8 @@ import { Account, AccountSchema } from '@/domain/entities/account'
     ...AccountResolvers,
     ...AccountCommandHandlers,
     ...AccountQueriesHandlers,
-    ...AccountPersistenceProviders
+    ...AccountPersistenceProviders,
+    SendGridService
   ],
   exports: [
     ...AccountPersistenceProviders
