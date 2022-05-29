@@ -13,6 +13,9 @@ export class AccountType {
   avatar?: string
 
   @Field(() => String)
+  email?: string
+
+  @Field(() => String)
   role!: string
 
   @Field(() => String)

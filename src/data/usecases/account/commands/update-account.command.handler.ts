@@ -16,6 +16,7 @@ import { RoleEnum } from '@/domain/protocols'
 
 // Adapters
 import { BcryptAdapter } from '@/infra/criptography'
+import e from 'express'
 
 @CommandHandler(UpdateAccountCommand)
 export class UpdateAccountHandler implements ICommandHandler<UpdateAccountCommand> {
@@ -61,10 +62,11 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Verify if data was modified
   verifyChanges(command: UpdateAccountCommand, account: Account) : boolean {
-    const { params: { avatar, name, password, oldPassword, confirmPassword } } = command
+    const { params: { avatar, email, name, password, oldPassword, confirmPassword } } = command
     console.log('here', avatar, account.avatar)
     if (
       name !== account.name ||
+      email !== account.email ||
       avatar !== account.avatar ||
       (password && oldPassword && confirmPassword)
     ) return true
@@ -74,8 +76,15 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
   // Convert data into schema
   async convertData(command: UpdateAccountCommand, account: Account): Promise<object> {
     const encrypter = new BcryptAdapter()
-    const { params: { name, password, oldPassword, confirmPassword, avatar }, payload: { role } } = command
+    const { params: { name, password, oldPassword, confirmPassword, avatar, email }, payload: { role } } = command
     let payload = { name, avatar }
+    // TODO: Implement a mailer feature to send a confirmation mail
+    if (email) {
+      payload['email'] = email
+      payload['isEmailconfirmed'] = false
+      console.log('[updated email] from ', account.email, ' to ', email)
+    }
+    // Updates the current password if informed
     if (oldPassword) {
       const pwdCompare = role === RoleEnum.master ? true : await encrypter.compare(oldPassword, account.password)
       if (!pwdCompare) throw new ApolloError('Senha atual informada não corresponde a armazenada', '400')

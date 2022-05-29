@@ -1,6 +1,6 @@
 // Dependencies
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsUUID } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsUUID, IsEmail } from 'class-validator'
 
 @InputType()
 export class UpdateAccountInput {
@@ -15,6 +15,12 @@ export class UpdateAccountInput {
   @MinLength(2, { message: 'Campo "name" deve conter no mínimo 2 caracteres' })
   @MaxLength(256, { message: 'Campo "name" deve conter no máximo 256 caracteres' })
 	name!: string
+
+  @Field(() => String)
+  @IsOptional()
+	@IsString({ message: 'Campo "email" deve ser do tipo String' })
+  @IsEmail({}, { message: 'Campo "email" deve ser um e-mail válido.' })
+  email!: string
 
   @Field(() => String)
   @IsOptional()
