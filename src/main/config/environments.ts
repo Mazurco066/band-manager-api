@@ -30,7 +30,8 @@ const configs = {
     SENDGRID_SENDER: process.env.SENDGRID_SENDER || '',
     SENDGRID_KEY: process.env.SENDGRID_KEY || '',
     // INTEGRATIONS
-    FRONTEND_URL: process.env.FRONTEND_URL
+    FRONTEND_URL: process.env.FRONTEND_URL,
+    BACKEND_URL: process.env.BACKEND_URL
   },
   development: {},
   production: {
