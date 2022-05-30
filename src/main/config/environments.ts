@@ -28,7 +28,9 @@ const configs = {
     EXPIRATION: process.env.APP_EXPIRATION || '3d',
     // SENDGRID SERVICES
     SENDGRID_SENDER: process.env.SENDGRID_SENDER || '',
-    SENDGRID_KEY: process.env.SENDGRID_KEY || ''
+    SENDGRID_KEY: process.env.SENDGRID_KEY || '',
+    // INTEGRATIONS
+    FRONTEND_URL: process.env.FRONTEND_URL
   },
   development: {},
   production: {

@@ -1,6 +1,7 @@
 // Dependencies
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { ApolloError } from 'apollo-server-express'
+import { options } from '@/main/config'
 
 // Commands
 import { UpdateAccountCommand } from '@/data/protocols'
@@ -16,13 +17,16 @@ import { RoleEnum } from '@/domain/protocols'
 
 // Adapters
 import { BcryptAdapter } from '@/infra/criptography'
-import e from 'express'
+
+// Infra services
+import { SendGridService } from '@/infra/mail'
 
 @CommandHandler(UpdateAccountCommand)
 export class UpdateAccountHandler implements ICommandHandler<UpdateAccountCommand> {
   // Dependencies injection
   constructor(
-    private readonly accountRepository: AccountRepository
+    private readonly accountRepository: AccountRepository,
+    private readonly messageService: SendGridService
   ) {}
 
   // Execute action handler
@@ -78,12 +82,28 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
     const encrypter = new BcryptAdapter()
     const { params: { name, password, oldPassword, confirmPassword, avatar, email }, payload: { role } } = command
     let payload = { name, avatar }
-    // TODO: Implement a mailer feature to send a confirmation mail
+    
+    // Email updates
     if (email) {
       payload['email'] = email
-      payload['isEmailconfirmed'] = false
-      console.log('[updated email] from ', account.email, ' to ', email)
+      if (email !== account.email) {
+        payload['isEmailconfirmed'] = false
+
+        // Send confirmation E-mail
+        const r = await this.messageService.sendTemplateMail({
+          subject: '[Playliter] E-mail atualizado',
+          to: email,
+          template: 'd-378d91102d6141ba8bc7ad1fe909bfd0',
+          context: {
+            subject: '[Playliter] E-mail atualizado',
+            name: account.name,
+            verify_url: `${options.FRONTEND_URL}`
+          }
+        })
+        if (r.status.code !== 200) console.log('[mail was not send]', r)
+      }
     }
+
     // Updates the current password if informed
     if (oldPassword) {
       const pwdCompare = role === RoleEnum.master ? true : await encrypter.compare(oldPassword, account.password)
@@ -91,6 +111,8 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
       if (password !== confirmPassword) throw new ApolloError('Nova senha e a confirmação informada não correspondem', '400')
       payload['password'] = password
     }
+
+    // Return updated payload
     return payload
   }
 

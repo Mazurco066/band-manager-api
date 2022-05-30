@@ -1,5 +1,6 @@
 // Dependencies
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
+import { options } from '@/main/config'
 
 // Commands
 import { AddAccountCommand } from '@/data/protocols'
@@ -37,7 +38,7 @@ export class AddAccountHandler implements ICommandHandler<AddAccountCommand> {
       context: {
         subject: 'Seja bem vindo ao playliter',
         name: createdAccount.name,
-        verify_url: 'https://playliter.vercel.app'
+        verify_url: `${options.FRONTEND_URL}`
       }
     })
     if (r.status.code !== 200) console.log('[mail was not send]', r)
