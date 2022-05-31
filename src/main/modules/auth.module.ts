@@ -20,6 +20,9 @@ import { StrageriesResolvers } from '@/main/strategies'
 // Module Providers
 import { AccountModule } from './account.module'
 
+// Infra services
+import { SendGridService } from  '@/infra/mail'
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
@@ -30,7 +33,8 @@ import { AccountModule } from './account.module'
     ...AuthResolvers,
     ...AuthCommandHandlers,
     ...AuthQueriesHandlers,
-    ...AuthPersistenceProviders
+    ...AuthPersistenceProviders,
+    SendGridService
   ],
   exports: [
     ...AuthPersistenceProviders

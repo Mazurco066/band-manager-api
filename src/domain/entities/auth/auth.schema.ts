@@ -25,6 +25,9 @@ export class Auth {
   @Prop({ required: true, type: String })
   token!: string
 
+  @Prop({ required: false, type: String, default: null })
+  resetPasswordToken?: null | string
+
   @Prop({ required: false, type: String})
   role!: RoleEnum
 }

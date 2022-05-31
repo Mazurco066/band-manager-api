@@ -74,4 +74,33 @@ export class AuthRepository implements IAuthRepository {
       throw new ApolloError('Erro ao atualizar token de acesso para conta informada', '500')
     }
   }
+  
+  async generateResetPasswordToken(account: Account, token: string, resetPasswordToken: string): Promise<Auth> {
+    try {
+      return await new this.connection({
+        account: account.id,
+        token,
+        resetPasswordToken,
+        role: account.role
+      }).save()
+    } catch (ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao gerar token de recuperação para conta informada', '500')
+    }
+  }
+
+  async updateResetPasswordToken(auth: Auth, resetPasswordToken: string): Promise<Auth> {
+    try {
+      return await this.connection.findOneAndUpdate({ _id: auth._id }, {
+        resetPasswordToken,
+        role: auth.role
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+    } catch (ex) {
+      console.error(ex)
+      throw new ApolloError('Erro ao atualizar token de recuperação para conta informada', '500')
+    }
+  }
 }

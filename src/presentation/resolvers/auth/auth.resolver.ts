@@ -4,10 +4,10 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Resolver, Args, Mutation } from '@nestjs/graphql'
 
 // Types
-import { AuthenticateInput, TokenType } from '@/domain/protocols'
+import { AuthenticateInput, ForgotPasswordInput, TokenType } from '@/domain/protocols'
 
 // Commands & Queries
-import { AuthenticateCommand } from '@/data/protocols'
+import { AuthenticateCommand, ForgotPasswordCommand } from '@/data/protocols'
 
 // Authenticator
 import { SkipAuth } from '@/main/decorators' 
@@ -32,4 +32,15 @@ export class AuthResolver {
      return this.commandBus.execute(new AuthenticateCommand({ ...params }))
    }
 
+   /**
+   * Forgot password Resolver
+   * @param params - Check ForgotPasswordInput for details
+   */
+    @Mutation(() => TokenType)
+    @SkipAuth()
+    async forgotPassword(
+      @Args(ForgotPasswordInput.name) params: ForgotPasswordInput
+    ): Promise<TokenType> {
+      return this.commandBus.execute(new ForgotPasswordCommand({ ...params }))
+    }
 }
