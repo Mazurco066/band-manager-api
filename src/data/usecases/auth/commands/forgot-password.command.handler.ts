@@ -86,7 +86,7 @@ export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordComm
       context: {
         subject: '[Playlityer] Recupere sua conta',
         name: account.name,
-        forgotUrl: `${options.FRONTEND_URL}/forgotPassword/reset/${account.id}/${auth.resetPasswordToken}`
+        forgotUrl: `${options.FRONTEND_URL}/resetPassword/${account.id}/${auth.resetPasswordToken}`
       }
     })
     return r
