@@ -2,15 +2,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { ApolloError } from 'apollo-server-express'
 import { options } from '@/main/config'
+import { generateVerificationCode } from '@/domain/shared'
 
 // Commands
 import { UpdateAccountCommand } from '@/data/protocols'
 
 // Repositories and Schemas
-import { AccountRepository } from '@/infra/db/mongodb'
+import { AccountRepository, VerificationRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
-import { Account } from '@/domain/entities'
+import { Account, VerificationCode } from '@/domain/entities'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -26,6 +27,7 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
   // Dependencies injection
   constructor(
     private readonly accountRepository: AccountRepository,
+    private readonly verificationRepository: VerificationRepository,
     private readonly messageService: SendGridService
   ) {}
 
@@ -77,6 +79,13 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
     return false
   }
 
+  // Generate verification code for user
+  async generateVerificationCode(account: Account): Promise<VerificationCode> {
+    const { _id } = account
+    const code = generateVerificationCode(4)
+    return await this.verificationRepository.save({ code, account: _id })
+  }
+
   // Convert data into schema
   async convertData(command: UpdateAccountCommand, account: Account): Promise<object> {
     const encrypter = new BcryptAdapter()
@@ -89,6 +98,10 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
       if (email !== account.email) {
         payload['isEmailconfirmed'] = false
 
+        // Generate a new code to the account
+        const accountCode = await this.generateVerificationCode(account)
+        if (!accountCode) throw new ApolloError('Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde.', '500')
+
         // Send confirmation E-mail
         const r = await this.messageService.sendTemplateMail({
           subject: '[Playliter] E-mail atualizado',
@@ -97,7 +110,8 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
           context: {
             subject: '[Playliter] E-mail atualizado',
             name: account.name,
-            verify_url: `${options.FRONTEND_URL}`
+            verify_url: `${options.FRONTEND_URL}/verify/${accountCode.code}`,
+            verify_code: accountCode.code
           }
         })
         if (r.status.code !== 200) console.log('[mail was not send]', r)

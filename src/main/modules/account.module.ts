@@ -12,14 +12,17 @@ import { AccountCommandHandlers, AccountQueriesHandlers } from '@/data/usecases'
 import { AccountPersistenceProviders } from '@/infra/db/mongodb'
 
 // Schemas
-import { Account, AccountSchema } from '@/domain/entities/account'
+import { Account, AccountSchema, VerificationCode, VerificationCodeSchema } from '@/domain/entities/account'
 
 // Infrastructure services
 import { SendGridService } from '@/infra/mail'
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }])
+    MongooseModule.forFeature([
+      { name: Account.name, schema: AccountSchema },
+      { name: VerificationCode.name, schema: VerificationCodeSchema }
+    ])
   ],
   providers: [
     ...AccountResolvers,

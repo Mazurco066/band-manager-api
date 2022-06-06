@@ -10,7 +10,8 @@ import {
   LoadAccountByEmailInput,
   LoadAccountByIdInput,
   UpdateAccountInput,
-  RemoveAccountByIdInput
+  RemoveAccountByIdInput,
+  VerifyAccountInput
 } from '@/domain/protocols'
 
 // Commands & Queries
@@ -21,7 +22,8 @@ import {
   LoadMeQuery,
   TokenPayload,
   UpdateAccountCommand,
-  RemoveAccountCommand
+  RemoveAccountCommand,
+  VerifyAccountCommand
 } from '@/data/protocols'
 
 // Authenticator
@@ -92,25 +94,38 @@ export class AccountResolver {
    * Update Account Resolver
    * @param params - Check UpdateAccountInput for details
    */
-   @Mutation(() => AccountType)
-   @Roles(Role.player, Role.master)
-   async updateAccount(
-     @Args(UpdateAccountInput.name) params: UpdateAccountInput,
-     @GqlUserDecorator() payload: TokenPayload
-   ): Promise<Account> {
-     return this.commandBus.execute(new UpdateAccountCommand({ ...params }, payload))
-   }
+  @Mutation(() => AccountType)
+  @Roles(Role.player, Role.master)
+  async updateAccount(
+    @Args(UpdateAccountInput.name) params: UpdateAccountInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Account> {
+    return this.commandBus.execute(new UpdateAccountCommand({ ...params }, payload))
+  }
 
-   /**
+  /**
    * Remove Account Resolver
    * @param params - Check RemoveAccountByIdInput for details
    */
-    @Mutation(() => AccountType)
-    @Roles(Role.player, Role.master)
-    async removeAccount(
-      @Args(RemoveAccountByIdInput.name) params: RemoveAccountByIdInput,
-      @GqlUserDecorator() payload: TokenPayload
-    ): Promise<Account> {
-      return this.commandBus.execute(new RemoveAccountCommand({ ...params }, payload))
-    }
+  @Mutation(() => AccountType)
+  @Roles(Role.player, Role.master)
+  async removeAccount(
+    @Args(RemoveAccountByIdInput.name) params: RemoveAccountByIdInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Account> {
+    return this.commandBus.execute(new RemoveAccountCommand({ ...params }, payload))
+  }
+
+  /**
+   * Verify Account Resolver
+   * @param params - Check VerifyAccountInput for details
+   */
+  @Mutation(() => AccountType)
+  @Roles(Role.player, Role.master)
+  async verifyAccount(
+    @Args(VerifyAccountInput.name) params: VerifyAccountInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Account> {
+    return this.commandBus.execute(new VerifyAccountCommand({ ...params }, payload))
+  }
 }
