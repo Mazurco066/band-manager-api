@@ -16,6 +16,9 @@ export class AccountType {
   email?: string
 
   @Field(() => String)
+  isEmailconfirmed?:string
+
+  @Field(() => String)
   role!: string
 
   @Field(() => String)

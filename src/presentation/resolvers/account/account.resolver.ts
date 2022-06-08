@@ -23,6 +23,7 @@ import {
   TokenPayload,
   UpdateAccountCommand,
   RemoveAccountCommand,
+  ResendVerificationCommand,
   VerifyAccountCommand
 } from '@/data/protocols'
 
@@ -127,5 +128,16 @@ export class AccountResolver {
     @GqlUserDecorator() payload: TokenPayload
   ): Promise<Account> {
     return this.commandBus.execute(new VerifyAccountCommand({ ...params }, payload))
+  }
+
+  /**
+   * Resend verification
+   */
+  @Mutation(() => AccountType)
+  @Roles(Role.player, Role.master)
+  async resendVerificationCode(
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Account> {
+    return this.commandBus.execute(new ResendVerificationCommand(payload))
   }
 }
