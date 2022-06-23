@@ -69,7 +69,6 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
   // Verify if data was modified
   verifyChanges(command: UpdateAccountCommand, account: Account) : boolean {
     const { params: { avatar, email, name, password, oldPassword, confirmPassword } } = command
-    console.log('here', avatar, account.avatar)
     if (
       name !== account.name ||
       email !== account.email ||

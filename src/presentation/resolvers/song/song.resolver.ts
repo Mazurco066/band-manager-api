@@ -12,6 +12,7 @@ import {
   ListSongsInput,
   ListPublicSongsInput,
   BaseSongType,
+  BandSongsType,
   SongType
 } from '@/domain/protocols'
 
@@ -97,7 +98,7 @@ export class SongResolver {
    * Loads songs from a band
    * @param params - Check ListSongsInput for details
    */
-  @Query(() => [SongType])
+  @Query(() => BandSongsType)
   @Roles(Role.player, Role.master)
   async songs(
     @Args(ListSongsInput.name) params: ListSongsInput,

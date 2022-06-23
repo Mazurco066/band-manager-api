@@ -1,5 +1,6 @@
 // Dependencies
 import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Song } from '@/domain/entities'
 
 // Join types
 import { BaseBandType } from '../../band'
@@ -69,4 +70,13 @@ export class BaseSongType {
 
   @Field(() => String)
   updatedAt!: string
+}
+
+@ObjectType()
+export class BandSongsType {
+  @Field(() => Number)
+  total!: number
+
+  @Field(() => [SongType])
+  data!: Song[]
 }

@@ -11,6 +11,7 @@ import { BandRepository, SongRepository, AccountRepository } from '@/infra/db/mo
 
 // Domain Entities
 import { Account, Band, Song } from '@/domain/entities'
+import { BandSongsType } from '@/domain/protocols'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -25,7 +26,7 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
   ) {}
 
   // Execute action handler
-  async execute(command: ListSongsQuery): Promise<Song[]> {
+  async execute(command: ListSongsQuery): Promise<BandSongsType> {
     // Destruct params
     const { params: { bandId }, payload: { account } } = command
 
@@ -41,7 +42,16 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Load songs from a band
-    return await this.listSongs(command, currentBand)
+    const [ songs, total ] = await Promise.all([
+      this.listSongs(command, currentBand),
+      this.countSongs(command, currentBand)
+    ])
+
+    // Return
+    return {
+      total: total,
+      data: songs
+    }
   }
 
   // Fetch account from database
@@ -71,11 +81,18 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
 
   // Lists songs from a band
   async listSongs(command: ListSongsQuery, band: Band): Promise<Song[] | null> {
-    const { params: { offset = 0, limit = 0 } } = command
-    const r = await this.songRepository.findPopulated(
-      { band: band._id.toString() },
+    const { params: { offset = 0, limit = 0, filter = '' } } = command
+    const r = await this.songRepository.findFilteredPopulated(
+      band._id.toString(),
+      filter,
       { offset, limit }
     )
     return r
+  }
+
+  // Count songs
+  async countSongs(command: ListSongsQuery, band: Band): Promise<number> {
+    const { params: { filter = '' } } = command
+    return await this.songRepository.customCount(band._id.toString(), filter)
   }
 }
