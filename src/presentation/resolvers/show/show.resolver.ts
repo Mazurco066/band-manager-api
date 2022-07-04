@@ -5,29 +5,35 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 // Types
 import {
+  AddObservationInput,
   AddShowInput,
   LoadShowByIdInput,
   BaseShowType,
   LinkSongInput,
   ListShowsInput,
+  RemoveObservationInput,
   RemoveShowByIdInput,
   ReorderShowInput,
   ShowType,
   UnlinkSongInput,
+  UpdateObservationInput,
   UpdateShowInput
 } from '@/domain/protocols'
 
 // Commands & Queries
 import {
+  AddObservationCommand,
   AddShowCommand,
   LinkSongCommand,
   ListShowsQuery,
   ListShowsByAccountQuery,
   LoadShowQuery,
+  RemoveObservationCommand,
   RemoveShowCommand,
   ReorderShowCommand,
   TokenPayload,
   UnlinkSongCommand,
+  UpdateObservationCommand,
   UpdateShowCommand,
   LoadPendingShowsQuery
 } from '@/data/protocols'
@@ -36,7 +42,7 @@ import {
 import { Roles, Role, GqlUserDecorator } from '@/main/decorators' 
 
 // Schemas
-import { Song } from '@/domain/entities'
+import { Show } from '@/domain/entities'
 
 @Resolver('Shows')
 @Injectable()
@@ -87,7 +93,7 @@ export class ShowResolver {
   async shows(
     @Args(ListShowsInput.name) params: ListShowsInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song[]> {
+  ): Promise<Show[]> {
     return this.queryBus.execute(new ListShowsQuery({ ...params }, payload))
   }
 
@@ -100,8 +106,47 @@ export class ShowResolver {
   async addShow(
     @Args(AddShowInput.name) params: AddShowInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song> {
+  ): Promise<Show> {
     return this.commandBus.execute(new AddShowCommand({ ...params }, payload))
+  }
+
+  /**
+   * Add observation Resolver
+   * @param params - Check AddObservationInput for details
+   */
+  @Mutation(() => BaseShowType)
+  @Roles(Role.player, Role.master)
+  async addObservation(
+    @Args(AddObservationInput.name) params: AddObservationInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Show> {
+    return this.commandBus.execute(new AddObservationCommand({ ...params }, payload))
+  }
+
+  /**
+   * Update observation Resolver
+   * @param params - Check UpdateObservationInput for details
+   */
+  @Mutation(() => BaseShowType)
+  @Roles(Role.player, Role.master)
+  async updateObservation(
+    @Args(UpdateObservationInput.name) params: UpdateObservationInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Show> {
+    return this.commandBus.execute(new UpdateObservationCommand({ ...params }, payload))
+  }
+
+  /**
+   * Remove observation Resolver
+   * @param params - Check RemoveObservationInput for details
+   */
+  @Mutation(() => BaseShowType)
+  @Roles(Role.player, Role.master)
+  async removeObservation(
+    @Args(RemoveObservationInput.name) params: RemoveObservationInput,
+    @GqlUserDecorator() payload: TokenPayload
+  ): Promise<Show> {
+    return this.commandBus.execute(new RemoveObservationCommand({ ...params }, payload))
   }
 
   /**
@@ -113,7 +158,7 @@ export class ShowResolver {
   async updateShow(
     @Args(UpdateShowInput.name) params: UpdateShowInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song> {
+  ): Promise<Show> {
     return this.commandBus.execute(new UpdateShowCommand({ ...params }, payload))
   }
 
@@ -126,7 +171,7 @@ export class ShowResolver {
   async reorderShow(
     @Args(ReorderShowInput.name) params: ReorderShowInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song> {
+  ): Promise<Show> {
     return this.commandBus.execute(new ReorderShowCommand({ ...params }, payload))
   }
 
@@ -139,7 +184,7 @@ export class ShowResolver {
   async removeShow(
     @Args(RemoveShowByIdInput.name) params: RemoveShowByIdInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song> {
+  ): Promise<Show> {
     return this.commandBus.execute(new RemoveShowCommand({ ...params }, payload))
   }
 
@@ -152,7 +197,7 @@ export class ShowResolver {
   async unlinkSong(
     @Args(UnlinkSongInput.name) params: UnlinkSongInput,
     @GqlUserDecorator() payload: TokenPayload
-  ): Promise<Song> {
+  ): Promise<Show> {
     return this.commandBus.execute(new UnlinkSongCommand({ ...params }, payload))
   }
 
@@ -165,7 +210,7 @@ export class ShowResolver {
    async linkSong(
      @Args(LinkSongInput.name) params: LinkSongInput,
      @GqlUserDecorator() payload: TokenPayload
-   ): Promise<Song> {
+   ): Promise<Show> {
      return this.commandBus.execute(new LinkSongCommand({ ...params }, payload))
    }
 }

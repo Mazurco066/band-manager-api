@@ -8,6 +8,18 @@ import { UniqueEntityID, UniqueObjectID } from '@/domain/shared'
 
 export type ShowDocument = Show & Document
 
+@Schema()
+export class Observation {
+  @Prop({ required: true, type: String })
+  id: string
+
+  @Prop({ type: String, required: true })
+  title: string
+
+  @Prop({ type: String, required: true })
+  data: string
+}
+
 @Schema({ autoCreate: true, autoIndex: true, timestamps: true, collection: 'Show' })
 export class Show {
   @Prop({ type: String, default: () => new UniqueObjectID(), required: false })
@@ -30,6 +42,10 @@ export class Show {
 
   @Prop({ type: String, ref: 'Band' })
   band!: string
+
+  // Observation schema
+  @Prop({ type: Array, required: true })
+  observations: Observation[]
 }
 
 export const ShowSchema = SchemaFactory.createForClass(Show)

@@ -6,6 +6,18 @@ import { BaseBandType } from '../../band'
 import { BaseSongType } from '../../song'
 
 @ObjectType()
+export class ObservationType {
+  @Field(() => ID)
+	id: string
+
+  @Field(() => String)
+  title: string
+
+  @Field(() => String)
+  data: string
+}
+
+@ObjectType()
 export class ShowType {
   @Field(() => ID)
 	id!: string
@@ -24,6 +36,9 @@ export class ShowType {
 
   @Field(() => [BaseSongType])
   songs!: [BaseSongType]
+
+  @Field(() => [ObservationType])
+  observations: [ObservationType]
 
   @Field(() => String)
   createdAt!: string
@@ -51,6 +66,9 @@ export class BaseShowType {
 
   @Field(() => [String])
   songs!: string[]
+
+  @Field(() => [ObservationType])
+  observations: [ObservationType]
 
   @Field(() => String)
   createdAt!: string
