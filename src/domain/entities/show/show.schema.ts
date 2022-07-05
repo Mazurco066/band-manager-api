@@ -44,7 +44,7 @@ export class Show {
   band!: string
 
   // Observation schema
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array, required: true, default: [] })
   observations: Observation[]
 }
 
