@@ -33,15 +33,16 @@ export class SongRepository implements ISongRepository {
     return r
   }
 
-  async findFilteredPopulated(bandId: string, filter: string, pagingOptions?: Paging): Promise<Song[] | null> {
+  async findFilteredPopulated(bandId: string, filter: string, pagingOptions?: Paging, sorting?: string): Promise<Song[] | null> {
     const r = await this.connection
       .find({
         $or: [
-          { title: new RegExp(filter) },
-          { writter: new RegExp(filter) }
+          { title: new RegExp(filter, 'i') },
+          { writter: new RegExp(filter, 'i') }
         ],
         band: bandId
       })
+      .sort(sorting || 'title')
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
@@ -53,8 +54,8 @@ export class SongRepository implements ISongRepository {
     const r = await this.connection
       .find({
         $or: [
-          { title: new RegExp(params) },
-          { writter: new RegExp(params) }
+          { title: new RegExp(params, 'i') },
+          { writter: new RegExp(params, 'i') }
         ],
         isPublic: true
       })
@@ -102,8 +103,8 @@ export class SongRepository implements ISongRepository {
   async customCount(bandId: string, filter: string): Promise<number> {
     return await this.connection.countDocuments({
       $or: [
-        { title: new RegExp(filter) },
-        { writter: new RegExp(filter) }
+        { title: new RegExp(filter, 'i') },
+        { writter: new RegExp(filter, 'i') }
       ],
       band: bandId
     })
