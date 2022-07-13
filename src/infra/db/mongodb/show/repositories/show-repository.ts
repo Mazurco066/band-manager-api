@@ -44,10 +44,11 @@ export class ShowRepository implements IShowRepository {
   }
 
   async findPendingPopulated(ids: string[], pagingOptions?: Paging): Promise<Show[] | null> {
+    const currentDate = new Date()
     const r = await this.connection
       .find({
         band: { $in: ids },
-        date: { $gte: new Date() }
+        date: { $gte: new Date(currentDate.toISOString().split('T')[0]) }
       })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
