@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Band, BandDocument } from '@/domain/entities/band'
@@ -64,7 +64,7 @@ export class BandRepository implements IBandRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover banda', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -73,7 +73,7 @@ export class BandRepository implements IBandRepository {
   }
 
   async save(target: any): Promise<Band> {
-    const r = await (await this.connection.create({ ...target }))
+    const r = await this.connection.create({ ...target })
     return r
   }
 
@@ -89,7 +89,7 @@ export class BandRepository implements IBandRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar banda', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -107,7 +107,7 @@ export class BandRepository implements IBandRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao adicionar membro na banda', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -125,7 +125,7 @@ export class BandRepository implements IBandRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao adicionar membro na banda', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -141,7 +141,7 @@ export class BandRepository implements IBandRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao adicionar membro na banda', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

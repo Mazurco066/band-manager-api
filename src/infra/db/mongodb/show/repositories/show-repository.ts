@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Show, ShowDocument } from '@/domain/entities/show'
@@ -78,7 +78,7 @@ export class ShowRepository implements IShowRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover show', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -103,7 +103,7 @@ export class ShowRepository implements IShowRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar show', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -121,7 +121,7 @@ export class ShowRepository implements IShowRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao adicionar música na apresentação', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -134,7 +134,7 @@ export class ShowRepository implements IShowRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover música da apresentação', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

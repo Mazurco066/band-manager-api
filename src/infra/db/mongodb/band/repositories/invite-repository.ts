@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Invite, InviteDocument } from '@/domain/entities/band'
@@ -56,7 +56,7 @@ export class InviteRepository implements IInviteRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover convite', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -81,7 +81,7 @@ export class InviteRepository implements IInviteRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar convite', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 import { BcryptAdapter } from '@/infra/criptography'
 
 // Domain
@@ -34,7 +34,7 @@ export class AccountRepository implements IAccountRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -67,7 +67,7 @@ export class AccountRepository implements IAccountRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -86,7 +86,7 @@ export class AccountRepository implements IAccountRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

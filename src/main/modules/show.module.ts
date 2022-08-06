@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
 // Resolvers
-import { ShowResolvers } from '@/presentation/resolvers'
+import { ShowControllers } from '@/presentation/controllers'
 
 // Commands & Queries
 import { ShowCommandHandlers, ShowQueriesHandlers } from '@/data/usecases'
@@ -27,7 +27,7 @@ import { SongModule } from './song.module'
     SongModule
   ],
   providers: [
-    ...ShowResolvers,
+    ...ShowControllers,
     ...ShowCommandHandlers,
     ...ShowQueriesHandlers,
     ...ShowPersistenceProviders

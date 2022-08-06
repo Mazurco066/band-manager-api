@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
 // Resolvers
-import { AuthResolvers } from '@/presentation/resolvers'
+import { AuthControllers } from '@/presentation/controllers'
 
 // Commands & Queries
 import { AuthCommandHandlers, AuthQueriesHandlers } from '@/data/usecases'
@@ -30,7 +30,7 @@ import { SendGridService } from  '@/infra/mail'
   ],
   providers: [
     ...StrageriesResolvers,
-    ...AuthResolvers,
+    ...AuthControllers,
     ...AuthCommandHandlers,
     ...AuthQueriesHandlers,
     ...AuthPersistenceProviders,

@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Category, CategoryDocument } from '@/domain/entities/song'
@@ -52,7 +52,7 @@ export class CategoryRepository implements ICategoryRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover categoria', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -77,7 +77,7 @@ export class CategoryRepository implements ICategoryRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar categoria', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

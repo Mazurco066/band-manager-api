@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Auth, AuthDocument } from '@/domain/entities/auth'
@@ -51,7 +51,7 @@ export class AuthRepository implements IAuthRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao gerar token de acesso para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -65,13 +65,11 @@ export class AuthRepository implements IAuthRepository {
         new: true,
         useFindAndModify: false
       })
-
-      if (r) return r
-      else throw new ApolloError('Erro ao atualizar token de acesso para conta informada', '404')
+      return r
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar token de acesso para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
   
@@ -85,7 +83,7 @@ export class AuthRepository implements IAuthRepository {
       }).save()
     } catch (ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao gerar token de recuperação para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -100,7 +98,7 @@ export class AuthRepository implements IAuthRepository {
       })
     } catch (ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar token de recuperação para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

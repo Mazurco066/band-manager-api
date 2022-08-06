@@ -1,11 +1,6 @@
 // Dependencies
-import {
-  Injectable,
-  ExecutionContext,
-  PreconditionFailedException
-} from '@nestjs/common'
+import { Injectable, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { GqlExecutionContext } from '@nestjs/graphql'
 import { AuthGuard } from '@nestjs/passport'
 import { Observable } from 'rxjs'
 
@@ -13,14 +8,14 @@ import { Observable } from 'rxjs'
 import { SKIP_AUTH } from '../decorators'
 
 @Injectable()
-export class GqlJwtAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private readonly reflector: Reflector) {
     super()
   }
 
   // Convert to GQL Conetext
   getRequest(context: ExecutionContext) {
-    return GqlExecutionContext.create(context).getContext().req
+    return context.switchToHttp().getRequest()
   }
 
   // Verify if auth is skipped
@@ -41,8 +36,9 @@ export class GqlJwtAuthGuard extends AuthGuard('jwt') {
     } = this.getRequest(context)
 
     if (authorization?.split(' ')[0] !== 'Bearer')
-      throw new PreconditionFailedException(
-        'Requests where authentication is bypassed must not contain token verification'
+      throw new HttpException(
+        'Requests where authentication is bypassed must not contain token verification',
+        HttpStatus.UNAUTHORIZED
       )
 
     // Validate token

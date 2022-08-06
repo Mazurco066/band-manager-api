@@ -8,7 +8,7 @@ import { HelperCommandHandlers } from '@/data/usecases'
 import { WebscrapService } from '@/infra/webscrap'
 
 // Resolvers
-import { HelperResolvers } from '@/presentation/resolvers'
+import { HelperControllers } from '@/presentation/controllers'
 
 // Helper module
 @Module({
@@ -16,7 +16,7 @@ import { HelperResolvers } from '@/presentation/resolvers'
   providers: [
     WebscrapService,
     ...HelperCommandHandlers,
-    ...HelperResolvers
+    ...HelperControllers
   ]
 })
 export class HelperModule {}

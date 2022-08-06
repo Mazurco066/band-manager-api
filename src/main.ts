@@ -7,7 +7,7 @@ import { options } from 'main/config'
 import { MainModule } from './main.module'
 
 // Filters
-import { MongoExceptionFilter } from './presentation/exceptions'
+import { HttpExceptionFilter, MongoExceptionFilter } from './presentation/exceptions'
 
 // Initialization
 const app = async () => {
@@ -25,7 +25,10 @@ const app = async () => {
 
     // Add custom filters
     app.useGlobalPipes(new ValidationPipe(validationOptions))
-    app.useGlobalFilters(new MongoExceptionFilter())
+    app.useGlobalFilters(
+      new HttpExceptionFilter(),
+      new MongoExceptionFilter()
+    )
 
     // Start Application
     await app.listen(options.PORT)

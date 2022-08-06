@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Song, SongDocument } from '@/domain/entities/song'
@@ -88,7 +88,7 @@ export class SongRepository implements ISongRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover música', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -127,7 +127,7 @@ export class SongRepository implements ISongRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar música', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }
