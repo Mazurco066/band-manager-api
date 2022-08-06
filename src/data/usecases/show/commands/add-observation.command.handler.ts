@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 import { UniqueEntityID } from '@/domain/shared'
 
 // Commands
@@ -29,8 +28,14 @@ export class AddObservationHandler implements ICommandHandler<AddObservationComm
       this.fetchAccount(command),
       this.fetchShow(command)
     ])
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
-    if (!show) throw new ApolloError(`Apresentação de id ${command.params.show} não encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!show) throw new HttpException(
+      `Apresentação de id ${command.params.show} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Create observation array
     const { params: { data, title } } = command
@@ -43,7 +48,10 @@ export class AddObservationHandler implements ICommandHandler<AddObservationComm
 
     // Save observation array to concert
     const updatedShow = await this.saveShow(command, observations)
-    if (!updatedShow) throw new ApolloError('Ocorreu um erro interno ao atualizar a apresentação!', '500')
+    if (!updatedShow) throw new HttpException(
+      'Ocorreu um erro interno ao atualizar a apresentação!',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Returning show
     return updatedShow

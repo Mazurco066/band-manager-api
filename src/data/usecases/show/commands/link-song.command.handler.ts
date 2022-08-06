@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LinkSongCommand } from '@/data/protocols'
@@ -36,13 +35,25 @@ export class LinkSongHandler implements ICommandHandler<LinkSongCommand> {
       this.fetchSong(command),
       this.fetchShow(command)
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
-    if (!currentSong) throw new ApolloError(`Música de id ${songId} não encontrada`)
-    if (!currentShow) throw new ApolloError(`Apresentação de id ${showId} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentSong) throw new HttpException(
+      `Música de id ${songId} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentShow) throw new HttpException(
+      `Apresentação de id ${showId} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve band
     const retrievedBand = await this.fetchBand(currentShow)
-    if (!retrievedBand) throw new ApolloError(`Banda não encontrada!`)
+    if (!retrievedBand) throw new HttpException(
+      `Banda não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and song
     this.validateRole(command, retrievedBand, currentAccount)
@@ -88,7 +99,10 @@ export class LinkSongHandler implements ICommandHandler<LinkSongCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados de apresentações dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados de apresentações dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
@@ -97,7 +111,10 @@ export class LinkSongHandler implements ICommandHandler<LinkSongCommand> {
     const { songs } = show
     const { _id: id, id: songId } = song
     if (songs.includes(id.toString())) {
-      throw new ApolloError(`A música de id ${songId} já está inclusa nessa apresentação!`)
+      throw new HttpException(
+        `A música de id ${songId} já está inclusa nessa apresentação!`,
+        HttpStatus.BAD_REQUEST
+      )
     }
   }
 

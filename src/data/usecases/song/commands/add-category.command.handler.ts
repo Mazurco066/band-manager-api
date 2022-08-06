@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { AddCategoryCommand } from '@/data/protocols'
@@ -31,11 +30,17 @@ export class AddCategoryHandler implements ICommandHandler<AddCategoryCommand> {
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Get desired band
     const band = await this.fetchBand(command)
-    if (!band) throw new ApolloError(`Banda de id ${bandId} não encontrada!`)
+    if (!band) throw new HttpException(
+      `Banda de id ${bandId} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate if user is able to create category
     this.validateRole(command, band, account)
@@ -67,7 +72,10 @@ export class AddCategoryHandler implements ICommandHandler<AddCategoryCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para criar uma categoria!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para criar uma categoria!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 

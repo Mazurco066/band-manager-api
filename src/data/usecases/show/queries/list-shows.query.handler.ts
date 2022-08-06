@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ListShowsQuery } from '@/data/protocols'
@@ -34,8 +33,14 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
       this.fetchAccount(account),
       this.fetchBand(bandId)
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentBand) throw new HttpException(
+      `Banda de id ${bandId} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -65,7 +70,10 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
       account._id.toString() !== owner &&
       !members.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para listar apresentações dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para listar apresentações dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 

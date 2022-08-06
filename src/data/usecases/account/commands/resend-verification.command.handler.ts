@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 import { options } from '@/main/config'
 
 // Commands
@@ -29,11 +29,11 @@ export class ResendVerificationHandler implements ICommandHandler<ResendVerifica
 
     // Step 1. Retrieve user account
     const currentAccount = await this.retrieveAccount(command)
-    if (!currentAccount) throw new ApolloError('Conta não encontrada!', '404')
+    if (!currentAccount) throw new HttpException('Conta não encontrada!', HttpStatus.NOT_FOUND)
 
     // Step 2. Retrieve account verification code
     const verificationCode = await this.retrieveCode(currentAccount)
-    if (!verificationCode) throw new ApolloError('Nenhum código de verificação foi gerado para essa conta!', '400')
+    if (!verificationCode) throw new HttpException('Nenhum código de verificação foi gerado para essa conta!', HttpStatus.BAD_REQUEST)
 
     // Step 3. Send confirmation E-mail
     const r = await this.messageService.sendTemplateMail({

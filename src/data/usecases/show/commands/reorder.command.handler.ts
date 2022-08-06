@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ReorderShowCommand } from '@/data/protocols'
@@ -35,12 +34,21 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
       this.fetchAccount(account),
       this.fetchShow(command)
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentShow) throw new ApolloError(`Apresentação de id ${id} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentShow) throw new HttpException(
+      `Apresentação de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(currentShow)
-    if (!currentBand) throw new ApolloError(`Banda na qual a apresentação está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a apresentação está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 4 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -48,11 +56,17 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
     // Step 5 - Fetch songs
     const showSongs = await this.fetchSongs(songs)
     if (showSongs.includes(null))
-      throw new ApolloError(`Algumas das músicas informadas nãos e encontram no banco de dados!`)
+      throw new HttpException(
+        `Algumas das músicas informadas não se encontram no banco de dados!`,
+        HttpStatus.BAD_REQUEST
+      )
 
     // Step 6 - Update song
     const updatedShow = await this.updateShow(command, showSongs)
-    if (!updatedShow) throw new ApolloError(`Ocorreu um erro ao reodenar as músicas do show informado!`)
+    if (!updatedShow) throw new HttpException(
+      `Ocorreu um erro ao reodenar as músicas do show informado!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Step 4 - Add member to band
     return updatedShow
@@ -87,7 +101,10 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 

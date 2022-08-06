@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { UpdateSongCommand } from '@/data/protocols'
@@ -38,13 +37,25 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
     ])
 
     // Step 2 - Validate retrieved data
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentSong) throw new ApolloError(`Música de id ${id} não encontrada!`)
-    if (category && !currentCategory) throw new ApolloError(`Categoria de id ${category} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentSong) throw new HttpException(
+      `Música de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (category && !currentCategory) throw new HttpException(
+      `Categoria de id ${category} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(currentSong)
-    if (!currentBand) throw new ApolloError(`Banda na qual a música está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a música está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 4 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -91,7 +102,10 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
@@ -99,7 +113,10 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
   async updateSong(command: UpdateSongCommand, updatedCategory?: Category): Promise<Song | null> {
     const { params: { id, title, writter, body, category, isPublic, tone } } = command
     if (!title && !writter && !body && !category && !tone)
-      throw new ApolloError('Nenhum dado foi informado para realizar a atualização da música!')
+      throw new HttpException(
+        'Nenhum dado foi informado para realizar a atualização da música!',
+        HttpStatus.BAD_REQUEST
+      )
     const payload = updatedCategory 
       ? { title, writter, body, tone, category: updatedCategory._id.toString() } 
       : {  title, writter, body, tone }

@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveObservationCommand } from '@/data/protocols'
@@ -28,21 +27,33 @@ export class RemoveObservationHandler implements ICommandHandler<RemoveObservati
       this.fetchAccount(command),
       this.fetchShow(command)
     ])
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
-    if (!show) throw new ApolloError(`Apresentação de id ${command.params.show} não encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!show) throw new HttpException(
+      `Apresentação de id ${command.params.show} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Verify if observation is present
     const { params: { id } } = command
     const observations = show.observations ? [ ...show.observations ] : []
     const currentObservation = observations.find(obs => obs.id === id)
-    if (!currentObservation) throw new ApolloError(`Observação de id ${id} não encontrada!`, '404')
+    if (!currentObservation) throw new HttpException(
+      `Observação de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Remove observation data
     const updatedObservations = observations.filter(obs => obs.id !== id)
 
     // Save observation array to concert
     const updatedShow = await this.saveShow(command, updatedObservations)
-    if (!updatedShow) throw new ApolloError('Ocorreu um erro interno ao atualizar a apresentação!', '500')
+    if (!updatedShow) throw new HttpException(
+      'Ocorreu um erro interno ao atualizar a apresentação!',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Returning show
     return updatedShow

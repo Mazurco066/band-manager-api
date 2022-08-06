@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadMeQuery } from '@/data/protocols'
@@ -22,7 +22,10 @@ export class LoadMeHandler implements IQueryHandler<LoadMeQuery> {
   async execute(command: LoadMeQuery): Promise<Account> {
     // Step 01 - Search for account into database
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Returning
     return account

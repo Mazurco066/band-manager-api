@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveAccountCommand } from '@/data/protocols'
@@ -28,11 +28,17 @@ export class RemoveAccountHandler implements ICommandHandler<RemoveAccountComman
 
     // Step 2 - Search for account into database
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.params.id} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.params.id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Remove account
     const isDeleted = await this.removeAccount(command)
-    if (!isDeleted) throw new ApolloError('Erro ao remover a conta! Por favor tente novamente mais tarde.')
+    if (!isDeleted) throw new HttpException(
+      'Erro ao remover a conta! Por favor tente novamente mais tarde.',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Step 4 - Return deleted account
     return account
@@ -42,7 +48,10 @@ export class RemoveAccountHandler implements ICommandHandler<RemoveAccountComman
   validateRole(command: RemoveAccountCommand) {
     const { params: { id }, payload: { role, account } } = command
     if (role === RoleEnum.player && id !== account) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para remover dados de outra conta`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para remover dados de outra conta`,
+        HttpStatus.UNAUTHORIZED
+      )
     }
   }
 

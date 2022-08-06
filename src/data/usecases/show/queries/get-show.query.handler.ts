@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadShowQuery } from '@/data/protocols'
@@ -34,15 +33,24 @@ export class LoadShowHandler implements IQueryHandler<LoadShowQuery> {
       this.fetchAccount(account),
       this.fetchBand(bandId)
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentBand) throw new HttpException(
+      `Banda de id ${bandId} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Load a song from a band
     const currentSong = await this.loadShow(command)
-    if (!currentSong) throw new ApolloError(`Música de id ${id} não foi encontrada!`)
+    if (!currentSong) throw new HttpException(
+      `Música de id ${id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
     return currentSong
   }
 
@@ -67,7 +75,10 @@ export class LoadShowHandler implements IQueryHandler<LoadShowQuery> {
       account._id.toString() !== owner &&
       !members.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para carregar músicas dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para carregar músicas dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 

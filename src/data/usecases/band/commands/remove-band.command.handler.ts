@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveBandCommand } from '@/data/protocols'
@@ -30,18 +29,27 @@ export class RemoveBandHandler implements ICommandHandler<RemoveBandCommand> {
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve band
     const retrievedBand = await this.fetchBand(command)
-    if (!retrievedBand) throw new ApolloError(`Banda de id ${id} não encontrada!`)
+    if (!retrievedBand) throw new HttpException(
+      `Banda de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, retrievedBand, currentAccount)
 
     // Step 4 - Add member to band
     const result = await this.removeBand(command)
-    if (!result) throw new ApolloError(`Erro ao remover banda de id ${id}!`)
+    if (!result) throw new HttpException(
+      `Erro ao remover banda de id ${id}!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
     return retrievedBand
   }
 
@@ -61,9 +69,12 @@ export class RemoveBandHandler implements ICommandHandler<RemoveBandCommand> {
   // Validates if is user is master
   validateRole(command: RemoveBandCommand, band: Band, account: Account): void {
     const { payload: { role } } = command
-    const { owner, admins } = band
+    const { owner } = band
     if (role === RoleEnum.player && account._id.toString() !== owner) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 

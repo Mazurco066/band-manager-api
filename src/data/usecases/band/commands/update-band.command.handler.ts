@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { UpdateBandCommand } from '@/data/protocols'
@@ -30,11 +29,17 @@ export class UpdateBandHandler implements ICommandHandler<UpdateBandCommand> {
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve band
     const retrievedBand = await this.fetchBand(command)
-    if (!retrievedBand) throw new ApolloError(`Banda de id ${id} não encontrada!`)
+    if (!retrievedBand) throw new HttpException(
+      `Banda de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, retrievedBand, currentAccount)
@@ -65,7 +70,10 @@ export class UpdateBandHandler implements ICommandHandler<UpdateBandCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
@@ -73,7 +81,10 @@ export class UpdateBandHandler implements ICommandHandler<UpdateBandCommand> {
   async updateBand(command: UpdateBandCommand): Promise<Band | null> {
     const { params: { id, title, description } } = command
     if (!title && !description)
-      throw new ApolloError('Nenhum dado foi informado para realizar a atualização da banda!')
+      throw new HttpException(
+        'Nenhum dado foi informado para realizar a atualização da banda!',
+        HttpStatus.BAD_REQUEST
+      )
     const r = await this.bandRepository.update({ title, description }, id)
     return r
   }

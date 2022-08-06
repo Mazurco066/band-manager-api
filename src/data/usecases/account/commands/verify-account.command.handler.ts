@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { VerifyAccountCommand } from '@/data/protocols'
@@ -24,19 +24,31 @@ export class VerifyAccountHandler implements ICommandHandler<VerifyAccountComman
 
     // Step 1. Retrieve user account
     const currentAccount = await this.retrieveAccount(command)
-    if (!currentAccount) throw new ApolloError('Conta não encontrada!', '404')
+    if (!currentAccount) throw new HttpException(
+      'Conta não encontrada!',
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2. Retrieve account verification code
     const verificationCode = await this.retrieveCode(currentAccount)
-    if (!verificationCode) throw new ApolloError('Nenhum código de verificação foi gerado para essa conta!', '400')
+    if (!verificationCode) throw new HttpException(
+      'Nenhum código de verificação foi gerado para essa conta!',
+      HttpStatus.BAD_REQUEST
+    )
 
     // Step 3. Match codes
     const isCodeEquals = this.verifyCode(command, verificationCode)
-    if (!isCodeEquals) throw new ApolloError('Código de verificação informado não corresponde ao gerado.', '400')
+    if (!isCodeEquals) throw new HttpException(
+      'Código de verificação informado não corresponde ao gerado.',
+      HttpStatus.BAD_REQUEST
+    )
 
     // Step 4. Added verified status to account
     const verifiedAccount = await this.addVerifyStatusToAccount(currentAccount)
-    if (!verifiedAccount) throw new ApolloError('Erro ao confirmar o e-mail de sua conta! Tente novamente mais tarde.', '500')
+    if (!verifiedAccount) throw new HttpException(
+      'Erro ao confirmar o e-mail de sua conta! Tente novamente mais tarde.',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Return verified account
     return verifiedAccount
