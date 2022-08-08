@@ -32,12 +32,12 @@ export class RemoveObservationHandler implements ICommandHandler<RemoveObservati
       HttpStatus.NOT_FOUND
     )
     if (!show) throw new HttpException(
-      `Apresentação de id ${command.params.show} não encontrada!`,
+      `Apresentação de id ${command.showId} não encontrada!`,
       HttpStatus.NOT_FOUND
     )
 
     // Verify if observation is present
-    const { params: { id } } = command
+    const { observationId: id } = command
     const observations = show.observations ? [ ...show.observations ] : []
     const currentObservation = observations.find(obs => obs.id === id)
     if (!currentObservation) throw new HttpException(
@@ -68,14 +68,14 @@ export class RemoveObservationHandler implements ICommandHandler<RemoveObservati
 
   // Fetch show from database
   async fetchShow(command: RemoveObservationCommand): Promise<Show | null> {
-    const { params: { show: id } } = command
+    const { showId: id } = command
     const show = await this.showRepository.findOne({ id })
     return show
   }
 
   // Save show
   async saveShow(command: RemoveObservationCommand, observations: Array<any>): Promise<Show> {
-    const { params: { show: id } } = command
+    const { showId: id } = command
     const show = await this.showRepository.update({ observations }, id)
     return show
   }

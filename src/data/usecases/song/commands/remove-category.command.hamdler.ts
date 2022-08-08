@@ -27,7 +27,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
   // Execute action handler
   async execute(command: RemoveCategoryCommand): Promise<Category> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -79,7 +79,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
 
   // Fetch category from database
   async fetchCategory(command: RemoveCategoryCommand): Promise<Category | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.findOne({ id })
     return r
   }
@@ -116,7 +116,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
 
   // Removes data from category
   async removeCategory(command: RemoveCategoryCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.delete({ id })
     return r
   }

@@ -27,7 +27,7 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
   // Execute action handler
   async execute(command: ListSongsQuery): Promise<BandSongsType> {
     // Destruct params
-    const { params: { bandId }, payload: { account } } = command
+    const { bandId, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)

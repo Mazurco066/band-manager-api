@@ -25,7 +25,7 @@ export class RemoveBandHandler implements ICommandHandler<RemoveBandCommand> {
   // Execute action handler
   async execute(command: RemoveBandCommand): Promise<Band> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -61,7 +61,7 @@ export class RemoveBandHandler implements ICommandHandler<RemoveBandCommand> {
 
   // Fetch band from database
   async fetchBand(command: RemoveBandCommand): Promise<Band | null> {
-    const { params: { id } } = command
+    const { id } = command
     const band = await this.bandRepository.findOne({ id })
     return band
   }
@@ -80,7 +80,7 @@ export class RemoveBandHandler implements ICommandHandler<RemoveBandCommand> {
 
   // Removes data from band
   async removeBand(command: RemoveBandCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.bandRepository.delete({ id })
     return r
   }

@@ -26,7 +26,7 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
   // Execute action handler
   async execute(command: RemoveShowCommand): Promise<Show> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, show and band
     const [ currentAccount, retrievedShow ] = await Promise.all([
@@ -69,7 +69,7 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
 
   // Fetch show from database
   async fetchShow(command: RemoveShowCommand): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOne({ id })
     return r
   }
@@ -99,7 +99,7 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
 
   // Removes data from show
   async removeShow(command: RemoveShowCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.delete({ id })
     return r
   }

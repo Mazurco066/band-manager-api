@@ -27,7 +27,7 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
   // Execute action handler
   async execute(command: UpdateSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { id, category }, payload: { account } } = command
+    const { id, params: { category }, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, cateogry and song
     const [ currentAccount, currentSong, currentCategory ] = await Promise.all([
@@ -72,7 +72,7 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
 
   // Fetch song from database
   async fetchSong(command: UpdateSongCommand): Promise<Song | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.findOne({ id })
     return r
   }
@@ -111,7 +111,7 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
 
   // Updates song from band
   async updateSong(command: UpdateSongCommand, updatedCategory?: Category): Promise<Song | null> {
-    const { params: { id, title, writter, body, category, isPublic, tone } } = command
+    const { id, params: { title, writter, body, category, isPublic, tone } } = command
     if (!title && !writter && !body && !category && !tone)
       throw new HttpException(
         'Nenhum dado foi informado para realizar a atualização da música!',

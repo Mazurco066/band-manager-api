@@ -25,7 +25,7 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
   // Execute action handler
   async execute(command: DemoteMemberCommand): Promise<Band> {
     // Destruct params
-    const { params: { accountId, bandId }, payload: { account } } = command
+    const { bandId, params: { accountId }, payload: { account } } = command
 
     // Step 1 - Retrieve account
     const retrievedAccount = await this.fetchAccount(accountId)
@@ -64,7 +64,7 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
 
   // Fetch band from database
   async fetchBand(command: DemoteMemberCommand): Promise<Band | null> {
-    const { params: { bandId } } = command
+    const { bandId } = command
     const band = await this.bandRepository.findOne({ id: bandId })
     return band
   }
@@ -80,7 +80,7 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
     ) {
       throw new HttpException(
         `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.FORBIDDEN
       )
     }
   }

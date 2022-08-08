@@ -29,7 +29,7 @@ export class RemoveAccountHandler implements ICommandHandler<RemoveAccountComman
     // Step 2 - Search for account into database
     const account = await this.fetchAccount(command)
     if (!account) throw new HttpException(
-      `Conta de id ${command.params.id} não foi encontrada!`,
+      `Conta de id ${command.id} não foi encontrada!`,
       HttpStatus.NOT_FOUND
     )
 
@@ -46,25 +46,25 @@ export class RemoveAccountHandler implements ICommandHandler<RemoveAccountComman
 
   // Validates if is user is master
   validateRole(command: RemoveAccountCommand) {
-    const { params: { id }, payload: { role, account } } = command
+    const { id, payload: { role, account } } = command
     if (role === RoleEnum.player && id !== account) {
       throw new HttpException(
         `Você não tem permissão como ${RoleEnum.player} para remover dados de outra conta`,
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.FORBIDDEN
       )
     }
   }
 
   // Fetch account from database
   async fetchAccount(command: RemoveAccountCommand): Promise<Account | null> {
-    const { params: { id } } = command
+    const { id } = command
     const account = await this.accountRepository.findOne({ id })
     return account
   }
 
   // Remove account from database
   async removeAccount(command: RemoveAccountCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.accountRepository.delete({ id })
     return r
   }

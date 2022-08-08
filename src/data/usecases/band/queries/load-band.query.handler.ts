@@ -24,7 +24,7 @@ export class LoadBandByIdHandler implements IQueryHandler<LoadBandByIdQuery> {
     // Step 1 - Search for band into database
     const band = await this.fetchBand(command)
     if (!band) throw new HttpException(
-      `Banda de id ${command.params.id} não foi encontrada!`,
+      `Banda de id ${command.id} não foi encontrada!`,
       HttpStatus.NOT_FOUND
     )
 
@@ -34,7 +34,7 @@ export class LoadBandByIdHandler implements IQueryHandler<LoadBandByIdQuery> {
 
   // Fetch band from database
   async fetchBand(command: LoadBandByIdQuery): Promise<Band | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.accountRepository.findOnePopulated({ id })
     return r
   }

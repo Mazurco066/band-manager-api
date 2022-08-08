@@ -26,7 +26,7 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
   // Execute action handler
   async execute(command: ListShowsQuery): Promise<Show[]> {
     // Destruct params
-    const { params: { bandId }, payload: { account } } = command
+    const { bandId, payload: { account } } = command
 
     // Step 1 - Retrieve current Account and band
     const [ currentAccount, currentBand ] = await Promise.all([

@@ -65,7 +65,7 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
     const pwdCompare = await encrypter.compare(password, account.password)
     if (!pwdCompare) throw new HttpException(
       'E-mail ou senha incorreto(s)',
-      HttpStatus.UNAUTHORIZED
+      HttpStatus.FORBIDDEN
     )
   }
 

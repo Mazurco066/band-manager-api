@@ -10,6 +10,7 @@ import { TokenPayload } from '@/data/protocols'
 // Add account command
 export class DemoteMemberCommand implements ICommand {
   constructor(
+    public readonly bandId: string,
     public readonly params: DemoteMemberInput,
     public readonly payload: TokenPayload
   ) {}

@@ -26,7 +26,7 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
   // Execute action handler
   async execute(command: ListCategoriesQuery): Promise<Category[]> {
     // Destruct params
-    const { params: { bandId }, payload: { account } } = command
+    const { bandId, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)

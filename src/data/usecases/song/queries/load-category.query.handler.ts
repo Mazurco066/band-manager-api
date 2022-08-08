@@ -26,7 +26,7 @@ export class LoadCategoryHandler implements IQueryHandler<LoadCategoryQuery> {
   // Execute action handler
   async execute(command: LoadCategoryQuery): Promise<Category> {
     // Destruct params
-    const { params: { bandId, id }, payload: { account } } = command
+    const { bandId, id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -84,7 +84,7 @@ export class LoadCategoryHandler implements IQueryHandler<LoadCategoryQuery> {
 
   // Loads a category from band
   async loadCategory(command: LoadCategoryQuery): Promise<Category | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.findOnePopulated({ id })
     return r
   }

@@ -26,7 +26,7 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
   // Execute action handler
   async execute(command: UpdateShowCommand): Promise<Show> {
     // Destruct params
-    const { params: { id, }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account and show
     const [ currentAccount, currentShow ] = await Promise.all([
@@ -64,7 +64,7 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
 
   // Fetch show from database
   async fetchShow(command: UpdateShowCommand): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOne({ id })
     return r
   }
@@ -94,7 +94,7 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
 
   // Updates show from band
   async updateShow(command: UpdateShowCommand): Promise<Show | null> {
-    const { params: { id, title, description, date } } = command
+    const { id, params: { title, description, date } } = command
     const payload = { title, description }
     if (date) payload['date'] = new Date(date)
     if (!title && !description)

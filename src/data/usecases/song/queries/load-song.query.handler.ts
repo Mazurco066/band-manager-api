@@ -26,7 +26,7 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
   // Execute action handler
   async execute(command: LoadSongQuery): Promise<Song> {
     // Destruct params
-    const { params: { bandId, id }, payload: { account } } = command
+    const { bandId, id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, band and song
     const [ currentAccount, currentBand, currentSong ] = await Promise.all([
@@ -88,7 +88,7 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
 
   // Loads a song from band
   async loadSong(command: LoadSongQuery): Promise<Song | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.findOnePopulated({ id })
     return r
   }

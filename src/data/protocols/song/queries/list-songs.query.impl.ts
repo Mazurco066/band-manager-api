@@ -10,6 +10,7 @@ import { TokenPayload } from '@/data/protocols'
 // Add account command
 export class ListSongsQuery implements IQuery {
   constructor(
+    public readonly bandId: string,
     public readonly params: ListSongsInput,
     public readonly payload: TokenPayload
   ) {}

@@ -25,7 +25,7 @@ export class PromoteMemberHandler implements ICommandHandler<PromoteMemberComman
   // Execute action handler
   async execute(command: PromoteMemberCommand): Promise<Band> {
     // Destruct params
-    const { params: { accountId, bandId }, payload: { account } } = command
+    const { bandId, params: { accountId }, payload: { account } } = command
 
     // Step 1 - Retrieve account
     const retrievedAccount = await this.fetchAccount(accountId)
@@ -64,7 +64,7 @@ export class PromoteMemberHandler implements ICommandHandler<PromoteMemberComman
 
   // Fetch band from database
   async fetchBand(command: PromoteMemberCommand): Promise<Band | null> {
-    const { params: { bandId } } = command
+    const { bandId } = command
     const band = await this.bandRepository.findOne({ id: bandId })
     return band
   }
@@ -80,7 +80,7 @@ export class PromoteMemberHandler implements ICommandHandler<PromoteMemberComman
     ) {
       throw new HttpException(
         `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.FORBIDDEN
       )
     }
   }

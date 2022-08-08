@@ -26,7 +26,7 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
   // Execute action handler
   async execute(command: RemoveSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -69,7 +69,7 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
 
   // Fetch song from database
   async fetchSong(command: RemoveSongCommand): Promise<Song | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.findOne({ id })
     return r
   }
@@ -99,7 +99,7 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
 
   // Removes data from song
   async removeSong(command: RemoveSongCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.delete({ id })
     return r
   }

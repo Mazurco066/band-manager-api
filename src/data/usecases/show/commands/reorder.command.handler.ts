@@ -27,7 +27,7 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
   // Execute action handler
   async execute(command: ReorderShowCommand): Promise<Show> {
     // Destruct params
-    const { params: { id, songs }, payload: { account } } = command
+    const { id, params: { songs }, payload: { account } } = command
 
     // Step 1 - Retrieve current Account and show
     const [ currentAccount, currentShow ] = await Promise.all([
@@ -80,7 +80,7 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
 
   // Fetch show from database
   async fetchShow(command: ReorderShowCommand): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOne({ id })
     return r
   }
@@ -118,7 +118,7 @@ export class ReorderShowHandler implements ICommandHandler<ReorderShowCommand> {
 
   // Update show
   async updateShow(command: ReorderShowCommand, songs: string[]): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const payload = { songs }
     const r = await this.showRepository.update(payload, id)
     return r

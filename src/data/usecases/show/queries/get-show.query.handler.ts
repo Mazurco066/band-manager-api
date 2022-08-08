@@ -26,7 +26,7 @@ export class LoadShowHandler implements IQueryHandler<LoadShowQuery> {
   // Execute action handler
   async execute(command: LoadShowQuery): Promise<Show> {
     // Destruct params
-    const { params: { bandId, id }, payload: { account } } = command
+    const { bandId, id, payload: { account } } = command
 
     // Step 1 - Retrieve account and band
     const [ currentAccount, currentBand ] = await Promise.all([
@@ -84,7 +84,7 @@ export class LoadShowHandler implements IQueryHandler<LoadShowQuery> {
 
   // Loads a song from band
   async loadShow(command: LoadShowQuery): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOnePopulated({ id })
     return r
   }

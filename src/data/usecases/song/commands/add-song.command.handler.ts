@@ -24,7 +24,7 @@ export class AddSongHandler implements ICommandHandler<AddSongCommand> {
   // Execute action handler
   async execute(command: AddSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { band: bandId, category: categoryId } } = command
+    const { bandId, params: { category: categoryId } } = command
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
@@ -60,8 +60,8 @@ export class AddSongHandler implements ICommandHandler<AddSongCommand> {
 
   // Fetch band from database
   async fetchBand(command: AddSongCommand): Promise<Band | null> {
-    const { params: { band } } = command
-    const r = await this.bandRepository.findOne({ id: band })
+    const { bandId } = command
+    const r = await this.bandRepository.findOne({ id: bandId })
     return r
   }
 

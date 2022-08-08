@@ -27,7 +27,7 @@ export class UnlinkSongHandler implements ICommandHandler<UnlinkSongCommand> {
   // Execute action handler
   async execute(command: UnlinkSongCommand): Promise<Show> {
     // Destruct params
-    const { params: { showId, songId }, payload: { account } } = command
+    const { showId, params: { songId }, payload: { account } } = command
 
     // Step 1 - Retrieve account 
     const [ currentAccount, currentSong, currentShow ] = await Promise.all([
@@ -75,7 +75,7 @@ export class UnlinkSongHandler implements ICommandHandler<UnlinkSongCommand> {
 
   // Fetch show from database
   async fetchShow(command: UnlinkSongCommand): Promise<Show | null> {
-    const { params: { showId } } = command
+    const { showId } = command
     const r = await this.showRepository.findOne({ id: showId })
     return r
   }

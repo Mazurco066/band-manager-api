@@ -25,7 +25,7 @@ export class RemoveMemberHandler implements ICommandHandler<RemoveMemberCommand>
   // Execute action handler
   async execute(command: RemoveMemberCommand): Promise<Band> {
     // Destruct params
-    const { params: { accountId, bandId }, payload: { account } } = command
+    const { bandId, params: { accountId }, payload: { account } } = command
 
     // Step 1 - Retrieve account
     const retrievedAccount = await this.fetchAccount(accountId)
@@ -64,7 +64,7 @@ export class RemoveMemberHandler implements ICommandHandler<RemoveMemberCommand>
 
   // Fetch band from database
   async fetchBand(command: RemoveMemberCommand): Promise<Band | null> {
-    const { params: { bandId } } = command
+    const { bandId } = command
     const band = await this.bandRepository.findOne({ id: bandId })
     return band
   }

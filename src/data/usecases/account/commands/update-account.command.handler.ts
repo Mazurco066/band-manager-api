@@ -39,7 +39,7 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
     // Step 2 - Search for account into database
     const account = await this.fetchAccount(command)
     if (!account) throw new HttpException(
-      `Conta de id ${command.params.id} não foi encontrada!`,
+      `Conta de id ${command.id} não foi encontrada!`,
       HttpStatus.NOT_FOUND
     )
 
@@ -59,18 +59,18 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Validates if is user is master
   validateRole(command: UpdateAccountCommand) {
-    const { params: { id }, payload: { role, account } } = command
+    const { id, payload: { role, account } } = command
     if (role === RoleEnum.player && id !== account) {
       throw new HttpException(
         `Você não tem permissão como ${RoleEnum.player} para atualizar dados de outra conta`,
-        HttpStatus.UNAUTHORIZED
+        HttpStatus.FORBIDDEN
       )
     }
   }
 
   // Fetch account from database
   async fetchAccount(command: UpdateAccountCommand): Promise<Account | null> {
-    const { params: { id } } = command
+    const { id } = command
     const account = await this.accountRepository.findOne({ id })
     return account
   }
@@ -149,7 +149,7 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Create account handler
   async updateAccount(command: UpdateAccountCommand, params: object): Promise<Account> {
-    const { params: { id } } = command
+    const { id } = command
     return await this.accountRepository.update({ ...params }, id)
   }
 }

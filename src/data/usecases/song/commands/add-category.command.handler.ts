@@ -26,7 +26,7 @@ export class AddCategoryHandler implements ICommandHandler<AddCategoryCommand> {
   // Execute action handler
   async execute(command: AddCategoryCommand): Promise<Category> {
     // Destruct params
-    const { params: { band: bandId } } = command
+    const { bandId } = command
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
@@ -58,8 +58,8 @@ export class AddCategoryHandler implements ICommandHandler<AddCategoryCommand> {
 
   // Fetch band from database
   async fetchBand(command: AddCategoryCommand): Promise<Band | null> {
-    const { params: { band } } = command
-    const r = await this.bandRepository.findOne({ id: band })
+    const { bandId } = command
+    const r = await this.bandRepository.findOne({ id: bandId })
     return r
   }
 

@@ -26,7 +26,7 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
   // Execute action handler
   async execute(command: UpdateCategoryCommand): Promise<Category> {
     // Destruct params
-    const { params: { id } } = command
+    const { id } = command
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
@@ -65,7 +65,7 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
 
   // Fetch category from database
   async fetchCategory(command: UpdateCategoryCommand): Promise<Category | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.findOne({ id })
     return r
   }
@@ -95,7 +95,7 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
 
   // Updates category into database
   async updateCategory(command: UpdateCategoryCommand): Promise<Category | null> {
-    const { params: { id, title, description } } = command
+    const { id, params: { title, description } } = command
     if (!title && !description)
       throw new HttpException(
         'Nenhum dado foi informado para realizar a atualização da categoria!',

@@ -67,7 +67,7 @@ export class ResetPasswordHandler implements ICommandHandler<ResetPasswordComman
 
   // Retrieve account
   async retrieveAccount(command: ResetPasswordCommand): Promise<Account> {
-    const { params: { accountId } } = command
+    const { accountId } = command
     const account = await this.accountRepository.findOne({ id: accountId })
     return account
   }
