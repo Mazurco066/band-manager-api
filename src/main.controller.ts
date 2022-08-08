@@ -12,13 +12,13 @@ import { resolve } from 'path'
 const pj = readFileSync(resolve(__dirname, '../package.json'), 'utf-8')
 const { version } = JSON.parse(pj)
 
-@Controller()
+@Controller('api/v1')
 export class MainController {
   @Get()
   @SkipAuth()
   getVersion(@Res() res): void {
     res.status(200).send(
-      baseResponse(200, `Playliter API - version ${version} - Graphql API, access /graphql to use API`)
+      baseResponse(200, `Playliter API - version ${version} - REST API`)
     )
   }
 }

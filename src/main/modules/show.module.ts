@@ -26,8 +26,10 @@ import { SongModule } from './song.module'
     BandModule,
     SongModule
   ],
+  controllers: [
+    ...ShowControllers
+  ],
   providers: [
-    ...ShowControllers,
     ...ShowCommandHandlers,
     ...ShowQueriesHandlers,
     ...ShowPersistenceProviders

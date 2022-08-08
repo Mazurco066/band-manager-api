@@ -28,9 +28,11 @@ import { SendGridService } from  '@/infra/mail'
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
     AccountModule
   ],
+  controllers: [
+    ...AuthControllers
+  ],
   providers: [
     ...StrageriesResolvers,
-    ...AuthControllers,
     ...AuthCommandHandlers,
     ...AuthQueriesHandlers,
     ...AuthPersistenceProviders,

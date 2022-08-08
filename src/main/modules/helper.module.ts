@@ -13,10 +13,12 @@ import { HelperControllers } from '@/presentation/controllers'
 // Helper module
 @Module({
   imports: [],
+  controllers: [
+    ...HelperControllers
+  ],
   providers: [
     WebscrapService,
-    ...HelperCommandHandlers,
-    ...HelperControllers
+    ...HelperCommandHandlers
   ]
 })
 export class HelperModule {}

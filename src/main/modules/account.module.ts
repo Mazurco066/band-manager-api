@@ -2,8 +2,9 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-// Resolvers
+// Controllers and services
 import { AccountControllers } from '@/presentation/controllers'
+import { AccountServices } from '@/presentation/services'
 
 // Commands & Queries
 import { AccountCommandHandlers, AccountQueriesHandlers } from '@/data/usecases'
@@ -24,8 +25,11 @@ import { SendGridService } from '@/infra/mail'
       { name: VerificationCode.name, schema: VerificationCodeSchema }
     ])
   ],
+  controllers: [
+    ...AccountControllers
+  ],
   providers: [
-    ...AccountControllers,
+    ...AccountServices,
     ...AccountCommandHandlers,
     ...AccountQueriesHandlers,
     ...AccountPersistenceProviders,

@@ -25,8 +25,10 @@ import { AccountModule } from './account.module'
     ]),
     AccountModule
   ],
+  controllers: [
+    ...BandControllers
+  ],
   providers: [
-    ...BandControllers,
     ...BandCommandHandlers,
     ...BandQueriesHandlers,
     ...BandPersistenceProviders
