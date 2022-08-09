@@ -53,7 +53,7 @@ export class AccountService {
   // Add account command
   async addAccount(params: AddAccountInput): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new AddAccountCommand(params))
-    return baseResponse(200, 'Sua conta foi criada com sucesso!', response)
+    return baseResponse(201, 'Sua conta foi criada com sucesso!', response)
   }
 
   // Update account command

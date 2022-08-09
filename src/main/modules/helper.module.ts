@@ -6,8 +6,9 @@ import { HelperCommandHandlers } from '@/data/usecases'
 
 // Services
 import { WebscrapService } from '@/infra/webscrap'
+import { HelperServices } from "@/presentation/services"
 
-// Resolvers
+// Controllers
 import { HelperControllers } from '@/presentation/controllers'
 
 // Helper module
@@ -18,6 +19,7 @@ import { HelperControllers } from '@/presentation/controllers'
   ],
   providers: [
     WebscrapService,
+    ...HelperServices,
     ...HelperCommandHandlers
   ]
 })

@@ -2,8 +2,9 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-// Resolvers
+// Controllers and services
 import { BandControllers } from '@/presentation/controllers'
+import { BandServices } from '@/presentation/services'
 
 // Commands & Queries
 import { BandCommandHandlers, BandQueriesHandlers } from '@/data/usecases'
@@ -29,6 +30,7 @@ import { AccountModule } from './account.module'
     ...BandControllers
   ],
   providers: [
+    ...BandServices,
     ...BandCommandHandlers,
     ...BandQueriesHandlers,
     ...BandPersistenceProviders
