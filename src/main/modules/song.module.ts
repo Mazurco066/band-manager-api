@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 
 // Resolvers~
 import { SongControllers } from '@/presentation/controllers'
+import { SongServices } from '@/presentation/services'
 
 // Commands & Queries
 import { SongCommandHandlers, SongQueriesHandlers } from '@/data/usecases'
@@ -31,6 +32,7 @@ import { BandModule } from './band.module'
     ...SongControllers
   ],
   providers: [
+    ...SongServices,
     ...SongCommandHandlers,
     ...SongQueriesHandlers,
     ...SongPersistenceProviders
