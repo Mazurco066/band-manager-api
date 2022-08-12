@@ -12,9 +12,6 @@ import { AuthRepository, AccountRepository } from '@/infra/db/mongodb'
 // Domain Entities
 import { Account } from '@/domain/entities'
 
-// Domain Protocols
-import { TokenType } from '@/domain/protocols'
-
 // Adapters
 import { BcryptAdapter } from '@/infra/criptography'
 
@@ -28,7 +25,7 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
   ) {}
 
   // Execute action handler
-  async execute(command: AuthenticateCommand): Promise<TokenType> {
+  async execute(command: AuthenticateCommand): Promise<{ token: string }> {
 
     // Verify account by email
     const account = await this.checkAccountByEmail(command)

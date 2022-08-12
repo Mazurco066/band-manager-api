@@ -15,9 +15,6 @@ import { AuthRepository, AccountRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
 import { Account, Auth } from '@/domain/entities'
-
-// Domain Protocols
-import { TokenType } from '@/domain/protocols'
   
 // Infra services
 import { SendGridService } from '@/infra/mail'
@@ -33,7 +30,7 @@ export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordComm
   ) {}
 
   // Execute action handler
-  async execute(command: ForgotPasswordCommand): Promise<TokenType> {
+  async execute(command: ForgotPasswordCommand): Promise<{ token: string }> {
 
     // Step 1. Retrieve account by email
     const myAccount = await this.retrieveAccount(command)

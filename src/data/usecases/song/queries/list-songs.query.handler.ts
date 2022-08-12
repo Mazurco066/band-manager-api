@@ -10,7 +10,6 @@ import { BandRepository, SongRepository, AccountRepository } from '@/infra/db/mo
 
 // Domain Entities
 import { Account, Band, Song } from '@/domain/entities'
-import { BandSongsType } from '@/domain/protocols'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -25,7 +24,10 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
   ) {}
 
   // Execute action handler
-  async execute(command: ListSongsQuery): Promise<BandSongsType> {
+  async execute(command: ListSongsQuery): Promise<{
+    total: number,
+    data: Song[]
+  }> {
     // Destruct params
     const { bandId, payload: { account } } = command
 
