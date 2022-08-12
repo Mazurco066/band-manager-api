@@ -41,7 +41,7 @@ export class ShowController {
     @Param('id') id: string,
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
-    return this.showService.loadShowById(bandId, id, payload)
+    return this.showService.loadShowById(id, bandId, payload)
   }
 
   /**
@@ -77,7 +77,7 @@ export class ShowController {
    * @param payload - Token payloads
    * @returns - Base response containing shows
    */
-  @Get('/get/:bandId/shows')
+  @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
   async listShows(
     @Param('bandId') bandId: string,
