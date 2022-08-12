@@ -29,7 +29,7 @@ export class AccountController {
    * @param payload - Token payload
    * @returns - Base response containing account
    */
-  @Get('/:id')
+  @Get('/get/:id')
   @Roles(Role.player, Role.master)
   async loadAccountById(
     @Param('id') id: string,
