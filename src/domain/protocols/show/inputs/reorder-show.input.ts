@@ -1,5 +1,5 @@
 // Dependencies
-import { IsNotEmpty, IsUUID,IsArray } from 'class-validator'
+import { IsNotEmpty, IsArray } from 'class-validator'
 
 export class ReorderShowInput {
   @IsNotEmpty({ message: 'Campo "songs" não deve ser vazio' })
