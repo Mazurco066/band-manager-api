@@ -51,7 +51,7 @@ export class CategoryController {
     return this.categoryService.updateCategory(id, params, payload)
   }
 
-  @Get('/:bandId/:id')
+  @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async loadCategory(
     @Param('id') id: string,
@@ -61,7 +61,7 @@ export class CategoryController {
     return this.categoryService.loadCategoryById(id, bandId, payload)
   }
 
-  @Get('/:bandId')
+  @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
   async categories(
     @Param('bandId') bandId: string,

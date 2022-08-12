@@ -26,7 +26,7 @@ export class BandController {
     private readonly bandService: BandService
   ) {}
 
-  @Get('/:id')
+  @Get('/get/:id')
   @Roles(Role.player, Role.master)
   async loadBandById(
     @Param('id') id: string,
@@ -35,7 +35,7 @@ export class BandController {
     return this.bandService.loadBandById(id, payload)
   }
 
-  @Get()
+  @Get('/get')
   @Roles(Role.player, Role.master)
   async listBands(
     @Query() params: ListBandsInput,

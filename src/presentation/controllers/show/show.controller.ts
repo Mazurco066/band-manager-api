@@ -27,7 +27,7 @@ export class ShowController {
     private readonly showService: ShowService
   ) {}
 
-  @Get('/:bandId/:id')
+  @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async getShowById(
     @Param('bandId') bandId: string,
@@ -53,7 +53,7 @@ export class ShowController {
     return this.showService.loadPendingShows(payload)
   }
 
-  @Get('/:bandId/shows')
+  @Get('/get/:bandId/shows')
   @Roles(Role.player, Role.master)
   async listShows(
     @Param('bandId') bandId: string,

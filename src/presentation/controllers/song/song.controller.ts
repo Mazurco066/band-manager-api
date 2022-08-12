@@ -52,7 +52,7 @@ export class SongController {
     return this.songService.updateSong(id, params, payload)
   }
  
-  @Get('/:bandId/:id')
+  @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async song(
     @Param('id') id: string,
@@ -62,7 +62,7 @@ export class SongController {
     return this.songService.loadSongById(id, bandId, payload)
   }
  
-  @Get('/:bandId')
+  @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
   async songs(
     @Param('bandId') bandId: string,
