@@ -22,6 +22,13 @@ export class CategoryController {
     private readonly categoryService: CategoryService
   ) {}
 
+  /**
+   * Add a category to a band
+   * @param bandId - Band id
+   * @param params - Category data
+   * @param payload - Token payload
+   * @returns - Base response containing category
+   */
   @Post('/:bandId')
   @Roles(Role.player, Role.master)
   async addCategory(
@@ -32,6 +39,12 @@ export class CategoryController {
     return this.categoryService.addCategory(bandId, params, payload)
   }
 
+  /**
+   * Deletes a category
+   * @param id - Category id
+   * @param payload - Token payload
+   * @returns - Base response containing category
+   */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
   async removeCategory(
@@ -41,6 +54,13 @@ export class CategoryController {
     return this.categoryService.removeCategory(id, payload)
   }
 
+  /**
+   * Updates a category
+   * @param id - Category id
+   * @param params - Category data
+   * @param payload - Token payload
+   * @returns - Base response containing category
+   */
   @Put('/:id')
   @Roles(Role.player, Role.master)
   async updateCategory(
@@ -51,6 +71,13 @@ export class CategoryController {
     return this.categoryService.updateCategory(id, params, payload)
   }
 
+  /**
+   * Load category by id
+   * @param id - Category id
+   * @param bandId - Band id
+   * @param payload - Token payload
+   * @returns - Base response containing category
+   */
   @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async loadCategory(
@@ -61,6 +88,13 @@ export class CategoryController {
     return this.categoryService.loadCategoryById(id, bandId, payload)
   }
 
+  /**
+   * List all categories from band
+   * @param bandId - Band id 
+   * @param params - Filter 
+   * @param payload - Token payload
+   * @returns - Base response containing categories
+   */
   @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
   async categories(

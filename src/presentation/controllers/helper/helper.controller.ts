@@ -20,6 +20,12 @@ export class HelperController {
     private readonly helperService: HelperService
   ) {}
 
+  /**
+   * Scraps a song from cifra club or cifras.com
+   * @param params - Song url
+   * @param payload - Token payload
+   * @returns - Base response containing scraped song
+   */
   @Post('/scrap_song')
   @Roles(Role.player, Role.master)
   async scrapSong(

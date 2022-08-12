@@ -23,6 +23,13 @@ export class SongController {
     private readonly songService: SongService
   ) {}
 
+  /**
+   * Add a song to band
+   * @param bandId - Band id
+   * @param params - Song data
+   * @param payload - Token payload
+   * @returns - Base response containing song
+   */
   @Post('/:bandId')
   @Roles(Role.player, Role.master)
   async addSong(
@@ -33,6 +40,12 @@ export class SongController {
     return this.songService.addSong(bandId, params, payload)
   }
  
+  /**
+   * Removes a song
+   * @param id - Song id
+   * @param payload - Token payload
+   * @returns - Base response containing song
+   */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
   async removeSong(
@@ -42,6 +55,13 @@ export class SongController {
     return this.songService.removeSong(id, payload)
   }
  
+  /**
+   * Updates a song
+   * @param id - Song id
+   * @param params - Song data
+   * @param payload - Token payload
+   * @returns - Base response containing song
+   */
   @Put('/:id')
   @Roles(Role.player, Role.master)
   async updateSong(
@@ -52,6 +72,13 @@ export class SongController {
     return this.songService.updateSong(id, params, payload)
   }
  
+  /**
+   * Loads a single song
+   * @param id - Song id
+   * @param bandId - Band id
+   * @param payload - Token payload
+   * @returns - Base response containing song
+   */
   @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async song(
@@ -62,6 +89,13 @@ export class SongController {
     return this.songService.loadSongById(id, bandId, payload)
   }
  
+  /**
+   * List songs from a band
+   * @param bandId - Band id
+   * @param params - Filter
+   * @param payload - Token payload
+   * @returns - Base response containing songs
+   */
   @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
   async songs(
@@ -72,6 +106,12 @@ export class SongController {
     return this.songService.listSongs(bandId, params, payload)
   }
  
+  /**
+   * List public songs
+   * @param params - Filter
+   * @param payload - Token payload
+   * @returns - Base response containing songs
+   */
   @Get('/public_songs')
   async publicSongs(
     @Query() params: ListPublicSongsInput,

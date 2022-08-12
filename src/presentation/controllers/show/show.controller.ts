@@ -27,6 +27,13 @@ export class ShowController {
     private readonly showService: ShowService
   ) {}
 
+  /**
+   * Load show by id
+   * @param bandId - Band id
+   * @param id - Show id
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
   async getShowById(
@@ -37,6 +44,11 @@ export class ShowController {
     return this.showService.loadShowById(bandId, id, payload)
   }
 
+  /**
+   * List account shows
+   * @param payload - Token payload
+   * @returns - Base response containing shows
+   */
   @Get('/account_shows')
   @Roles(Role.player, Role.master)
    async accountShows(
@@ -45,6 +57,11 @@ export class ShowController {
     return this.showService.loadAccountShows(payload)
   }
 
+  /**
+   * List pending shows
+   * @param payload - Token payload
+   * @returns - Base response containing shows
+   */
   @Get('/pending_shows')
   @Roles(Role.player, Role.master)
    async pendingShows(
@@ -53,6 +70,13 @@ export class ShowController {
     return this.showService.loadPendingShows(payload)
   }
 
+  /**
+   * List shows
+   * @param bandId - Band id
+   * @param params - Filters
+   * @param payload - Token payloads
+   * @returns - Base response containing shows
+   */
   @Get('/get/:bandId/shows')
   @Roles(Role.player, Role.master)
   async listShows(
@@ -63,6 +87,12 @@ export class ShowController {
     return this.showService.listShows(bandId, params, payload)
   }
 
+  /**
+   * Add show to a band
+   * @param params - Show data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Post()
   @Roles(Role.player, Role.master)
   async addShow(
@@ -72,6 +102,13 @@ export class ShowController {
     return this.showService.addShow(params, payload)
   }
 
+  /**
+   * Adds a observation to a show
+   * @param id - Show id
+   * @param params - Observation data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Post('/:id/add_observation')
   @Roles(Role.player, Role.master)
   async addObservation(
@@ -82,6 +119,14 @@ export class ShowController {
     return this.showService.addShowObservation(id, params, payload)
   }
 
+  /**
+   * Updates a show observation
+   * @param showId - Show id
+   * @param id - Observation id
+   * @param params - Observation data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Put('/:show_id/:id/update_observation')
   @Roles(Role.player, Role.master)
   async updateObservation(
@@ -93,6 +138,13 @@ export class ShowController {
     return this.showService.updateShowObservation(id, showId, params, payload)
   }
 
+  /**
+   * Removes a observation from show
+   * @param showId - Show id
+   * @param id - Observation id
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Post('/:show_id/:id/remove_observation')
   @Roles(Role.player, Role.master)
   async removeObservation(
@@ -103,6 +155,13 @@ export class ShowController {
     return this.showService.removeShowObservation(showId, id, payload)
   }
 
+  /**
+   * Updates a show
+   * @param id - Show id
+   * @param params - Show data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Put('/:id')
   @Roles(Role.player, Role.master)
   async updateShow(
@@ -113,6 +172,13 @@ export class ShowController {
     return this.showService.updateShow(id, params, payload)
   }
 
+  /**
+   * Reorder a show
+   * @param id - Show id
+   * @param params - Song order
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Put('/:id/reorder')
   @Roles(Role.player, Role.master)
   async reorderShow(
@@ -123,6 +189,12 @@ export class ShowController {
     return this.showService.reorderShow(id, params, payload)
   }
 
+  /**
+   * Removes a show
+   * @param id - Show id
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
   async removeShow(
@@ -132,6 +204,13 @@ export class ShowController {
     return this.showService.removeShow(id, payload)
   }
 
+  /**
+   * Unlink song from show
+   * @param id - Show id 
+   * @param params - Song data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Patch('/:id/unlink_song')
   @Roles(Role.player, Role.master)
   async unlinkSong(
@@ -142,6 +221,13 @@ export class ShowController {
     return this.showService.unlinkSong(id, params, payload)
   }
 
+  /**
+   * Links a song to a show
+   * @param id - Show id
+   * @param params - Song data
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
   @Patch('/:id/link_song')
   @Roles(Role.player, Role.master)
   async linkSong(

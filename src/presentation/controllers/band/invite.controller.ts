@@ -20,6 +20,12 @@ export class InviteController {
     private readonly inviteService: InviteService
   ) {}
 
+  /**
+   * Responds a invite accepting or declining
+   * @param params - Invite response
+   * @param payload - Token payload
+   * @returns - Base response containing invite
+   */
   @Post('/respond')
   @Roles(Role.player, Role.master)
   async respondInvite(
@@ -29,6 +35,11 @@ export class InviteController {
     return this.inviteService.respondInvite(params, payload)
   }
 
+  /**
+   * List user pending invites
+   * @param payload - Token payload
+   * @returns - Base response containing invites
+   */
   @Get('/pending_invites')
   @Roles(Role.player, Role.master)
   async pendingInvites(

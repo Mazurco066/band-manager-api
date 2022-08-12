@@ -26,6 +26,12 @@ export class BandController {
     private readonly bandService: BandService
   ) {}
 
+  /**
+   * Load band by id
+   * @param id - Band id
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Get('/get/:id')
   @Roles(Role.player, Role.master)
   async loadBandById(
@@ -35,6 +41,12 @@ export class BandController {
     return this.bandService.loadBandById(id, payload)
   }
 
+  /**
+   * List bands
+   * @param params - Filters
+   * @param payload - Token payload
+   * @returns - Base response containing a list of bands
+   */
   @Get('/get')
   @Roles(Role.player, Role.master)
   async listBands(
@@ -44,6 +56,12 @@ export class BandController {
     return this.bandService.listBands(params, payload)
   }
 
+  /**
+   * Creates a band
+   * @param params - Band data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Post()
   @Roles(Role.player, Role.master)
   async addBand(
@@ -53,6 +71,13 @@ export class BandController {
     return this.bandService.addBand(params, payload)
   }
 
+  /**
+   * Updates a band
+   * @param id - Band id
+   * @param params - Band data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Put('/:id')
   @Roles(Role.player, Role.master)
   async updateBand(
@@ -63,6 +88,12 @@ export class BandController {
     return this.bandService.updateBand(id, params, payload)
   }
 
+  /**
+   * Removes a band from database
+   * @param id - Band id
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
   async removeBand(
@@ -72,6 +103,13 @@ export class BandController {
     return this.bandService.removeBand(id, payload)
   }
 
+  /**
+   * Add a mamber to a band
+   * @param id - Band id
+   * @param params - Account data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Post('/add_member/:id')
   @Roles(Role.player, Role.master)
   async addBandMember(
@@ -82,6 +120,13 @@ export class BandController {
     return this.bandService.addBandMember(id, params, payload)
   }
 
+  /**
+   * Promotes a member in band
+   * @param id - Band id
+   * @param params - Account data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Post('/promote_member/:id')
   @Roles(Role.player, Role.master)
   async promoteBandMember(
@@ -92,6 +137,13 @@ export class BandController {
     return this.bandService.promoteBandMember(id, params, payload)
   }
 
+  /**
+   * Removes a member from band
+   * @param id - Band id
+   * @param params - Account data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Post('/remove_member/:id')
   @Roles(Role.player, Role.master)
   async removeBandMember(
@@ -102,6 +154,13 @@ export class BandController {
     return this.bandService.removeBandMember(id, params, payload)
   }
 
+  /**
+   * Demotes a member from band
+   * @param id - Band id
+   * @param params - Account data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
   @Post('/demote_member/:id')
   @Roles(Role.player, Role.master)
   async demoteBandMember(
