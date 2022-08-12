@@ -101,7 +101,7 @@ export class AccountController {
    * @param payload - Token payload
    * @returns - Base response containing account
    */
-  @Delete()
+  @Delete('/:id')
   @Roles(Role.player, Role.master)
   async removeAccount(
     @Param('id') id: string,
