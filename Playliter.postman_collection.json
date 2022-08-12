@@ -1,0 +1,1418 @@
+{
+	"info": {
+		"_postman_id": "b2b431c7-f26a-46b0-bf06-5e2a48fabe34",
+		"name": "Playliter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19768874"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"takeonme3\",\r\n    \"password\": \"svchost.exe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/authenticate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"mazurco066@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/forgot_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"forgot_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"63751120d3c87f16eb6ff9057a551256c0c7003994b7cb75a1305e1e13143e7b\",\r\n    \"newPassword\": \"svchost.exe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset_password/e36123a1-c765-436c-a7fe-dfbfea6ab254",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"reset_password",
+								"e36123a1-c765-436c-a7fe-dfbfea6ab254"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get Account by username",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"johndoe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/account_by_username",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"account_by_username"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend verification E-mail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/resend_verification_email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"resend_verification_email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"5664\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/verify_account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"verify_account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Take on Me\",\r\n    \"username\": \"takeonme3\",\r\n    \"email\": \"takeonme3@gmail.com\",\r\n    \"password\": \"svchost.exe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gabriel Mazurco\",\r\n    \"email\": \"mazurco066@gmail.com\",\r\n    \"avatar\": \"https://res.cloudinary.com/r4kta/image/upload/v1653783107/playliter_profile_pictures/jotaro_mi3hii.jpg\",\r\n    \"oldPassword\": \"svchost.exe\",\r\n    \"password\": \"svchost.exe\",\r\n    \"confirmPassword\": \"svchost.exe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/e36123a1-c765-436c-a7fe-dfbfea6ab254",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"e36123a1-c765-436c-a7fe-dfbfea6ab254"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/2fdad622-6ddb-44ae-a793-45070f272257",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"2fdad622-6ddb-44ae-a793-45070f272257"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/get/e36123a1-c765-436c-a7fe-dfbfea6ab254",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"get",
+								"e36123a1-c765-436c-a7fe-dfbfea6ab254"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Add Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Debugandinho\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Debugandinho haha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/5bf02064-c248-445a-88dc-82017110cf24",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"5bf02064-c248-445a-88dc-82017110cf24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/5bf02064-c248-445a-88dc-82017110cf24",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"5bf02064-c248-445a-88dc-82017110cf24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41/ac1c7309-743f-4ded-a3aa-47afb4928f47",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+								"ac1c7309-743f-4ded-a3aa-47afb4928f47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Helpers",
+			"item": [
+				{
+					"name": "Scrap song",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\": \"https://www.cifraclub.com.br/roberto-carlos/como-grande-meu-amor-por-voce\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/helpers/scrap_song",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"helpers",
+								"scrap_song"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Band",
+			"item": [
+				{
+					"name": "Invite Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"accountId\": \"028d296c-313f-4f39-87ea-3811ec4a819d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands/add_member/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"add_member",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Promote Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"accountId\": \"028d296c-313f-4f39-87ea-3811ec4a819d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands/promote_member/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"promote_member",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"accountId\": \"028d296c-313f-4f39-87ea-3811ec4a819d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands/remove_member/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"remove_member",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Demote Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"accountId\": \"028d296c-313f-4f39-87ea-3811ec4a819d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands/demote_member/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"demote_member",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond Invite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"inviteId\": \"766a16a2-d9a3-4d28-abd8-c2fcbc7ba902\",\r\n   \"response\": \"accepted\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/invitations/respond",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invitations",
+								"respond"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Band",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Debug band\",\r\n    \"description\": \"Band designed for debugging app\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Band",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Debug band\",\r\n    \"description\": \"Band designed for debugging app\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bands/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Band",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/bands/02446456-9154-42a0-8664-e9b7f5d71909",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"02446456-9154-42a0-8664-e9b7f5d71909"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Band",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/bands/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List bands (Account)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/bands/get",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bands",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pending Invites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/invitations/pending_invites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invitations",
+								"pending_invites"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Song",
+			"item": [
+				{
+					"name": "Add Song",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Música do Debug 2\",\r\n    \"writter\": \"Gabriel Mazurco\",\r\n    \"tone\": \"E\",\r\n    \"body\": \"[E]Essa é [A]a música do [D]debug\",\r\n    \"category\": \"e3789ada-810f-46c4-ab8a-ff291f078514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/songs/f10987a8-3291-40c8-a304-e35ef78a7470",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"f10987a8-3291-40c8-a304-e35ef78a7470"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Song",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Essa é a Música do Debug\",\r\n    \"writter\": \"Gabriel Mazurco\",\r\n    \"tone\": \"E\",\r\n    \"body\": \"[E]Essa é [A]a música do [D]debug\",\r\n    \"category\": \"e3789ada-810f-46c4-ab8a-ff291f078514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/songs/8ff6708d-164e-49e8-a765-e36a1a16379a",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"8ff6708d-164e-49e8-a765-e36a1a16379a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Song",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/songs/7ed107f1-c248-4169-bf1a-2b40388c21cc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"7ed107f1-c248-4169-bf1a-2b40388c21cc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Song",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/songs/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41/f545025e-07be-450d-9094-136ffb4025b0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+								"f545025e-07be-450d-9094-136ffb4025b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Songs (Band)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/songs/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Songs (Public)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/songs/public_songs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"songs",
+								"public_songs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Show",
+			"item": [
+				{
+					"name": "Add Show",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"band\": \"f10987a8-3291-40c8-a304-e35ef78a7470\",\r\n    \"title\": \"O show do debug 3\",\r\n    \"description\": \"O show mais debugado do Brasil\",\r\n    \"date\": \"2022-08-14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Link Song",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"songId\": \"3fa88ca9-fe2b-4102-8c23-c38363311dd9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/link_song",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"link_song"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlink Song",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"songId\": \"3fa88ca9-fe2b-4102-8c23-c38363311dd9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/unlink_song",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"unlink_song"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Show Observation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Obs 01\",\r\n    \"data\": \"Minha primeira observação\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/add_observation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"add_observation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Show Observation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Obs 01\",\r\n    \"data\": \"Minha primeira observação editada\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/e9592fbc-85bc-49db-a69d-2989e475745d/update_observation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"e9592fbc-85bc-49db-a69d-2989e475745d",
+								"update_observation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Show Observation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/e9592fbc-85bc-49db-a69d-2989e475745d/remove_observation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"e9592fbc-85bc-49db-a69d-2989e475745d",
+								"remove_observation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Show",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"O show do debug\",\r\n    \"description\": \"O show mais debugado do Brasil\",\r\n    \"date\": \"2022-08-14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/041bd5fb-8d95-40d6-b715-9235267cd2a9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"041bd5fb-8d95-40d6-b715-9235267cd2a9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Show",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"songs\": [\r\n        \"3fa88ca9-fe2b-4102-8c23-c38363311dd9\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/shows/20e40c6a-f1f7-4a88-967e-8eb4255f9ece/reorder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"20e40c6a-f1f7-4a88-967e-8eb4255f9ece",
+								"reorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Show",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/9f119750-2862-4029-a336-f3528a62938f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"9f119750-2862-4029-a336-f3528a62938f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41/72069435-a517-4f3f-9821-404fa5e50e8c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+								"72069435-a517-4f3f-9821-404fa5e50e8c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Shows",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/get/bc8681f8-b66c-4f15-ab31-6d0398e78d41",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"get",
+								"bc8681f8-b66c-4f15-ab31-6d0398e78d41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Shows",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/account_shows",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"account_shows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pending Shows",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shows/pending_shows",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shows",
+								"pending_shows"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API Version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}",
+					"host": [
+						"{{base_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
