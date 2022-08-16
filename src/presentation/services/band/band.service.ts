@@ -34,6 +34,7 @@ const bandOmitKeys = [
   '__v',
   'owner._id',
   'owner.__v',
+  'owner.password',
   'members._id',
   'members.__v',
   'members.password',
