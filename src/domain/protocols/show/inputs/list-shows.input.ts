@@ -1,14 +1,12 @@
 // Dependencies
-import { IsUUID, IsNumber, IsOptional, Min } from 'class-validator'
+import { IsNumberString, IsOptional } from 'class-validator'
 
 export class ListShowsInput {
   @IsOptional()
-  @IsNumber({}, { message: 'Campo "limit" deve ser do tipo Number' })
-  @Min(0, { message: 'Campo "limit" deve ser um número positivo' })
+  @IsNumberString({}, { message: 'Campo "limit" deve ser do tipo Number' })
   limit?: number
 
   @IsOptional()
-  @IsNumber({}, { message: 'Campo "offset" deve ser do tipo Number' })
-  @Min(0, { message: 'Campo "offset" deve ser um número positivo' })
+  @IsNumberString({}, { message: 'Campo "offset" deve ser do tipo Number' })
   offset?: number
 }

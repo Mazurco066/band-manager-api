@@ -79,10 +79,10 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
 
   // Lists shows from a band
   async listShows(command: ListShowsQuery, band: Band): Promise<Show[] | null> {
-    const { params: { offset = 0, limit = 0 } } = command
+    const { params: { offset = '0', limit = '0' } } = command
     const r = await this.showRepository.findPopulated(
       { band: band._id.toString() },
-      { offset, limit }
+      { offset: parseInt(offset.toString()), limit: parseInt(limit.toString()) }
     )
     return r
   }
