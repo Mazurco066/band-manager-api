@@ -8,10 +8,16 @@ const omitDeep = curry((keys, obj) => {
 
   // Map key props
   keys.forEach((key: string) => {
-    // TODO: Verify if key is a nested array (just the 1 level ll do the job)
-
+    // Split key ex: "members._id" => "['members', '_id]"
     const keyParts = key.split('.')
-    newObj = dissocPath(keyParts, newObj)
+
+    // Nested array validation else will be treated like a common object
+    if (Array.isArray(newObj[keyParts[0]]) && keyParts.length > 1) {
+      newObj[keyParts[0]] = newObj[keyParts[0]].map((sub: any) => 
+        dissocPath(keyParts.filter((_, idx) => idx !== 0), sub))
+    } else {
+      newObj = dissocPath(keyParts, newObj)
+    }
   })
 
   // Return sanitized object
