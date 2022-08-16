@@ -91,11 +91,11 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
 
   // Lists songs from a band
   async listSongs(command: ListSongsQuery, band: Band): Promise<Song[] | null> {
-    const { params: { offset = 0, limit = 0, filter = '' } } = command
+    const { params: { offset = '0', limit = '0', filter = '' } } = command
     const r = await this.songRepository.findFilteredPopulated(
       band._id.toString(),
       filter,
-      { offset, limit }
+      { offset: parseInt(offset.toString()), limit: parseInt(offset.toString()) }
     )
     return r
   }

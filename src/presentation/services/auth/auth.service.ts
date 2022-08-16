@@ -17,6 +17,13 @@ import {
   ResetPasswordCommand
 } from '@/data/protocols'
 
+// Default class omits
+const accountOmitKeys = [
+  '_id',
+  '__v',
+  'password'
+]
+
 @Injectable()
 export class AuthService {
   // Dependencies Injection
@@ -39,7 +46,7 @@ export class AuthService {
   // Reset password command
   async resetPassword(id: string, params: ResetPasswordInput): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new ResetPasswordCommand(id, params))
-    const safeResponse = sanitizeJson(response, ['_id', '__v', 'password'])
+    const safeResponse = sanitizeJson(response, accountOmitKeys)
     return baseResponse(200, 'Sua senha foi recuperada com sucesso!', safeResponse)
   }
 }

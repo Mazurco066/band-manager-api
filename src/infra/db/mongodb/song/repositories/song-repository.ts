@@ -104,6 +104,15 @@ export class SongRepository implements ISongRepository {
     return await this.connection.countDocuments(params)
   }
 
+  async publicCount(filter: string): Promise<number> {
+    return await this.connection.countDocuments({
+      $or: [
+        { title: new RegExp(filter, 'i') },
+        { writter: new RegExp(filter, 'i') }
+      ]
+    })
+  }
+
   async customCount(bandId: string, filter: string): Promise<number> {
     return await this.connection.countDocuments({
       $or: [
