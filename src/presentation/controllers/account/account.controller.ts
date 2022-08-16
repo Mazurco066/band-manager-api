@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Param, Get, Post, Put, Delete } from '@ne
 import { AccountService } from '../../services/account'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { SkipAuth, Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -15,6 +18,7 @@ import {
   VerifyAccountInput
 } from '@/domain/protocols'
 
+@ApiTags('Accounts')
 @Controller('api/v1/accounts')
 @Injectable()
 export class AccountController {

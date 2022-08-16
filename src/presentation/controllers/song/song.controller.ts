@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Query, Param, Post, Get, Put, Delete } fr
 import { SongService } from '../../services/song'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -15,6 +18,7 @@ import {
   ListPublicSongsInput
 } from '@/domain/protocols'
 
+@ApiTags('Songs')
 @Controller('api/v1/songs')
 @Injectable()
 export class SongController {

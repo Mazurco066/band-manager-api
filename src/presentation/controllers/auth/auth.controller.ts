@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Post, Param } from '@nestjs/common'
 import { AuthService } from '../../services/auth'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Inputs
 import {
   AuthenticateInput,
@@ -13,6 +16,7 @@ import {
 // Authorization
 import { SkipAuth } from '@/main/decorators'
 
+@ApiTags('Authentication')
 @Controller('api/v1/auth')
 @Injectable()
 export class AuthController {

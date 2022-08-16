@@ -1,6 +1,9 @@
 // Dependencies
 import { Controller, Get, Res } from '@nestjs/common'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Helpers
 import { baseResponse } from '@/domain/shared'
 
@@ -12,6 +15,7 @@ import { resolve } from 'path'
 const pj = readFileSync(resolve(__dirname, '../package.json'), 'utf-8')
 const { version } = JSON.parse(pj)
 
+@ApiTags('Root')
 @Controller('api/v1')
 export class MainController {
   @Get()

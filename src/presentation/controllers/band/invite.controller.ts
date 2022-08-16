@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Post, Get } from '@nestjs/common'
 import { InviteService } from '../../services/band'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -12,6 +15,7 @@ import {
   RespondInviteInput
 } from '@/domain/protocols'
 
+@ApiTags('Invites')
 @Controller('api/v1/invitations')
 @Injectable()
 export class InviteController {

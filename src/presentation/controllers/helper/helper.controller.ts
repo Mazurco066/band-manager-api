@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Post } from '@nestjs/common'
 import { HelperService } from '../../services/helper'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -12,6 +15,7 @@ import {
   ScrapSongInput
 } from '@/domain/protocols'
 
+@ApiTags('Helpers')
 @Controller('api/v1/helpers')
 @Injectable()
 export class HelperController {

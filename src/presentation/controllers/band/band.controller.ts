@@ -3,6 +3,9 @@ import { Injectable, Controller, Param, Body, Query, Get, Post, Put, Delete } fr
 import { BandService } from '../../services/band'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -18,6 +21,7 @@ import {
   ListBandsInput
 } from '@/domain/protocols'
 
+@ApiTags('Bands')
 @Controller('api/v1/bands')
 @Injectable()
 export class BandController {

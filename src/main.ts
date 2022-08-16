@@ -10,6 +10,7 @@
 // Dependencies
 import { NestFactory } from '@nestjs/core'
 import { Logger, ValidationPipe } from '@nestjs/common'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { options } from 'main/config'
 
 // Module
@@ -38,6 +39,15 @@ const app = async () => {
       new HttpExceptionFilter(),
       new MongoExceptionFilter()
     )
+
+    // Swagger init
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Playliter API')
+      .setDescription('Rest API for playliter app')
+      .setVersion('1.4.0')
+      .build()
+    const document = SwaggerModule.createDocument(app, swaggerConfig)
+    SwaggerModule.setup('api', app, document)
 
     // Start Application
     await app.listen(options.PORT)

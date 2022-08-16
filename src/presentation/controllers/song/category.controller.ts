@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Query, Param, Post, Get, Put, Delete } fr
 import { CategoryService } from '../../services/song'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -14,6 +17,7 @@ import {
   ListCategoriesInput
 } from '@/domain/protocols'
 
+@ApiTags('Categories')
 @Controller('api/v1/categories')
 @Injectable()
 export class CategoryController {

@@ -3,6 +3,9 @@ import { Injectable, Controller, Body, Param, Query, Get, Post, Put, Delete, Pat
 import { ShowService } from '../../services/show'
 import { IBaseResponse } from '@/domain/shared'
 
+// API Documentation
+import { ApiTags } from '@nestjs/swagger'
+
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
@@ -19,6 +22,7 @@ import {
   UpdateShowInput
 } from '@/domain/protocols'
 
+@ApiTags('Shows')
 @Controller('api/v1/shows')
 @Injectable()
 export class ShowController {
