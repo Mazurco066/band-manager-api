@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth'
 import { IBaseResponse } from '@/domain/shared'
 
 // API Documentation
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Inputs
 import {
@@ -32,6 +32,14 @@ export class AuthController {
    */
   @Post('/authenticate')
   @SkipAuth()
+  @ApiOperation({
+    summary: 'Authenticate',
+    description: 'Login into API.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the authenticated account.'
+  })
   async authenticate(
     @Body() params: AuthenticateInput
   ): Promise<IBaseResponse> {
@@ -45,6 +53,14 @@ export class AuthController {
    */
   @Post('/forgot_password')
   @SkipAuth()
+  @ApiOperation({
+    summary: 'Forgot Password',
+    description: 'Forgot password resource.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a message informing that a reset password E-mail was sent.'
+  })
   async forgotPassword(
     @Body() params: ForgotPasswordInput
   ): Promise<IBaseResponse> {
@@ -59,6 +75,14 @@ export class AuthController {
    */
   @Post('/reset_password/:id')
   @SkipAuth()
+  @ApiOperation({
+    summary: 'Reset Password',
+    description: 'Reset password resource.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated account.'
+  })
   async resetPassword(
     @Param('id') id: string,
     @Body() params: ResetPasswordInput
