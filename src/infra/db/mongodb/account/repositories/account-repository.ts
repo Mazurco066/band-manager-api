@@ -17,13 +17,13 @@ export class AccountRepository implements IAccountRepository {
   ) {}
   
   async find(params: Filter): Promise<Account[] | null> {
-    const r = await this.connection.find({ ...params })
+    const r = await this.connection.find({ ...params }).lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Account | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -49,7 +49,7 @@ export class AccountRepository implements IAccountRepository {
       ...target,
       password: encodedPasswd
     })
-    return account
+    return account.toObject()
   }
 
   async update(target: any, id: string): Promise<Account> {
@@ -63,7 +63,7 @@ export class AccountRepository implements IAccountRepository {
         new: true,
         useFindAndModify: false
       })
-      return account
+      return account.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -82,7 +82,7 @@ export class AccountRepository implements IAccountRepository {
         new: true,
         useFindAndModify: false
       })
-      return account
+      return account.toObject()
 
     } catch(ex) {
       console.error(ex)

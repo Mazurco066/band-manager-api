@@ -29,6 +29,7 @@
     "@types/node": "^15.12.4",
     "@types/passport-jwt": "^3.0.5",
     "@types/puppeteer": "^5.4.5",
+    "@types/ramda": "^0.28.15",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
@@ -61,6 +62,7 @@
     "mongoose": "^5.12.15",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "puppeteer": "^13.5.2"
+    "puppeteer": "^13.5.2",
+    "ramda": "^0.28.0"
   }
 }

@@ -25,6 +25,7 @@ export class BandRepository implements IBandRepository {
       .populate('members')
       .populate('directory')
       .populate('admins')
+      .lean()
     return r
   }
 
@@ -38,12 +39,13 @@ export class BandRepository implements IBandRepository {
       .populate('members')
       .populate('directory')
       .populate('admins')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Band | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<Band | null> {
@@ -53,7 +55,7 @@ export class BandRepository implements IBandRepository {
       .populate('members')
       .populate('directory')
       .populate('admins')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -85,7 +87,7 @@ export class BandRepository implements IBandRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -103,7 +105,7 @@ export class BandRepository implements IBandRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -121,7 +123,7 @@ export class BandRepository implements IBandRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -137,7 +139,7 @@ export class BandRepository implements IBandRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)

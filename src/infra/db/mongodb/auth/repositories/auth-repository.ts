@@ -22,7 +22,7 @@ export class AuthRepository implements IAuthRepository {
 
   async findOne(params: Filter): Promise<Auth | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   delete(params: Filter): Promise<boolean> {
@@ -35,7 +35,8 @@ export class AuthRepository implements IAuthRepository {
 
   async save(target: Auth): Promise<Auth> {
     const account = new this.connection(target)
-    return await account.save()
+    const r = await account.save()
+    return r.toObject()
   }
 
   async generateToken(account: Account, token: string): Promise<Auth> {
@@ -47,7 +48,8 @@ export class AuthRepository implements IAuthRepository {
         role: account.role
       })
 
-      return await authentication.save()
+      const r = await authentication.save()
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -65,7 +67,7 @@ export class AuthRepository implements IAuthRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
@@ -75,12 +77,13 @@ export class AuthRepository implements IAuthRepository {
   
   async generateResetPasswordToken(account: Account, token: string, resetPasswordToken: string): Promise<Auth> {
     try {
-      return await new this.connection({
+      const r = await new this.connection({
         account: account.id,
         token,
         resetPasswordToken,
         role: account.role
       }).save()
+      return r.toObject()
     } catch (ex) {
       console.error(ex)
       throw new MongoError({ ...ex })
@@ -89,13 +92,14 @@ export class AuthRepository implements IAuthRepository {
 
   async updateResetPasswordToken(auth: Auth, resetPasswordToken: string): Promise<Auth> {
     try {
-      return await this.connection.findOneAndUpdate({ _id: auth._id }, {
+      const r = await this.connection.findOneAndUpdate({ _id: auth._id }, {
         resetPasswordToken,
         role: auth.role
       }, {
         new: true,
         useFindAndModify: false
       })
+      return r.toObject()
     } catch (ex) {
       console.error(ex)
       throw new MongoError({ ...ex })

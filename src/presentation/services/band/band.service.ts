@@ -1,7 +1,9 @@
 // Dependencies
 import { Injectable } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { baseResponse, IBaseResponse } from '@/domain/shared'
+import { baseResponse, IBaseResponse, sanitizeJson } from '@/domain/shared'
+
+import { serialize } from 'class-transformer'
 
 // Inputs
 import {
@@ -39,13 +41,15 @@ export class BandService {
   // Load band by id
   async loadBandById(id: string, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new LoadBandByIdQuery(id, payload))
-    return baseResponse(200, 'Banda recuperada com sucesso!', response)
+    const safeResponse = sanitizeJson(response, ['_id', '__v', 'owner._id', 'owner.__v', 'members.password'])
+    return baseResponse(200, 'Banda recuperada com sucesso!', safeResponse)
   }
 
   // List bands
   async listBands(params: ListBandsInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListBandsQuery(params, payload))
-    return baseResponse(200, 'Bandas recuperadas com sucesso!', response)
+    const safeResponse = sanitizeJson(response, ['_id', '__v', 'members.password'])
+    return baseResponse(200, 'Bandas recuperadas com sucesso!', safeResponse)
   }
 
   // Add band

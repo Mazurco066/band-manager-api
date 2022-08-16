@@ -1,7 +1,7 @@
 // Dependencies
 import { Injectable } from '@nestjs/common'
 import { CommandBus } from '@nestjs/cqrs'
-import { baseResponse, IBaseResponse } from '@/domain/shared'
+import { baseResponse, IBaseResponse, sanitizeJson } from '@/domain/shared'
 
 // Inputs
 import {
@@ -39,6 +39,7 @@ export class AuthService {
   // Reset password command
   async resetPassword(id: string, params: ResetPasswordInput): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new ResetPasswordCommand(id, params))
-    return baseResponse(200, 'Sua senha foi recuperada com sucesso!', response)
+    const safeResponse = sanitizeJson(response, ['_id', '__v', 'password'])
+    return baseResponse(200, 'Sua senha foi recuperada com sucesso!', safeResponse)
   }
 }
