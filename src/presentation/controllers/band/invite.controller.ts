@@ -4,7 +4,7 @@ import { InviteService } from '../../services/band'
 import { IBaseResponse } from '@/domain/shared'
 
 // API Documentation
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
@@ -32,6 +32,14 @@ export class InviteController {
    */
   @Post('/respond')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Respond band invitation',
+    description: 'Accept or deny band invitation'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the band bounded to invite.'
+  })
   async respondInvite(
     @Body() params: RespondInviteInput,
     @JwtUserDecorator() payload: TokenPayload
@@ -46,6 +54,14 @@ export class InviteController {
    */
   @Get('/pending_invites')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Pending invites',
+    description: 'List all account pending invites'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the pending invites as a list.'
+  })
   async pendingInvites(
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {

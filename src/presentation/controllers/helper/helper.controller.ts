@@ -4,7 +4,7 @@ import { HelperService } from '../../services/helper'
 import { IBaseResponse } from '@/domain/shared'
 
 // API Documentation
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
@@ -32,6 +32,14 @@ export class HelperController {
    */
   @Post('/scrap_song')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Scrap Song',
+    description: 'Search a song in Cifra Club or Cifras website.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the scrapped song as text.'
+  })
   async scrapSong(
     @Body() params: ScrapSongInput,
     @JwtUserDecorator() payload: TokenPayload
