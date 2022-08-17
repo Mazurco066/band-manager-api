@@ -4,7 +4,7 @@ import { SongService } from '../../services/song'
 import { IBaseResponse } from '@/domain/shared'
 
 // API Documentation
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
@@ -36,6 +36,14 @@ export class SongController {
    */
   @Post('/:bandId')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Create song',
+    description: 'Add a new song to band'
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns the created song.'
+  })
   async addSong(
     @Param('bandId') bandId: string,
     @Body() params: AddSongInput,
@@ -52,6 +60,14 @@ export class SongController {
    */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Remove song',
+    description: 'Remove a song from band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the deleted song.'
+  })
   async removeSong(
     @Param('id') id: string,
     @JwtUserDecorator() payload: TokenPayload
@@ -68,6 +84,14 @@ export class SongController {
    */
   @Put('/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Update song',
+    description: 'Update a song from band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated song.'
+  })
   async updateSong(
     @Param('id') id: string,
     @Body() params: UpdateSongInput,
@@ -85,6 +109,14 @@ export class SongController {
    */
   @Get('/get/:bandId/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Get song',
+    description: 'Get song by id'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the song that matches the requested id.'
+  })
   async song(
     @Param('id') id: string,
     @Param('bandId') bandId: string,
@@ -102,6 +134,14 @@ export class SongController {
    */
   @Get('/get/:bandId')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'List songs',
+    description: 'List songs from a band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of songs.'
+  })
   async songs(
     @Param('bandId') bandId: string,
     @Query() params: ListSongsInput,
@@ -117,6 +157,14 @@ export class SongController {
    * @returns - Base response containing songs
    */
   @Get('/public_songs')
+  @ApiOperation({
+    summary: 'List public songs',
+    description: 'List all public songs from every band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of songs.'
+  })
   async publicSongs(
     @Query() params: ListPublicSongsInput,
     @JwtUserDecorator() payload: TokenPayload

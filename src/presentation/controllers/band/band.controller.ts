@@ -4,7 +4,7 @@ import { BandService } from '../../services/band'
 import { IBaseResponse } from '@/domain/shared'
 
 // API Documentation
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
 import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
@@ -38,6 +38,14 @@ export class BandController {
    */
   @Get('/get/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Get band',
+    description: 'Get band by id'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a band that matches the informed id.'
+  })
   async loadBandById(
     @Param('id') id: string,
     @JwtUserDecorator() payload: TokenPayload
@@ -52,6 +60,14 @@ export class BandController {
    * @returns - Base response containing a list of bands
    */
   @Get('/get')
+  @ApiOperation({
+    summary: 'List bands',
+    description: 'List account bands'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of bands that authenticated account belongs.'
+  })
   @Roles(Role.player, Role.master)
   async listBands(
     @Query() params: ListBandsInput,
@@ -68,6 +84,14 @@ export class BandController {
    */
   @Post()
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Create Band',
+    description: 'Add a new band to account'
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns the created band.'
+  })
   async addBand(
     @Body() params: AddBandInput,
     @JwtUserDecorator() payload: TokenPayload
@@ -84,6 +108,14 @@ export class BandController {
    */
   @Put('/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Update Band',
+    description: 'Updates band data'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
   async updateBand(
     @Param('id') id: string,
     @Body() params: UpdateBandInput,
@@ -100,6 +132,14 @@ export class BandController {
    */
   @Delete('/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Remove Band',
+    description: 'Deletes a band based on id param'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the deleted band.'
+  })
   async removeBand(
     @Param('id') id: string,
     @JwtUserDecorator() payload: TokenPayload
@@ -116,6 +156,14 @@ export class BandController {
    */
   @Post('/add_member/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Add band member',
+    description: 'Add a new member to band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
   async addBandMember(
     @Param('id') id: string,
     @Body() params: AddMemberInput,
@@ -133,6 +181,14 @@ export class BandController {
    */
   @Post('/promote_member/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Promote band member',
+    description: 'Promote a band member to admin'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
   async promoteBandMember(
     @Param('id') id: string,
     @Body() params: PromoteMemberInput,
@@ -150,6 +206,14 @@ export class BandController {
    */
   @Post('/remove_member/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Remove band member',
+    description: 'Removes a band member'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
   async removeBandMember(
     @Param('id') id: string,
     @Body() params: RemoveMemberInput,
@@ -167,6 +231,14 @@ export class BandController {
    */
   @Post('/demote_member/:id')
   @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Revoke band member permissions',
+    description: 'Turns a member into a normal user'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
   async demoteBandMember(
     @Param('id') id: string,
     @Body() params: DemoteMemberInput,
