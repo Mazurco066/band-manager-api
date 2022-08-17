@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveSongCommand } from '@/data/protocols'
@@ -27,26 +26,38 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
   // Execute action handler
   async execute(command: RemoveSongCommand): Promise<Song> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve song
     const retrievedSong = await this.fetchSong(command)
-    if (!retrievedSong) throw new ApolloError(`Música de id ${id} não encontrada!`)
+    if (!retrievedSong) throw new HttpException(
+      `Música de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(retrievedSong)
-    if (!currentBand) throw new ApolloError(`Banda na qual a música está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a música está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Add member to band
     const result = await this.removeSong(command)
-    if (!result) throw new ApolloError(`Erro ao remover música de id ${id}!`)
+    if (!result) throw new HttpException(
+      `Erro ao remover música de id ${id}!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
     return retrievedSong
   }
 
@@ -58,7 +69,7 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
 
   // Fetch song from database
   async fetchSong(command: RemoveSongCommand): Promise<Song | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.findOne({ id })
     return r
   }
@@ -79,13 +90,16 @@ export class RemoveSongHandler implements ICommandHandler<RemoveSongCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Removes data from song
   async removeSong(command: RemoveSongCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.delete({ id })
     return r
   }

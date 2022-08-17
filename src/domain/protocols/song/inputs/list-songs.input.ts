@@ -1,27 +1,22 @@
 // Dependencies
-import { Field, InputType } from '@nestjs/graphql'
-import { IsUUID, IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { IsNumberString, IsOptional, IsString } from 'class-validator'
 
-@InputType()
+// API Documentation
+import { ApiProperty } from '@nestjs/swagger'
+
 export class ListSongsInput {
-	@Field(() => String!)
-	@IsUUID('4', { message: 'Campo "id" deve ser do tipo UUID versão 4' })
-	bandId!: string
-
-  @Field(() => Number)
   @IsOptional()
-  @IsNumber({}, { message: 'Campo "limit" deve ser do tipo Number' })
-  @Min(0, { message: 'Campo "limit" deve ser um número positivo' })
+  @IsNumberString({}, { message: 'Campo "limit" deve ser do tipo Number' })
+  @ApiProperty({ type: String, required: false, example: '0' })
   limit?: number
 
-  @Field(() => Number)
   @IsOptional()
-  @IsNumber({}, { message: 'Campo "offset" deve ser do tipo Number' })
-  @Min(0, { message: 'Campo "offset" deve ser um número positivo' })
+  @IsNumberString({}, { message: 'Campo "offset" deve ser do tipo Number' })
+  @ApiProperty({ type: String, required: false, example: '0' })
   offset?: number
 
-  @Field(() => String)
   @IsOptional()
   @IsString({ message: 'Campo "filter" deve ser do tipo String' })
+  @ApiProperty({ type: String, required: false, example: 'some filter here...' })
   filter?: string
 }

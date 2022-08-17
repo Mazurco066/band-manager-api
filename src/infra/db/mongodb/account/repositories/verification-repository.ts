@@ -20,6 +20,7 @@ export class VerificationRepository implements IVerificationRepository {
       .find({ ...params })
       .limit(pagingOptions.limit || 0)
       .skip(pagingOptions.offset || 0)
+      .lean()
     return r
   }
 
@@ -29,17 +30,18 @@ export class VerificationRepository implements IVerificationRepository {
       .limit(pagingOptions.limit || 0)
       .skip(pagingOptions.offset || 0)
       .populate('account')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<VerificationCode | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<VerificationCode | null> {
     const r = await this.connection.findOne({ ...params }).populate('account')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -62,7 +64,7 @@ export class VerificationRepository implements IVerificationRepository {
     try {
       
       const r = await this.connection.create({ ...target })
-      return r
+      return r.toObject()
       
     } catch(ex) {
       console.error(ex)
@@ -79,7 +81,7 @@ export class VerificationRepository implements IVerificationRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)

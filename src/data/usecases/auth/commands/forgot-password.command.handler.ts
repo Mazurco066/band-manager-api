@@ -1,8 +1,8 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { JwtService } from '@nestjs/jwt'
-import { ApolloError } from 'apollo-server-express'
 import { randomBytes } from 'crypto'
 import { options } from '@/main/config'
 import { IBaseResponse } from '@/domain/shared'
@@ -15,9 +15,6 @@ import { AuthRepository, AccountRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
 import { Account, Auth } from '@/domain/entities'
-
-// Domain Protocols
-import { TokenType } from '@/domain/protocols'
   
 // Infra services
 import { SendGridService } from '@/infra/mail'
@@ -33,20 +30,29 @@ export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordComm
   ) {}
 
   // Execute action handler
-  async execute(command: ForgotPasswordCommand): Promise<TokenType> {
+  async execute(command: ForgotPasswordCommand): Promise<{ token: string }> {
 
     // Step 1. Retrieve account by email
     const myAccount = await this.retrieveAccount(command)
-    if (!myAccount) throw new ApolloError('O E-mail fornecido não corresponde a um a conta criada no aplicativo.', '404')
+    if (!myAccount) throw new HttpException(
+      'O E-mail fornecido não corresponde a um a conta criada no aplicativo.',
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2. Generate a reset token
     const accountAuthentication = await this.retrieveAuthentication(myAccount)
-    if (!accountAuthentication) throw new ApolloError('Ocorreu um erro ao gerar um código de recuperação para sua conta.', '500')
+    if (!accountAuthentication) throw new HttpException(
+      'Ocorreu um erro ao gerar um código de recuperação para sua conta.',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Step 3. Send the reset URL to account E-mail
     const emailResponse = await this.notifyUser(myAccount, accountAuthentication)
     if (emailResponse.status.code !== 200) {
-      throw new ApolloError('Ocorreu um erro ao enviar o E-mail de recuperação para sua conta.', '500')
+      throw new HttpException(
+        'Ocorreu um erro ao enviar o E-mail de recuperação para sua conta.',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      )
     }
 
     // Final step. Return a message informing that a reset email was sent

@@ -1,8 +1,6 @@
 // Dependencies
-import { Injectable, ExecutionContext, CanActivate, PreconditionFailedException } from '@nestjs/common'
+import { Injectable, ExecutionContext, CanActivate, HttpException, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { GqlExecutionContext } from '@nestjs/graphql'
-import { AuthenticationError } from 'apollo-server-express'
 
 // Decorators
 import { ROLES } from '../decorators'
@@ -13,7 +11,7 @@ export class RolesGuard implements CanActivate {
 
   // Convert to GQL Conetext
   getRequest(context: ExecutionContext) {
-    return GqlExecutionContext.create(context).getContext().req
+    return context.switchToHttp().getRequest()
   }
 
   // Validates role decorator
@@ -28,8 +26,9 @@ export class RolesGuard implements CanActivate {
     
     // Verify if public routes contains decorator
     const { user } = this.getRequest(context)
-    if (roles && !user) throw new PreconditionFailedException(
-      'Requests where authentication is bypassed must not contain roles verification'
+    if (roles && !user) throw new HttpException(
+      'Requests where authentication is bypassed must not contain roles verification',
+      HttpStatus.UNAUTHORIZED
     )
 
     // No elegible roles
@@ -37,8 +36,9 @@ export class RolesGuard implements CanActivate {
     if (user && user.role && hasRole()) return true
 
     // Authentication error
-    throw new AuthenticationError(
-      `Você não tem permissão como ${user.role} para acessar essa feature!`
+    throw new HttpException(
+      `Você não tem permissão como ${user.role} para acessar esse recurso!`,
+      HttpStatus.UNAUTHORIZED
     )
   }
 }

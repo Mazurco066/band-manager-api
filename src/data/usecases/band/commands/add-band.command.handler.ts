@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { AddBandCommand } from '@/data/protocols'
@@ -24,7 +23,10 @@ export class AddBandHandler implements ICommandHandler<AddBandCommand> {
   async execute(command: AddBandCommand): Promise<Band> {
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Store band
     return await this.createBand(command, account)

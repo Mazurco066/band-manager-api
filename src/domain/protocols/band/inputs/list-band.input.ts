@@ -1,16 +1,17 @@
 // Dependencies
-import { Field, InputType } from '@nestjs/graphql'
-import { IsOptional, IsString } from 'class-validator'
+import { IsOptional, IsNumberString } from 'class-validator'
 
-@InputType()
+// API Documentation
+import { ApiProperty } from '@nestjs/swagger'
+
 export class ListBandsInput {
-  @Field(() => String)
 	@IsOptional()
-  @IsString({ message: 'Campo "limit" deve ser do tipo String' })
+  @IsNumberString({} ,{ message: 'Campo "limit" deve ser do tipo String' })
+  @ApiProperty({ type: String, required: false, example: '0' })
   limit?: string
 
-  @Field(() => String)
   @IsOptional()
-  @IsString({ message: 'Campo "offset" deve ser do tipo String' })
+  @IsNumberString({}, { message: 'Campo "offset" deve ser do tipo String' })
+  @ApiProperty({ type: String, required: false, example: '0' })
   offset?: string
 }

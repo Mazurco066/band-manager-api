@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { UpdateObservationCommand } from '@/data/protocols'
@@ -28,14 +27,23 @@ export class UpdateObservationHandler implements ICommandHandler<UpdateObservati
       this.fetchAccount(command),
       this.fetchShow(command)
     ])
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
-    if (!show) throw new ApolloError(`Apresentação de id ${command.params.show} não encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!show) throw new HttpException(
+      `Apresentação de id ${command.showId} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Verify if observation is present
-    const { params: { id, title, data } } = command
+    const { id, params: { title, data } } = command
     const observations = show.observations ? [ ...show.observations ] : []
     const currentObservation = observations.find(obs => obs.id === id)
-    if (!currentObservation) throw new ApolloError(`Observação de id ${id} não encontrada!`, '404')
+    if (!currentObservation) throw new HttpException(
+      `Observação de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Update observation data
     const updatedObservations = observations.map(obs => {
@@ -46,7 +54,10 @@ export class UpdateObservationHandler implements ICommandHandler<UpdateObservati
 
     // Save observation array to concert
     const updatedShow = await this.saveShow(command, updatedObservations)
-    if (!updatedShow) throw new ApolloError('Ocorreu um erro interno ao atualizar a apresentação!', '500')
+    if (!updatedShow) throw new HttpException(
+      'Ocorreu um erro interno ao atualizar a apresentação!',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Returning show
     return updatedShow
@@ -61,14 +72,14 @@ export class UpdateObservationHandler implements ICommandHandler<UpdateObservati
 
   // Fetch show from database
   async fetchShow(command: UpdateObservationCommand): Promise<Show | null> {
-    const { params: { show: id } } = command
+    const { showId: id } = command
     const show = await this.showRepository.findOne({ id })
     return show
   }
 
   // Save show
   async saveShow(command: UpdateObservationCommand, observations: Array<any>): Promise<Show> {
-    const { params: { show: id } } = command
+    const { showId: id } = command
     const show = await this.showRepository.update({ observations }, id)
     return show
   }

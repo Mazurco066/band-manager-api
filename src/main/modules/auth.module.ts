@@ -2,8 +2,9 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-// Resolvers
-import { AuthResolvers } from '@/presentation/resolvers'
+// Controllers and services
+import { AuthControllers } from '@/presentation/controllers'
+import { AuthServices } from '@/presentation/services'
 
 // Commands & Queries
 import { AuthCommandHandlers, AuthQueriesHandlers } from '@/data/usecases'
@@ -28,9 +29,12 @@ import { SendGridService } from  '@/infra/mail'
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
     AccountModule
   ],
+  controllers: [
+    ...AuthControllers
+  ],
   providers: [
+    ...AuthServices,
     ...StrageriesResolvers,
-    ...AuthResolvers,
     ...AuthCommandHandlers,
     ...AuthQueriesHandlers,
     ...AuthPersistenceProviders,

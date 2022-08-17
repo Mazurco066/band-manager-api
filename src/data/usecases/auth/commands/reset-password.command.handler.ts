@@ -1,7 +1,7 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ResetPasswordCommand } from '@/data/protocols'
@@ -25,26 +25,41 @@ export class ResetPasswordHandler implements ICommandHandler<ResetPasswordComman
 
     // Step 1. Retrieve current account
     const myAccount = await this.retrieveAccount(command)
-    if (!myAccount) throw new ApolloError('Conta não encontrada.', '404')
+    if (!myAccount) throw new HttpException(
+      'Conta não encontrada.',
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2. Retrieve account auth token
     const myAuth = await this.retrieveAuthentication(myAccount)
     if (!myAuth || !myAuth.resetPasswordToken) {
-      throw new ApolloError('Nenhuma solicitação de recuperação de senha encontrada para essa conta.', '400')
+      throw new HttpException(
+        'Nenhuma solicitação de recuperação de senha encontrada para essa conta.',
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     // Step 3. Validade reset token
     if (myAuth.resetPasswordToken !== command.params.token) {
-      throw new ApolloError('O token enviado é invalido, por favor solicite uma nova troca de senha!', '400')
+      throw new HttpException(
+        'O token enviado é invalido, por favor solicite uma nova troca de senha!',
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     // Step 4. Update account password
     const restoredAccount = await this.updatePassword(command, myAccount)
-    if (!restoredAccount) throw new ApolloError('Ocorreu um erro ao recuperar sua conta, tente novamente mais tarde.', '500')
+    if (!restoredAccount) throw new HttpException(
+      'Ocorreu um erro ao recuperar sua conta, tente novamente mais tarde.',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Step 5. Update authentication tokens
     const updatedAuthentication = await this.updateResetPasswordToken(myAuth)
-    if (!updatedAuthentication) throw new ApolloError('Ocorreu um erro ao atualizar suas credencias, tente novamente mais tarde.', '500')
+    if (!updatedAuthentication) throw new HttpException(
+      'Ocorreu um erro ao atualizar suas credencias, tente novamente mais tarde.',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
     
     // Final step. Return the updated account
     return restoredAccount
@@ -52,7 +67,7 @@ export class ResetPasswordHandler implements ICommandHandler<ResetPasswordComman
 
   // Retrieve account
   async retrieveAccount(command: ResetPasswordCommand): Promise<Account> {
-    const { params: { accountId } } = command
+    const { accountId } = command
     const account = await this.accountRepository.findOne({ id: accountId })
     return account
   }

@@ -1,7 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
-
 // Commands
 import { ScrapSongCommand } from '@/data/protocols'
 
@@ -33,7 +32,10 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
 
       // Retrieve song from cifra club
       const r = await this.webscrapService.scrapCifraClubSong(url)
-      if (r.status.code !== 200) throw new ApolloError(r.status.message, `${r.status.code}`)
+      if (r.status.code !== 200) throw new HttpException(
+        r.status.message,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      )
       return {
         loot: r.data?.text || '',
         tone: r.data?.tone || '',
@@ -45,7 +47,10 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
 
       // Retrieve song from cifras
       const r = await this.webscrapService.scrapCifrasSong(url)
-      if (r.status.code !== 200) throw new ApolloError(r.status.message, `${r.status.code}`)
+      if (r.status.code !== 200) throw new HttpException(
+        r.status.message,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      )
       return {
         loot: r.data?.text || '',
         tone: r.data?.tone || '',
@@ -54,7 +59,7 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
       }
 
     } else {
-      throw new ApolloError('Invalid URL', '400')
+      throw new HttpException('Invalid URL', HttpStatus.BAD_REQUEST)
     }    
   }
 }

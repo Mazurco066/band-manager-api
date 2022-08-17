@@ -1,9 +1,8 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { JwtService } from '@nestjs/jwt'
-import { ApolloError } from 'apollo-server-express'
-
 // Commands
 import { AuthenticateCommand, TokenPayload } from '@/data/protocols'
 
@@ -12,9 +11,6 @@ import { AuthRepository, AccountRepository } from '@/infra/db/mongodb'
 
 // Domain Entities
 import { Account } from '@/domain/entities'
-
-// Domain Protocols
-import { TokenType } from '@/domain/protocols'
 
 // Adapters
 import { BcryptAdapter } from '@/infra/criptography'
@@ -29,7 +25,7 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
   ) {}
 
   // Execute action handler
-  async execute(command: AuthenticateCommand): Promise<TokenType> {
+  async execute(command: AuthenticateCommand): Promise<{ token: string }> {
 
     // Verify account by email
     const account = await this.checkAccountByEmail(command)
@@ -52,7 +48,10 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
   async checkAccountByEmail(command: AuthenticateCommand): Promise<Account> {
     const { params: { username } } = command
     const r = await this.accountRepository.findOne({ username })
-    if (!r) throw new ApolloError('Esse usuário não pertence a nenhuma conta cadastrada', '404')
+    if (!r) throw new HttpException(
+      'Esse usuário não pertence a nenhuma conta cadastrada',
+      HttpStatus.NOT_FOUND
+    )
     return r
   }
 
@@ -61,7 +60,10 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
     const { params: { password } }  = command
     const encrypter = new BcryptAdapter()
     const pwdCompare = await encrypter.compare(password, account.password)
-    if (!pwdCompare) throw new ApolloError('E-mail ou senha incorreto(s)', '401')
+    if (!pwdCompare) throw new HttpException(
+      'E-mail ou senha incorreto(s)',
+      HttpStatus.FORBIDDEN
+    )
   }
 
   // Generates a Token

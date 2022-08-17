@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RespondInviteCommand } from '@/data/protocols'
@@ -36,12 +35,21 @@ export class RespondInviteHandler implements ICommandHandler<RespondInviteComman
     ])
 
     // Step 2 - Verify if retrieved data exists
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
-    if (!retrievedInvite) throw new ApolloError(`Convite de id ${inviteId} não encontrado!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!retrievedInvite) throw new HttpException(
+      `Convite de id ${inviteId} não encontrado!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2.1 - Validate if invite is expired
     if (retrievedInvite.response !== ResponseEnum.pending) {
-      throw new ApolloError(`Convite de id ${inviteId} já foi respondido!`)
+      throw new HttpException(
+        `Convite de id ${inviteId} já foi respondido!`,
+        HttpStatus.NOT_FOUND
+      )
     }
 
     // Step 3 - Validate if band and account still exists
@@ -49,12 +57,21 @@ export class RespondInviteHandler implements ICommandHandler<RespondInviteComman
       this.fetchBand(retrievedInvite.band),
       this.fetchAccountById(retrievedInvite.account)
     ])
-    if (!retrievedBand) throw new ApolloError(`Banda vinculada ao convite não encontrada!`)
-    if (!retrievedAccount) throw new ApolloError(`Conta vinculada ao convite não encontrada`)
+    if (!retrievedBand) throw new HttpException(
+      `Banda vinculada ao convite não encontrada!`,
+      HttpStatus.NOT_FOUND  
+    )
+    if (!retrievedAccount) throw new HttpException(
+      `Conta vinculada ao convite não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3.1 - Validate if authenticated user and the invite target arte the same users
     if (retrievedAccount.id !== currentAccount.id) {
-      throw new ApolloError('A conta autenticada deve ser a pessoa que recebeu o convite!')
+      throw new HttpException(
+        'A conta autenticada deve ser a pessoa que recebeu o convite!',
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     // Step 4 - Validate Role and membership
@@ -101,7 +118,10 @@ export class RespondInviteHandler implements ICommandHandler<RespondInviteComman
     const { members } = band
     const { _id: id, id: accountId } = account
     if (members.includes(id.toString())) {
-      throw new ApolloError(`A conta de id ${accountId} já é um integrante ativo dessa banda!`)
+      throw new HttpException(
+        `A conta de id ${accountId} já é um integrante ativo dessa banda!`,
+        HttpStatus.BAD_REQUEST
+      )
     }
   }
 

@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadBandByIdQuery } from '@/data/protocols'
@@ -23,7 +23,10 @@ export class LoadBandByIdHandler implements IQueryHandler<LoadBandByIdQuery> {
 
     // Step 1 - Search for band into database
     const band = await this.fetchBand(command)
-    if (!band) throw new ApolloError(`Banda de id ${command.params.id} não foi encontrada!`, '404')
+    if (!band) throw new HttpException(
+      `Banda de id ${command.id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Returning
     return band
@@ -31,7 +34,7 @@ export class LoadBandByIdHandler implements IQueryHandler<LoadBandByIdQuery> {
 
   // Fetch band from database
   async fetchBand(command: LoadBandByIdQuery): Promise<Band | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.accountRepository.findOnePopulated({ id })
     return r
   }

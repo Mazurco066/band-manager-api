@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 import { options } from '@/main/config'
 import { generateVerificationCode } from '@/domain/shared'
 
@@ -38,11 +38,17 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
     // Step 2 - Search for account into database
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.params.id} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Verify if data was modified
     const proceed = this.verifyChanges(command, account)
-    if (!proceed) throw new ApolloError(`Nenhum dado foi modificado!`, '400')
+    if (!proceed) throw new HttpException(
+      `Nenhum dado foi modificado!`,
+      HttpStatus.BAD_REQUEST
+    )
 
     // Step 04 - Verify passwords if it has one
     const payload = await this.convertData(command, account)
@@ -53,15 +59,18 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Validates if is user is master
   validateRole(command: UpdateAccountCommand) {
-    const { params: { id }, payload: { role, account } } = command
+    const { id, payload: { role, account } } = command
     if (role === RoleEnum.player && id !== account) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados de outra conta`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados de outra conta`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Fetch account from database
   async fetchAccount(command: UpdateAccountCommand): Promise<Account | null> {
-    const { params: { id } } = command
+    const { id } = command
     const account = await this.accountRepository.findOne({ id })
     return account
   }
@@ -99,7 +108,10 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
         // Generate a new code to the account
         const accountCode = await this.generateVerificationCode(account)
-        if (!accountCode) throw new ApolloError('Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde.', '500')
+        if (!accountCode) throw new HttpException(
+          'Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde.',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        )
 
         // Send confirmation E-mail
         const r = await this.messageService.sendTemplateMail({
@@ -120,8 +132,14 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
     // Updates the current password if informed
     if (oldPassword) {
       const pwdCompare = role === RoleEnum.master ? true : await encrypter.compare(oldPassword, account.password)
-      if (!pwdCompare) throw new ApolloError('Senha atual informada não corresponde a armazenada', '400')
-      if (password !== confirmPassword) throw new ApolloError('Nova senha e a confirmação informada não correspondem', '400')
+      if (!pwdCompare) throw new HttpException(
+        'Senha atual informada não corresponde a armazenada',
+        HttpStatus.BAD_REQUEST
+      )
+      if (password !== confirmPassword) throw new HttpException(
+        'Nova senha e a confirmação informada não correspondem',
+        HttpStatus.BAD_REQUEST
+      )
       payload['password'] = password
     }
 
@@ -131,7 +149,7 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
 
   // Create account handler
   async updateAccount(command: UpdateAccountCommand, params: object): Promise<Account> {
-    const { params: { id } } = command
+    const { id } = command
     return await this.accountRepository.update({ ...params }, id)
   }
 }

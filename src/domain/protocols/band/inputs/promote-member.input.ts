@@ -1,16 +1,12 @@
 // Dependencies
-import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, IsUUID } from 'class-validator'
 
-@InputType()
-export class PromoteMemberInput {
-	@Field(() => String)
-	@IsNotEmpty({ message: 'Campo "bandId" não deve ser vazio' })
-	@IsUUID('4', { message: 'Campo "bandId" deve ser do tipo UUID versão 4' })
-	bandId?: string
+// API Documentation
+import { ApiProperty } from '@nestjs/swagger'
 
-  @Field(() => String)
+export class PromoteMemberInput {
 	@IsNotEmpty({ message: 'Campo "accountId" não deve ser vazio' })
 	@IsUUID('4', { message: 'Campo "accountId" deve ser do tipo UUID versão 4' })
+	@ApiProperty({ type: String, required: true, example: 'valid-uuid-v4-here' })
 	accountId?: string
 }

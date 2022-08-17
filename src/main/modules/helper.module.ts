@@ -6,17 +6,21 @@ import { HelperCommandHandlers } from '@/data/usecases'
 
 // Services
 import { WebscrapService } from '@/infra/webscrap'
+import { HelperServices } from "@/presentation/services"
 
-// Resolvers
-import { HelperResolvers } from '@/presentation/resolvers'
+// Controllers
+import { HelperControllers } from '@/presentation/controllers'
 
 // Helper module
 @Module({
   imports: [],
+  controllers: [
+    ...HelperControllers
+  ],
   providers: [
     WebscrapService,
-    ...HelperCommandHandlers,
-    ...HelperResolvers
+    ...HelperServices,
+    ...HelperCommandHandlers
   ]
 })
 export class HelperModule {}

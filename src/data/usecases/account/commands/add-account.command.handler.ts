@@ -1,4 +1,5 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { options } from '@/main/config'
 import { generateVerificationCode } from '@/domain/shared'
@@ -14,7 +15,6 @@ import { Account, VerificationCode } from '@/domain/entities'
 
 // Infra
 import { SendGridService } from '@/infra/mail'
-import { ApolloError } from 'apollo-server-express'
 
 @CommandHandler(AddAccountCommand)
 export class AddAccountHandler implements ICommandHandler<AddAccountCommand> {
@@ -30,11 +30,17 @@ export class AddAccountHandler implements ICommandHandler<AddAccountCommand> {
 
     // Step 1. Create account
     const createdAccount = await this.createAccount(command)
-    if (!createdAccount) throw new ApolloError(`Ocorreu um erro ao criar sua conta!`, '500')
+    if (!createdAccount) throw new HttpException(
+      `Ocorreu um erro ao criar sua conta!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Step 2. Generate a verification code
     const accountCode = await this.generateVerificationCode(createdAccount)
-    if (!accountCode) throw new ApolloError('Ocorreu um erro ao gerar um código de verificação para sua cvonta!', '500')
+    if (!accountCode) throw new HttpException(
+      'Ocorreu um erro ao gerar um código de verificação para sua conta!',
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     // Send confirmation E-mail
     const r = await this.messageService.sendTemplateMail({

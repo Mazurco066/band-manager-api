@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadSongQuery } from '@/data/protocols'
@@ -27,7 +26,7 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
   // Execute action handler
   async execute(command: LoadSongQuery): Promise<Song> {
     // Destruct params
-    const { params: { bandId, id }, payload: { account } } = command
+    const { bandId, id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, band and song
     const [ currentAccount, currentBand, currentSong ] = await Promise.all([
@@ -37,9 +36,18 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
     ])
 
     // Step 2 - Verify if all data is persisted
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
-    if (!currentSong) throw new ApolloError(`Música de id ${id} não foi encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentBand) throw new HttpException(
+      `Banda de id ${bandId} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentSong) throw new HttpException(
+      `Música de id ${id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership if song is not public
     if (!currentSong.isPublic) {
@@ -71,13 +79,16 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
       account._id.toString() !== owner &&
       !members.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para carregar músicas dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para carregar músicas dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Loads a song from band
   async loadSong(command: LoadSongQuery): Promise<Song | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.songRepository.findOnePopulated({ id })
     return r
   }

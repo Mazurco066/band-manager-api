@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadPendingShowsQuery } from '@/data/protocols'
@@ -28,7 +27,10 @@ export class LoadPendingShowsHandler implements IQueryHandler<LoadPendingShowsQu
 
     // Step 1 - Retrieve account and band
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve account bands
     const bands = await this.fetchBands(currentAccount)

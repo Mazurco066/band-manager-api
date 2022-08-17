@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ListBandsQuery } from '@/data/protocols'
@@ -25,7 +24,10 @@ export class ListBandsHandler implements IQueryHandler<ListBandsQuery> {
 
     // Step 1 - Search for user account
     const retrievedAccount = await this.fetchAccount(command)
-    if (!retrievedAccount) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!retrievedAccount) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve user bands
     const bands = await this.fetchBands(command, retrievedAccount)

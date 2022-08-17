@@ -3,7 +3,8 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
 // Resolvers~
-import { SongResolvers } from '@/presentation/resolvers'
+import { SongControllers } from '@/presentation/controllers'
+import { SongServices } from '@/presentation/services'
 
 // Commands & Queries
 import { SongCommandHandlers, SongQueriesHandlers } from '@/data/usecases'
@@ -27,8 +28,11 @@ import { BandModule } from './band.module'
     AccountModule,
     BandModule
   ],
+  controllers: [
+    ...SongControllers
+  ],
   providers: [
-    ...SongResolvers,
+    ...SongServices,
     ...SongCommandHandlers,
     ...SongQueriesHandlers,
     ...SongPersistenceProviders

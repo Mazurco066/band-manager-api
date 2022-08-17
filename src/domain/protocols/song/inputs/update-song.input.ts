@@ -1,45 +1,41 @@
 // Dependencies
-import { Field, InputType } from '@nestjs/graphql'
-import { IsString, IsOptional, IsNotEmpty, IsUUID, MinLength, MaxLength, IsBoolean } from 'class-validator'
+import { IsString, IsOptional, IsUUID, MinLength, MaxLength, IsBoolean } from 'class-validator'
 
-@InputType()
+// API Documentation
+import { ApiProperty } from '@nestjs/swagger'
+
 export class UpdateSongInput {
-  @Field(() => String)
-	@IsNotEmpty({ message: 'Campo "id" não deve ser vazio' })
-	@IsUUID('4', { message: 'Campo "id" deve ser do tipo UUID versão 4' })
-	id: string
-
-	@Field(() => String)
   @IsOptional()
 	@IsString({ message: 'Campo "title" deve ser do tipo String' })
   @MinLength(2, { message: 'Campo "title" deve conter no mínimo 2 caracteres' })
   @MaxLength(256, { message: 'Campo "title" deve conter no máximo 256 caracteres' })
+  @ApiProperty({ type: String, required: false, example: 'Butterflies' })
 	title?: string
 
-  @Field(() => String)
   @IsOptional()
 	@IsString({ message: 'Campo "tone" deve ser do tipo String' })
+  @ApiProperty({ type: String, required: false, example: 'E' })
 	tone?: string
 
-  @Field(() => String)
   @IsOptional()
   @IsString({ message: 'Campo "writter" deve ser do tipo String' })
   @MinLength(2, { message: 'Campo "writter" deve conter no mínimo 2 caracteres' })
   @MaxLength(256, { message: 'Campo "writter" deve conter no máximo 256 caracteres' })
+  @ApiProperty({ type: String, required: false, example: 'Michael Bay' })
 	writter?: string
 
-  @Field(() => String)
   @IsOptional()
 	@IsString({ message: 'Campo "body" deve ser do tipo String' })
+  @ApiProperty({ type: String, required: false, example: 'Haha my song body' })
 	body?: string
 
-  @Field(() => String)
   @IsOptional()
 	@IsUUID('4', { message: 'Campo "category" deve ser do tipo UUID versão 4' })
+  @ApiProperty({ type: String, required: false, example: 'valid-uuid-v4-here' })
 	category?: string
 
-  @Field(() => Boolean)
   @IsOptional()
   @IsBoolean({ message: 'Campo "isPublic" deve ser do tipo booleano' })
+  @ApiProperty({ type: Boolean, required: false, example: true })
   isPublic: boolean
 }

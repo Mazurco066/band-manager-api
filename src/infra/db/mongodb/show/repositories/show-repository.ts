@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Show, ShowDocument } from '@/domain/entities/show'
@@ -20,6 +20,7 @@ export class ShowRepository implements IShowRepository {
       .find({ ...params })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
+      .lean()
     return r
   }
 
@@ -30,6 +31,7 @@ export class ShowRepository implements IShowRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('songs')
+      .lean()
     return r
   }
 
@@ -40,6 +42,7 @@ export class ShowRepository implements IShowRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('songs')
+      .lean()
     return r
   }
 
@@ -54,12 +57,13 @@ export class ShowRepository implements IShowRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('songs')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Show | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<Show | null> {
@@ -67,7 +71,7 @@ export class ShowRepository implements IShowRepository {
       .findOne({ ...params })
       .populate('band')
       .populate('songs')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -78,7 +82,7 @@ export class ShowRepository implements IShowRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover show', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -88,7 +92,7 @@ export class ShowRepository implements IShowRepository {
 
   async save(target: any): Promise<Show> {
     const r = await this.connection.create({ ...target })
-    return r
+    return r.toObject()
   }
 
   async update(target: any, id: string): Promise<Show> {
@@ -99,11 +103,11 @@ export class ShowRepository implements IShowRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar show', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -117,11 +121,11 @@ export class ShowRepository implements IShowRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao adicionar música na apresentação', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -130,11 +134,11 @@ export class ShowRepository implements IShowRepository {
       const r = await this.connection.findOneAndUpdate({ id }, {
         $set: { songs }
       }, { new: true, useFindAndModify: false })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover música da apresentação', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

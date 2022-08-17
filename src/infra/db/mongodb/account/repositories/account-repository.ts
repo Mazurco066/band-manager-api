@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 import { BcryptAdapter } from '@/infra/criptography'
 
 // Domain
@@ -17,13 +17,13 @@ export class AccountRepository implements IAccountRepository {
   ) {}
   
   async find(params: Filter): Promise<Account[] | null> {
-    const r = await this.connection.find({ ...params })
+    const r = await this.connection.find({ ...params }).lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Account | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -34,7 +34,7 @@ export class AccountRepository implements IAccountRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -49,7 +49,7 @@ export class AccountRepository implements IAccountRepository {
       ...target,
       password: encodedPasswd
     })
-    return account
+    return account.toObject()
   }
 
   async update(target: any, id: string): Promise<Account> {
@@ -63,11 +63,11 @@ export class AccountRepository implements IAccountRepository {
         new: true,
         useFindAndModify: false
       })
-      return account
+      return account.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -82,11 +82,11 @@ export class AccountRepository implements IAccountRepository {
         new: true,
         useFindAndModify: false
       })
-      return account
+      return account.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar conta', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

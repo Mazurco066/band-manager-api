@@ -1,13 +1,13 @@
-import { GqlJwtAuthGuard } from './gql-jwt-auth.guard'
+import { JwtAuthGuard } from './jwt-auth-guard'
 import { RolesGuard } from './roles.guard'
 import { APP_GUARD } from '@nestjs/core'
 
-export * from './gql-jwt-auth.guard'
+export * from './jwt-auth-guard'
 export * from './roles.guard'
 
 const GqlJwtAuthGuardProvider = {
   provide: APP_GUARD,
-  useClass: GqlJwtAuthGuard
+  useClass: JwtAuthGuard
 }
 
 const RolesGuardProvider = {

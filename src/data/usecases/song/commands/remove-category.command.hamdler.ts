@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveCategoryCommand } from '@/data/protocols'
@@ -28,19 +27,28 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
   // Execute action handler
   async execute(command: RemoveCategoryCommand): Promise<Category> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve category
     const retrievedCategory = await this.fetchCategory(command)
-    if (!retrievedCategory) throw new ApolloError(`Categoria de id ${id} não encontrada!`)
+    if (!retrievedCategory) throw new HttpException(
+      `Categoria de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(retrievedCategory)
-    if (!currentBand) throw new ApolloError(`Banda na qual a categoria está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a categoria está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -48,12 +56,18 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
     // Validate if category is not in use
     const categorySongs = await this.fetchSongs(retrievedCategory)
     if (categorySongs.length >= 1) {
-      throw new ApolloError(`Essa categoria esta sendo usada por 1 ou mais músicas. Remova as músicas antes de deletar a categoria!`)
+      throw new HttpException(
+        `Essa categoria esta sendo usada por 1 ou mais músicas. Remova as músicas antes de deletar a categoria!`,
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     // Step 4 - Add member to band
     const result = await this.removeCategory(command)
-    if (!result) throw new ApolloError(`Erro ao remover categoria de id ${id}!`)
+    if (!result) throw new HttpException(
+      `Erro ao remover categoria de id ${id}!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
     return retrievedCategory
   }
 
@@ -65,7 +79,7 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
 
   // Fetch category from database
   async fetchCategory(command: RemoveCategoryCommand): Promise<Category | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.findOne({ id })
     return r
   }
@@ -93,13 +107,16 @@ export class RemoveCategoryHandler implements ICommandHandler<RemoveCategoryComm
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa categoria!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa categoria!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Removes data from category
   async removeCategory(command: RemoveCategoryCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.delete({ id })
     return r
   }

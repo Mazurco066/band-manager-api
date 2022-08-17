@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadAccountByIdQuery } from '@/data/protocols'
@@ -28,7 +28,10 @@ export class LoadAccountByIdHandler implements IQueryHandler<LoadAccountByIdQuer
 
     // Step 2 - Search for account into database
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.params.id} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Returning
     return account
@@ -36,15 +39,18 @@ export class LoadAccountByIdHandler implements IQueryHandler<LoadAccountByIdQuer
 
   // Validates if is user is master
   validateRole(command: LoadAccountByIdQuery) {
-    const { params: { id }, payload: { role, account } } = command
+    const { id, payload: { role, account } } = command
     if (role === RoleEnum.player && id !== account) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para consultar dados de outra conta`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para consultar dados de outra conta`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Fetch account from database
   async fetchAccount(command: LoadAccountByIdQuery): Promise<Account | null> {
-    const { params: { id } } = command
+    const { id } = command
     const account = await this.accountRepository.findOne({ id })
     return account
   }

@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ListShowsByAccountQuery } from '@/data/protocols'
@@ -28,7 +27,10 @@ export class ListShowsByAccountHandler implements IQueryHandler<ListShowsByAccou
 
     // Step 1 - Retrieve current Account and band
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Find user bands
     const accountBands = await this.fetchBands(currentAccount)

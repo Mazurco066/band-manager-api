@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { UpdateShowCommand } from '@/data/protocols'
@@ -27,19 +26,28 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
   // Execute action handler
   async execute(command: UpdateShowCommand): Promise<Show> {
     // Destruct params
-    const { params: { id, }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account and show
     const [ currentAccount, currentShow ] = await Promise.all([
       this.fetchAccount(account),
       this.fetchShow(command)
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
-    if (!currentShow) throw new ApolloError(`Apresentação de id ${id} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!currentShow) throw new HttpException(
+      `Apresentação de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const currentBand = await this.fetchBand(currentShow)
-    if (!currentBand) throw new ApolloError(`Banda na qual a apresentação está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a apresentação está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 4 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -56,7 +64,7 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
 
   // Fetch show from database
   async fetchShow(command: UpdateShowCommand): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOne({ id })
     return r
   }
@@ -77,17 +85,23 @@ export class UpdateShowHandler implements ICommandHandler<UpdateShowCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa música!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Updates show from band
   async updateShow(command: UpdateShowCommand): Promise<Show | null> {
-    const { params: { id, title, description, date } } = command
+    const { id, params: { title, description, date } } = command
     const payload = { title, description }
     if (date) payload['date'] = new Date(date)
     if (!title && !description)
-      throw new ApolloError('Nenhum dado foi informado para realizar a atualização da música!')
+      throw new HttpException(
+        'Nenhum dado foi informado para realizar a atualização da música!',
+        HttpStatus.BAD_REQUEST
+      )
     const r = await this.showRepository.update(payload, id)
     return r
   }

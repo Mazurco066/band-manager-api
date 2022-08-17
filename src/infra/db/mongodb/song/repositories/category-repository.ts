@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Category, CategoryDocument } from '@/domain/entities/song'
@@ -20,6 +20,7 @@ export class CategoryRepository implements ICategoryRepository {
       .find({ ...params })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
+      .lean()
     return r
   }
 
@@ -29,19 +30,20 @@ export class CategoryRepository implements ICategoryRepository {
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Category | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<Category | null> {
     const r = await this.connection
       .findOne({ ...params })
       .populate('band')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -52,7 +54,7 @@ export class CategoryRepository implements ICategoryRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover categoria', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -62,7 +64,7 @@ export class CategoryRepository implements ICategoryRepository {
 
   async save(target: any): Promise<Category> {
     const r = await this.connection.create({ ...target })
-    return r
+    return r.toObject()
   }
 
   async update(target: any, id: string): Promise<Category> {
@@ -73,11 +75,11 @@ export class CategoryRepository implements ICategoryRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar categoria', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

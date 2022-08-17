@@ -1,6 +1,6 @@
 // Dependencies
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { LoadAccountByEmailQuery } from '@/data/protocols'
@@ -23,7 +23,10 @@ export class LoadAccountByEmailHandler implements IQueryHandler<LoadAccountByEma
 
     // Step 1 - Search for account into database
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de usuário ${command.params.username} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de usuário ${command.params.username} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Returning
     return account

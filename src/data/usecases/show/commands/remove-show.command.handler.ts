@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { RemoveShowCommand } from '@/data/protocols'
@@ -27,26 +26,38 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
   // Execute action handler
   async execute(command: RemoveShowCommand): Promise<Show> {
     // Destruct params
-    const { params: { id }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, show and band
     const [ currentAccount, retrievedShow ] = await Promise.all([
       this.fetchAccount(account),
       this.fetchShow(command),
     ])
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
-    if (!retrievedShow) throw new ApolloError(`Música de id ${id} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
+    if (!retrievedShow) throw new HttpException(
+      `Música de id ${id} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve current Band
     const currentBand = await this.fetchBand(retrievedShow)
-    if (!currentBand) throw new ApolloError(`Banda na qual a apresentação está vinculada não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda na qual a apresentação está vinculada não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Add member to band
     const result = await this.removeShow(command)
-    if (!result) throw new ApolloError(`Erro ao remover a apresentação de id ${id}!`)
+    if (!result) throw new HttpException(
+      `Erro ao remover a apresentação de id ${id}!`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
     return retrievedShow
   }
 
@@ -58,7 +69,7 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
 
   // Fetch show from database
   async fetchShow(command: RemoveShowCommand): Promise<Show | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.findOne({ id })
     return r
   }
@@ -79,13 +90,16 @@ export class RemoveShowHandler implements ICommandHandler<RemoveShowCommand> {
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa apresentação!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa apresentação!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Removes data from show
   async removeShow(command: RemoveShowCommand): Promise<boolean> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.showRepository.delete({ id })
     return r
   }

@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { DemoteMemberCommand } from '@/data/protocols'
@@ -26,19 +25,28 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
   // Execute action handler
   async execute(command: DemoteMemberCommand): Promise<Band> {
     // Destruct params
-    const { params: { accountId, bandId }, payload: { account } } = command
+    const { bandId, params: { accountId }, payload: { account } } = command
 
     // Step 1 - Retrieve account
     const retrievedAccount = await this.fetchAccount(accountId)
-    if (!retrievedAccount) throw new ApolloError(`Conta de id ${accountId} não encontrada`)
+    if (!retrievedAccount) throw new HttpException(
+      `Conta de id ${accountId} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Retrieve band
     const retrievedBand = await this.fetchBand(command)
-    if (!retrievedBand) throw new ApolloError(`Banda de id ${bandId} não encontrada!`)
+    if (!retrievedBand) throw new HttpException(
+      `Banda de id ${bandId} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 4 - Validate Role and membership
     this.validateRole(command, retrievedBand, currentAccount)
@@ -56,7 +64,7 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
 
   // Fetch band from database
   async fetchBand(command: DemoteMemberCommand): Promise<Band | null> {
-    const { params: { bandId } } = command
+    const { bandId } = command
     const band = await this.bandRepository.findOne({ id: bandId })
     return band
   }
@@ -70,7 +78,10 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
@@ -79,10 +90,16 @@ export class DemoteMemberHandler implements ICommandHandler<DemoteMemberCommand>
     const { members, admins } = band
     const { _id: id, id: accountId } = account
     if (!members.includes(id.toString())) {
-      throw new ApolloError(`A conta de id ${accountId} não é um integrante ativo dessa banda!`)
+      throw new HttpException(
+        `A conta de id ${accountId} não é um integrante ativo dessa banda!`,
+        HttpStatus.BAD_REQUEST
+      )
     }
     if (!admins.includes(id.toString())) {
-      throw new ApolloError(`A conta de id ${accountId} não é um admin dessa banda!`)
+      throw new HttpException(
+        `A conta de id ${accountId} não é um admin dessa banda!`,
+        HttpStatus.BAD_REQUEST
+      )
     }
   }
 

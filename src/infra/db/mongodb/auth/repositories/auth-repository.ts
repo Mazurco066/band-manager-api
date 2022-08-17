@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Auth, AuthDocument } from '@/domain/entities/auth'
@@ -22,7 +22,7 @@ export class AuthRepository implements IAuthRepository {
 
   async findOne(params: Filter): Promise<Auth | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   delete(params: Filter): Promise<boolean> {
@@ -35,7 +35,8 @@ export class AuthRepository implements IAuthRepository {
 
   async save(target: Auth): Promise<Auth> {
     const account = new this.connection(target)
-    return await account.save()
+    const r = await account.save()
+    return r.toObject()
   }
 
   async generateToken(account: Account, token: string): Promise<Auth> {
@@ -47,11 +48,12 @@ export class AuthRepository implements IAuthRepository {
         role: account.role
       })
 
-      return await authentication.save()
+      const r = await authentication.save()
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao gerar token de acesso para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -65,42 +67,42 @@ export class AuthRepository implements IAuthRepository {
         new: true,
         useFindAndModify: false
       })
-
-      if (r) return r
-      else throw new ApolloError('Erro ao atualizar token de acesso para conta informada', '404')
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar token de acesso para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
   
   async generateResetPasswordToken(account: Account, token: string, resetPasswordToken: string): Promise<Auth> {
     try {
-      return await new this.connection({
+      const r = await new this.connection({
         account: account.id,
         token,
         resetPasswordToken,
         role: account.role
       }).save()
+      return r.toObject()
     } catch (ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao gerar token de recuperação para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
   async updateResetPasswordToken(auth: Auth, resetPasswordToken: string): Promise<Auth> {
     try {
-      return await this.connection.findOneAndUpdate({ _id: auth._id }, {
+      const r = await this.connection.findOneAndUpdate({ _id: auth._id }, {
         resetPasswordToken,
         role: auth.role
       }, {
         new: true,
         useFindAndModify: false
       })
+      return r.toObject()
     } catch (ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar token de recuperação para conta informada', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

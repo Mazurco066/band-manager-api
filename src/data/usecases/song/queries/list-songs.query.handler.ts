@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ListSongsQuery } from '@/data/protocols'
@@ -11,7 +10,6 @@ import { BandRepository, SongRepository, AccountRepository } from '@/infra/db/mo
 
 // Domain Entities
 import { Account, Band, Song } from '@/domain/entities'
-import { BandSongsType } from '@/domain/protocols'
 
 // Domain Protocols
 import { RoleEnum } from '@/domain/protocols'
@@ -26,17 +24,26 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
   ) {}
 
   // Execute action handler
-  async execute(command: ListSongsQuery): Promise<BandSongsType> {
+  async execute(command: ListSongsQuery): Promise<{
+    total: number,
+    data: Song[]
+  }> {
     // Destruct params
-    const { params: { bandId }, payload: { account } } = command
+    const { bandId, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve band
     const currentBand = await this.fetchBand(bandId)
-    if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda de id ${bandId} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -75,17 +82,20 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
       account._id.toString() !== owner &&
       !members.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para listar músicas dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para listar músicas dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Lists songs from a band
   async listSongs(command: ListSongsQuery, band: Band): Promise<Song[] | null> {
-    const { params: { offset = 0, limit = 0, filter = '' } } = command
+    const { params: { offset = '0', limit = '0', filter = '' } } = command
     const r = await this.songRepository.findFilteredPopulated(
       band._id.toString(),
       filter,
-      { offset, limit }
+      { offset: parseInt(offset.toString()), limit: parseInt(offset.toString()) }
     )
     return r
   }

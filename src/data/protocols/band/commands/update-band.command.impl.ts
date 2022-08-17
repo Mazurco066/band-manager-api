@@ -10,6 +10,7 @@ import { TokenPayload } from '@/data/protocols'
 // Add account command
 export class UpdateBandCommand implements ICommand {
   constructor(
+    public readonly id: string,
     public readonly params: UpdateBandInput,
     public readonly payload: TokenPayload
   ) {}

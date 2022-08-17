@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { UpdateCategoryCommand } from '@/data/protocols'
@@ -27,19 +26,28 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
   // Execute action handler
   async execute(command: UpdateCategoryCommand): Promise<Category> {
     // Destruct params
-    const { params: { id } } = command
+    const { id } = command
 
     // Step 1 - Get authenticated account
     const account = await this.fetchAccount(command)
-    if (!account) throw new ApolloError(`Conta de id ${command.payload.account} não foi encontrada!`, '404')
+    if (!account) throw new HttpException(
+      `Conta de id ${command.payload.account} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Get Category
     const category = await this.fetchCategory(command)
-    if (!category) throw new ApolloError(`Categoria de id ${id} não foi encontrada!`, '404')
+    if (!category) throw new HttpException(
+      `Categoria de id ${id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Get desired category
     const band = await this.fetchBand(category)
-    if (!band) throw new ApolloError(`Banda vinculada a categoria atual não encontrada!`)
+    if (!band) throw new HttpException(
+      `Banda vinculada a categoria atual não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 4 - Validate if user is able to update the category
     this.validateRole(command, band, account)
@@ -57,7 +65,7 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
 
   // Fetch category from database
   async fetchCategory(command: UpdateCategoryCommand): Promise<Category | null> {
-    const { params: { id } } = command
+    const { id } = command
     const r = await this.categoryRepository.findOne({ id })
     return r
   }
@@ -78,15 +86,21 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
       account._id.toString() !== owner &&
       !admins.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa categoria!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para atualizar dados dessa categoria!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Updates category into database
   async updateCategory(command: UpdateCategoryCommand): Promise<Category | null> {
-    const { params: { id, title, description } } = command
+    const { id, params: { title, description } } = command
     if (!title && !description)
-      throw new ApolloError('Nenhum dado foi informado para realizar a atualização da categoria!')
+      throw new HttpException(
+        'Nenhum dado foi informado para realizar a atualização da categoria!',
+        HttpStatus.BAD_REQUEST
+      )
     const { params } = command
     const r = await this.categoryRepository.update({ ...params  }, id)
     return r

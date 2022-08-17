@@ -1,16 +1,12 @@
 // Dependencies
-import { Field, InputType } from '@nestjs/graphql'
-import { IsNotEmpty, IsUUID,IsArray } from 'class-validator'
+import { IsNotEmpty, IsArray } from 'class-validator'
 
-@InputType()
+// API Documentation
+import { ApiProperty } from '@nestjs/swagger'
+
 export class ReorderShowInput {
-  @Field(() => String!)
-	@IsNotEmpty({ message: 'Campo "id" não deve ser vazio' })
-	@IsUUID('4', { message: 'Campo "id" deve ser do tipo UUID versão 4' })
-	id!: string
-
-	@Field(() => [String]!)
   @IsNotEmpty({ message: 'Campo "songs" não deve ser vazio' })
 	@IsArray({ message: 'Campo "songs" deve ser do tipo Array' })
+	@ApiProperty({ type: Array, required: false, example: "[\"valid-uuid-v4-here\",\"valid-uuid-v4-here\",\"valid-uuid-v4-here\",\"valid-uuid-v4-here\"]" })
 	songs!: string[]
 }

@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Invite, InviteDocument } from '@/domain/entities/band'
@@ -21,6 +21,7 @@ export class InviteRepository implements IInviteRepository {
       .find({ ...params })
       .limit(options.limit || 0)
       .skip(options.offset || 0)
+      .lean()
     return r
   }
 
@@ -32,12 +33,13 @@ export class InviteRepository implements IInviteRepository {
       .skip(options.offset || 0)
       .populate('account')
       .populate('band')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Invite | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<Invite | null> {
@@ -45,7 +47,7 @@ export class InviteRepository implements IInviteRepository {
       .findOne({ ...params })
       .populate('account')
       .populate('band')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -56,7 +58,7 @@ export class InviteRepository implements IInviteRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover convite', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -65,8 +67,8 @@ export class InviteRepository implements IInviteRepository {
   }
 
   async save(target: any): Promise<Invite> {
-    const r = await (await this.connection.create({ ...target }))
-    return r
+    const r = await this.connection.create({ ...target })
+    return r.toObject()
   }
 
   async update(target: any, id: string): Promise<Invite> {
@@ -77,11 +79,11 @@ export class InviteRepository implements IInviteRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar convite', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

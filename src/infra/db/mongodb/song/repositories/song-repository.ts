@@ -1,7 +1,7 @@
 // Dependencies
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ApolloError } from 'apollo-server-express'
+import { MongoError } from 'mongodb'
 
 // Domain
 import { Song, SongDocument } from '@/domain/entities/song'
@@ -20,6 +20,7 @@ export class SongRepository implements ISongRepository {
       .find({ ...params })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
+      .lean()
     return r
   }
 
@@ -30,6 +31,7 @@ export class SongRepository implements ISongRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('category')
+      .lean()
     return r
   }
 
@@ -47,6 +49,7 @@ export class SongRepository implements ISongRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('category')
+      .lean()
     return r
   }
 
@@ -64,12 +67,13 @@ export class SongRepository implements ISongRepository {
       .skip(pagingOptions?.offset || 0)
       .populate('band')
       .populate('category')
+      .lean()
     return r
   }
 
   async findOne(params: Filter): Promise<Song | null> {
     const r = await this.connection.findOne({ ...params })
-    return r
+    return r.toObject()
   }
 
   async findOnePopulated(params: Filter): Promise<Song | null> {
@@ -77,7 +81,7 @@ export class SongRepository implements ISongRepository {
       .findOne({ ...params })
       .populate('band')
       .populate('category')
-    return r
+    return r.toObject()
   }
 
   async delete(params: Filter): Promise<boolean> {
@@ -88,7 +92,7 @@ export class SongRepository implements ISongRepository {
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao remover música', '500')
+      throw new MongoError({ ...ex })
     }
   }
 
@@ -98,6 +102,15 @@ export class SongRepository implements ISongRepository {
 
   async count(params: Filter): Promise<number> {
     return await this.connection.countDocuments(params)
+  }
+
+  async publicCount(filter: string): Promise<number> {
+    return await this.connection.countDocuments({
+      $or: [
+        { title: new RegExp(filter, 'i') },
+        { writter: new RegExp(filter, 'i') }
+      ]
+    })
   }
 
   async customCount(bandId: string, filter: string): Promise<number> {
@@ -112,7 +125,7 @@ export class SongRepository implements ISongRepository {
 
   async save(target: any): Promise<Song> {
     const r = await this.connection.create({ ...target })
-    return r
+    return r.toObject()
   }
 
   async update(target: any, id: string): Promise<Song> {
@@ -123,11 +136,11 @@ export class SongRepository implements ISongRepository {
         new: true,
         useFindAndModify: false
       })
-      return r
+      return r.toObject()
 
     } catch(ex) {
       console.error(ex)
-      throw new ApolloError('Erro ao atualizar música', '500')
+      throw new MongoError({ ...ex })
     }
   }
 }

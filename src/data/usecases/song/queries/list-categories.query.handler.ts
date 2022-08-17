@@ -1,7 +1,6 @@
 // Dependencies
-import { Inject } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import { ApolloError } from 'apollo-server-express'
 
 // Commands
 import { ListCategoriesQuery } from '@/data/protocols'
@@ -27,15 +26,21 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
   // Execute action handler
   async execute(command: ListCategoriesQuery): Promise<Category[]> {
     // Destruct params
-    const { params: { bandId }, payload: { account } } = command
+    const { bandId, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new ApolloError(`Conta de id ${account} não encontrada!`)
+    if (!currentAccount) throw new HttpException(
+      `Conta de id ${account} não encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 2 - Retrieve band
     const currentBand = await this.fetchBand(bandId)
-    if (!currentBand) throw new ApolloError(`Banda de id ${bandId} não foi encontrada!`)
+    if (!currentBand) throw new HttpException(
+      `Banda de id ${bandId} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
 
     // Step 3 - Validate Role and membership
     this.validateRole(command, currentBand, currentAccount)
@@ -65,16 +70,19 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
       account._id.toString() !== owner &&
       !members.includes(account._id.toString())
     ) {
-      throw new ApolloError(`Você não tem permissão como ${RoleEnum.player} para listar categorias dessa banda!`)
+      throw new HttpException(
+        `Você não tem permissão como ${RoleEnum.player} para listar categorias dessa banda!`,
+        HttpStatus.FORBIDDEN
+      )
     }
   }
 
   // Lists categories from a band
   async listCategories(command: ListCategoriesQuery, band: Band): Promise<Category[] | null> {
-    const { params: { offset = 0, limit = 0 } } = command
+    const { params: { offset = '0', limit = '0' } } = command
     const r = await this.categoryRepository.findPopulated(
       { band: band._id.toString() },
-      { offset, limit }
+      { offset: parseInt(offset.toString()), limit: parseInt(limit.toString()) }
     )
     return r
   }
