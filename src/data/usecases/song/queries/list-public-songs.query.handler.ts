@@ -24,12 +24,8 @@ export class ListPublicSongsHandler implements IQueryHandler<ListPublicSongsQuer
     total: number,
     data: Song[]
   }> {
-    console.log('[debug]')
-
     // Destruct params
     const { payload: { account } } = command
-
-    console.log('[debug]')
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)

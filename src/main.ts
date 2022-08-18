@@ -26,6 +26,14 @@ const app = async () => {
     // Create Nestjs app
     const app = await NestFactory.create(MainModule)
 
+    // Enable server CORS
+    app.enableCors({
+      origin: '*',
+      methods: '*',
+      allowedHeaders: '*',
+      credentials: true
+    })
+
     // Class validator custom pipe
     const validationOptions = {
       skipMissingProperties: false,
