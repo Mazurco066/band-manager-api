@@ -73,7 +73,7 @@ export class SongRepository implements ISongRepository {
 
   async findOne(params: Filter): Promise<Song | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async findOnePopulated(params: Filter): Promise<Song | null> {
@@ -81,7 +81,7 @@ export class SongRepository implements ISongRepository {
       .findOne({ ...params })
       .populate('band')
       .populate('category')
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async delete(params: Filter): Promise<boolean> {

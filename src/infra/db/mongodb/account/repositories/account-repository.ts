@@ -23,7 +23,7 @@ export class AccountRepository implements IAccountRepository {
 
   async findOne(params: Filter): Promise<Account | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async delete(params: Filter): Promise<boolean> {

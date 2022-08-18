@@ -36,14 +36,14 @@ export class CategoryRepository implements ICategoryRepository {
 
   async findOne(params: Filter): Promise<Category | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async findOnePopulated(params: Filter): Promise<Category | null> {
     const r = await this.connection
       .findOne({ ...params })
       .populate('band')
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async delete(params: Filter): Promise<boolean> {

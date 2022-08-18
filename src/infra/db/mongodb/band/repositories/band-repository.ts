@@ -45,7 +45,7 @@ export class BandRepository implements IBandRepository {
 
   async findOne(params: Filter): Promise<Band | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async findOnePopulated(params: Filter): Promise<Band | null> {
@@ -55,7 +55,7 @@ export class BandRepository implements IBandRepository {
       .populate('members')
       .populate('directory')
       .populate('admins')
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async delete(params: Filter): Promise<boolean> {

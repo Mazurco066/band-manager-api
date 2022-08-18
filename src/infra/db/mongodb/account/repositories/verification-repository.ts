@@ -36,12 +36,12 @@ export class VerificationRepository implements IVerificationRepository {
 
   async findOne(params: Filter): Promise<VerificationCode | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async findOnePopulated(params: Filter): Promise<VerificationCode | null> {
     const r = await this.connection.findOne({ ...params }).populate('account')
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   async delete(params: Filter): Promise<boolean> {
