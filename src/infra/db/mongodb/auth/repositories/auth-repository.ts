@@ -22,7 +22,7 @@ export class AuthRepository implements IAuthRepository {
 
   async findOne(params: Filter): Promise<Auth | null> {
     const r = await this.connection.findOne({ ...params })
-    return r.toObject()
+    return r ? r.toObject() : r
   }
 
   delete(params: Filter): Promise<boolean> {
