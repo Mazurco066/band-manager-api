@@ -34,16 +34,12 @@ export class ListPublicSongsHandler implements IQueryHandler<ListPublicSongsQuer
       HttpStatus.NOT_FOUND
     )
 
-    console.log('[2]')
-
     // Step 4 - Load songs from a band
     const [ songs, total ] = await Promise.all([
       this.listSongs(command),
       this.countSongs(command)
     ])
   
-    console.log('[list here]')
-
     // Returning
     return { total, data: songs }
   }

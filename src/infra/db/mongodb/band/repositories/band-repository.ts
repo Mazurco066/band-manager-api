@@ -76,7 +76,7 @@ export class BandRepository implements IBandRepository {
 
   async save(target: any): Promise<Band> {
     const r = await this.connection.create({ ...target })
-    return r
+    return r.toObject()
   }
 
   async update(target: any, id: string): Promise<Band> {
