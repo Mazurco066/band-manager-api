@@ -12,6 +12,7 @@ import { TokenPayload } from '@/data/protocols'
 
 // Inputs
 import {
+  DailyLiturgyInput,
   ScrapSongInput
 } from '@/domain/protocols'
 
@@ -45,5 +46,28 @@ export class HelperController {
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.helperService.scrapSong(params, payload)
+  }
+
+  /**
+   * Scraps a song from cifra club or cifras.com
+   * @param params - Song url
+   * @param payload - Token payload
+   * @returns - Base response containing scraped song
+   */
+  @Post('/daily_liturgy')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Daily Liturgy',
+    description: 'Searchs daily liturgy into pocketterço website.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the scrapped liturgy as array.'
+  })
+  async dailyLiturgy(
+    @Body() params: DailyLiturgyInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.helperService.dailyLiturgy(params, payload)
   }
 }
