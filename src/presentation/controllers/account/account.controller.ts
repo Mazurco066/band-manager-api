@@ -1,5 +1,5 @@
 // Dependencies
-import { Injectable, Controller, Body, Param, Get, Post, Put, Delete } from '@nestjs/common'
+import { Injectable, Controller, Body, Param, Get, Post, Put, Delete, Query } from '@nestjs/common'
 import { AccountService } from '../../services/account'
 import { IBaseResponse } from '@/domain/shared'
 
@@ -13,6 +13,7 @@ import { TokenPayload } from '@/data/protocols'
 // Inputs
 import {
   AddAccountInput,
+  ListAccountsInput,
   LoadAccountByEmailInput,
   UpdateAccountInput,
   VerifyAccountInput
@@ -26,6 +27,29 @@ export class AccountController {
   constructor(
     private readonly accountService: AccountService,
   ) {}
+
+  /**
+   * List accounts
+   * @param params - Limit and offset params
+   * @param payload - Token payload
+   * @returns - Base response containing accounts list
+   */
+  @Get('/get')
+  @ApiOperation({
+    summary: 'List accounts',
+    description: 'List active user accounts.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns current account list.'
+  })
+  @Roles(Role.player, Role.master)
+  async listAccounts(
+    @Query() params: ListAccountsInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.accountService.listAccount(params, payload)
+  }
 
   /**
    * Load account by id endpoint

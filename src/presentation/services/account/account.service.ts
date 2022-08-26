@@ -6,6 +6,7 @@ import { baseResponse, IBaseResponse, sanitizeJson } from '@/domain/shared'
 // Inputs
 import {
   AddAccountInput,
+  ListAccountsInput,
   LoadAccountByEmailInput,
   UpdateAccountInput,
   VerifyAccountInput
@@ -13,6 +14,7 @@ import {
 
 // Commands and queries
 import {
+  ListAccountsQuery,
   LoadAccountByIdQuery,
   LoadAccountByEmailQuery,
   LoadMeQuery,
@@ -38,6 +40,21 @@ export class AccountService {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus
   ) {}
+
+  // List accounts
+  async listAccount(params: ListAccountsInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListAccountsQuery(params, payload))
+    const safeResponse = sanitizeJson(response, [
+      ...accountOmitKeys,
+      'isEmailconfirmed',
+      'username',
+      'createdAt',
+      'updatedAt',
+      'email',
+      'role'
+    ])
+    return baseResponse(200, 'Lista de contas ativas recuperada.', safeResponse)
+  }
 
   // Load account by Id query
   async loadAccountById(id: string, payload: TokenPayload): Promise<IBaseResponse> {

@@ -6,7 +6,7 @@ import { BcryptAdapter } from '@/infra/criptography'
 
 // Domain
 import { Account, AccountDocument } from '@/domain/entities/account'
-import { Filter, IBaseRepository } from '@/domain/shared'
+import { Filter, IBaseRepository, Paging } from '@/domain/shared'
 
 // Interfaces
 export type IAccountRepository = IBaseRepository<Account>
@@ -18,6 +18,14 @@ export class AccountRepository implements IAccountRepository {
   
   async find(params: Filter): Promise<Account[] | null> {
     const r = await this.connection.find({ ...params }).lean()
+    return r
+  }
+
+  async findPaginated(params: Filter, pagingOptions?: Paging): Promise<Account[] | null> {
+    const r = await this.connection.find({ ...params })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .lean()
     return r
   }
 
