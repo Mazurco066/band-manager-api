@@ -27,8 +27,11 @@ export class ListAccountsHandler implements IQueryHandler<ListAccountsQuery> {
 
   // Fetch account from database
   async fetchAccounts(command: ListAccountsQuery): Promise<Account[] | null> {
-    const { params: { limit = 0, offset = 0 } } = command
-    const accounts = await this.accountRepository.findPaginated({}, { limit, offset })
+    const { params: { limit = '0', offset = '0' } } = command
+    const accounts = await this.accountRepository.findPaginated({}, {
+      limit: parseInt(limit.toString()),
+      offset: parseInt(offset.toString()) 
+    })
     return accounts
   }
 }
