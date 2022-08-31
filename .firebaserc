@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "playliter-api",
+    "production": "playliter-api"
+  },
+  "targets": {},
+  "etags": {}
+}

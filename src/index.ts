@@ -6,14 +6,21 @@
 | |_\ \ | | | | | (_| |/ /| |_| | | | (_| (_) | ./ /___\ |_/ /./ /___./ /___
  \____/_| |_| |_|\__,_/___|\__,_|_|  \___\___/  \_____/ \___/ \_____/\_____/
 
- Default Nest.js init file
+ Firebase deploy script
 */
 
 // Dependencies
 import { NestFactory } from '@nestjs/core'
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { options } from 'main/config'
+
+// Firebase tools and express server
+import express from 'express'
+import { ExpressAdapter } from '@nestjs/platform-express'
+import * as functions from 'firebase-functions'
+
+// Retrieve express instance
+const expressServer = express()
 
 // Module
 import { MainModule } from './main.module'
@@ -22,11 +29,14 @@ import { MainModule } from './main.module'
 import { HttpExceptionFilter, MongoExceptionFilter } from './presentation/exceptions'
 
 // Initialization
-const startApp = async () : Promise<void> => {
+const createFunction  = async (expressInstance: any): Promise<void> => {
   try {
 
     // Create Nestjs app
-    const app = await NestFactory.create(MainModule)
+    const app = await NestFactory.create(
+      MainModule,
+      new ExpressAdapter(expressInstance)
+    )
 
     // Enable server CORS
     app.enableCors({
@@ -60,13 +70,15 @@ const startApp = async () : Promise<void> => {
     SwaggerModule.setup('api', app, document)
 
     // Start Application
-    await app.listen(options.PORT)
-    Logger.log(`App is listening at http://localhost:${options.PORT}`)
+    await app.init()
 
   } catch (error) {
-    console.log(error)
+    Logger.error(`Error: ${JSON.stringify(error)}`)
   }
 }
 
 // Start server
-startApp()
+export const api = functions.https.onRequest(async (request, response) => {
+  await createFunction(expressServer)
+  expressServer(request, response)
+});

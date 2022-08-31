@@ -98,7 +98,7 @@ export class UpdateAccountHandler implements ICommandHandler<UpdateAccountComman
   async convertData(command: UpdateAccountCommand, account: Account): Promise<object> {
     const encrypter = new BcryptAdapter()
     const { params: { name, password, oldPassword, confirmPassword, avatar, email }, payload: { role } } = command
-    let payload = { name, avatar }
+    const payload = { name, avatar }
     
     // Email updates
     if (email) {
