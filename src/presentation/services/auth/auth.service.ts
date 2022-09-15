@@ -34,7 +34,11 @@ export class AuthService {
   // Authenticate account command
   async authenticate(params: AuthenticateInput): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new AuthenticateCommand(params))
-    return baseResponse(200, 'Conta autenticada com sucesso!', response)
+    const safeResponse = sanitizeJson(response.account, accountOmitKeys)
+    return baseResponse(200, 'Conta autenticada com sucesso!', {
+      token: response.token,
+      account: safeResponse
+    })
   }
 
   // Forgot password command

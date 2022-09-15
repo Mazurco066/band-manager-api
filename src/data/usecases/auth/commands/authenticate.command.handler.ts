@@ -25,7 +25,10 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
   ) {}
 
   // Execute action handler
-  async execute(command: AuthenticateCommand): Promise<{ token: string }> {
+  async execute(command: AuthenticateCommand): Promise<{
+    token: string,
+    account: Account
+  }> {
 
     // Verify account by email
     const account = await this.checkAccountByEmail(command)
@@ -41,7 +44,10 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
 
     // Create user
     const token = await this.generateToken(account, payload)
-    return { token }
+    return {
+      token,
+      account
+    }
   }
 
   // Check if account exists
