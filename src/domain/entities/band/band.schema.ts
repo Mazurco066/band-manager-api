@@ -16,6 +16,13 @@ export class Band {
   @Prop({ immutable: true, required: true, type: String, index: true, default: () => new UniqueEntityID() })
   readonly id!: string
 
+  @Prop({
+    required: false,
+    type: String,
+    default: 'https://res.cloudinary.com/r4kta/image/upload/v1663515679/playliter/logo/default_band_mklz55.png'
+  })
+  logo?: string
+
   @Prop({ required: true, type: String })
   title!: string
 
