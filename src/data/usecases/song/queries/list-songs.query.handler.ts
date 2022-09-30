@@ -95,7 +95,10 @@ export class ListSongsHandler implements IQueryHandler<ListSongsQuery> {
     const r = await this.songRepository.findFilteredPopulated(
       band._id.toString(),
       filter,
-      { offset: parseInt(offset.toString()), limit: parseInt(offset.toString()) }
+      {
+        offset: parseInt(offset.toString()),
+        limit: parseInt(limit.toString())
+      }
     )
     return r
   }

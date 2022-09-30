@@ -15,18 +15,20 @@ export class ShowRepository implements IShowRepository {
     @InjectModel(Show.name) private readonly connection: Model<ShowDocument>
   ) {}
   
-  async find(params: Filter, pagingOptions?: Paging): Promise<Show[] | null> {
+  async find(params: Filter, pagingOptions?: Paging, sorting?: string): Promise<Show[] | null> {
     const r = await this.connection
       .find({ ...params })
+      .sort(sorting || { 'date': -1 })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .lean()
     return r
   }
 
-  async findPopulated(params: Filter, pagingOptions?: Paging): Promise<Show[] | null> {
+  async findPopulated(params: Filter, pagingOptions?: Paging, sorting?: string): Promise<Show[] | null> {
     const r = await this.connection
       .find({ ...params })
+      .sort(sorting || { 'date': -1 })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
@@ -35,9 +37,10 @@ export class ShowRepository implements IShowRepository {
     return r
   }
 
-  async findShowsByBandPopulated(ids: string[], pagingOptions?: Paging): Promise<Show[] | null> {
+  async findShowsByBandPopulated(ids: string[], pagingOptions?: Paging, sorting?: string): Promise<Show[] | null> {
     const r = await this.connection
       .find({ band: { $in: ids } })
+      .sort(sorting || { 'date': -1 })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
@@ -46,13 +49,14 @@ export class ShowRepository implements IShowRepository {
     return r
   }
 
-  async findPendingPopulated(ids: string[], pagingOptions?: Paging): Promise<Show[] | null> {
+  async findPendingPopulated(ids: string[], pagingOptions?: Paging, sorting?: string): Promise<Show[] | null> {
     const currentDate = new Date()
     const r = await this.connection
       .find({
         band: { $in: ids },
         date: { $gte: new Date(currentDate.toISOString().split('T')[0]) }
       })
+      .sort(sorting || { 'date': 1 })
       .limit(pagingOptions?.limit || 0)
       .skip(pagingOptions?.offset || 0)
       .populate('band')
