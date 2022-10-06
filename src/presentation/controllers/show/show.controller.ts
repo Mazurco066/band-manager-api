@@ -33,12 +33,11 @@ export class ShowController {
 
   /**
    * Load show by id
-   * @param bandId - Band id
    * @param id - Show id
    * @param payload - Token payload
    * @returns - Base response containing show
    */
-  @Get('/get/:bandId/:id')
+  @Get('/:id')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'Get show',
@@ -49,11 +48,10 @@ export class ShowController {
     description: 'Returns the show that matches the requested id.'
   })
   async getShowById(
-    @Param('bandId') bandId: string,
     @Param('id') id: string,
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
-    return this.showService.loadShowById(id, bandId, payload)
+    return this.showService.loadShowById(id, payload)
   }
 
   /**
@@ -61,7 +59,7 @@ export class ShowController {
    * @param payload - Token payload
    * @returns - Base response containing shows
    */
-  @Get('/account_shows')
+  @Get('/get/account_shows')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'List account shows',
@@ -82,7 +80,7 @@ export class ShowController {
    * @param payload - Token payload
    * @returns - Base response containing shows
    */
-  @Get('/pending_shows')
+  @Get('/get/pending_shows')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'List pending shows',
@@ -105,7 +103,7 @@ export class ShowController {
    * @param payload - Token payloads
    * @returns - Base response containing shows
    */
-  @Get('/get/:bandId')
+  @Get('/list/:bandId')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'List band shows',

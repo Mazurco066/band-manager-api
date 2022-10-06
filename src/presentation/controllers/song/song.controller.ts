@@ -103,11 +103,10 @@ export class SongController {
   /**
    * Loads a single song
    * @param id - Song id
-   * @param bandId - Band id
    * @param payload - Token payload
    * @returns - Base response containing song
    */
-  @Get('/get/:bandId/:id')
+  @Get('/:id')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'Get song',
@@ -119,10 +118,9 @@ export class SongController {
   })
   async song(
     @Param('id') id: string,
-    @Param('bandId') bandId: string,
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
-    return this.songService.loadSongById(id, bandId, payload)
+    return this.songService.loadSongById(id, payload)
   }
  
   /**
@@ -132,7 +130,7 @@ export class SongController {
    * @param payload - Token payload
    * @returns - Base response containing songs
    */
-  @Get('/get/:bandId')
+  @Get('/list/:bandId')
   @Roles(Role.player, Role.master)
   @ApiOperation({
     summary: 'List songs',
@@ -156,7 +154,7 @@ export class SongController {
    * @param payload - Token payload
    * @returns - Base response containing songs
    */
-  @Get('/public_songs')
+  @Get('/get/public_songs')
   @ApiOperation({
     summary: 'List public songs',
     description: 'List all public songs from every band'

@@ -64,8 +64,8 @@ export class ShowService {
   ) {}
 
   // Load show by id
-  async loadShowById(id: string, bandId: string, payload: TokenPayload): Promise<IBaseResponse> {
-    const response = await this.queryBus.execute(new LoadShowQuery(id, bandId, payload))
+  async loadShowById(id: string, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new LoadShowQuery(id, payload))
     const safeResponse = sanitizeJson(response, showOmitKeys)
     return baseResponse(200, 'Show recuperado com sucesso!', safeResponse)
   }

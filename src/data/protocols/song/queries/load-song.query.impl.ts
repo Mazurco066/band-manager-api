@@ -8,7 +8,6 @@ import { TokenPayload } from '@/data/protocols'
 export class LoadSongQuery implements IQuery {
   constructor(
     public readonly id: string,
-    public readonly bandId: string,
     public readonly payload: TokenPayload
   ) {}
 }

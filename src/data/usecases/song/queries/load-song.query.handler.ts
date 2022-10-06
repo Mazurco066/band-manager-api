@@ -26,26 +26,28 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
   // Execute action handler
   async execute(command: LoadSongQuery): Promise<Song> {
     // Destruct params
-    const { bandId, id, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 - Retrieve current Account, band and song
-    const [ currentAccount, currentBand, currentSong ] = await Promise.all([
+    const [ currentAccount, currentSong ] = await Promise.all([
       this.fetchAccount(account),
-      this.fetchBand(bandId),
       this.loadSong(command)
     ])
-
+   
     // Step 2 - Verify if all data is persisted
     if (!currentAccount) throw new HttpException(
       `Conta de id ${account} não encontrada!`,
       HttpStatus.NOT_FOUND
     )
-    if (!currentBand) throw new HttpException(
-      `Banda de id ${bandId} não foi encontrada!`,
-      HttpStatus.NOT_FOUND
-    )
     if (!currentSong) throw new HttpException(
       `Música de id ${id} não foi encontrada!`,
+      HttpStatus.NOT_FOUND
+    )
+
+    // Step 2.1 - Retrieve band based on song
+    const currentBand = await this.fetchBand(currentSong.band)
+    if (!currentBand) throw new HttpException(
+      `Banda não encontrada!`,
       HttpStatus.NOT_FOUND
     )
 
@@ -66,7 +68,7 @@ export class LoadSongHandler implements IQueryHandler<LoadSongQuery> {
 
   // Fetch band from database
   async fetchBand(id: string): Promise<Band | null> {
-    const r = await this.bandRepository.findOne({ id })
+    const r = await this.bandRepository.findOne({ _id: id })
     return r
   }
 

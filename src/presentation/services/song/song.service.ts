@@ -52,8 +52,8 @@ export class SongService {
   ) {}
 
   // Load song by id
-  async loadSongById(id: string, bandId: string, payload: TokenPayload): Promise<IBaseResponse> {
-    const response = await this.queryBus.execute(new LoadSongQuery(id, bandId, payload))
+  async loadSongById(id: string, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new LoadSongQuery(id, payload))
     const safeResponse = sanitizeJson(response, songOmitKeys)
     return baseResponse(200, 'Música recuperada com sucesso!', safeResponse)
   }
