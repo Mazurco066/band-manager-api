@@ -1,5 +1,6 @@
 // Service Dependencies
 import puppeteer from 'puppeteer'
+import { options } from 'main/config'
 
 // Dependencies
 import { Injectable } from '@nestjs/common'
@@ -14,15 +15,17 @@ export class WebscrapService implements IBaseWebscrap {
    * @returns Array - Scrapped info as array
    */
   public async scrapDailyLiturgy (date: string): Promise<IBaseResponse> {
+    let browser = null
     try {
 
-      // Retrieve div content from cifra club
-      const browser = await puppeteer.launch({
-        args : [
-          '--no-sandbox',
-          '--disable-setuid-sandbox'
-        ]
-      })
+      // Retrieve div content from pocket terço
+      // const browser = await puppeteer.launch({
+      //   args : [
+      //     '--no-sandbox',
+      //     '--disable-setuid-sandbox'
+      //   ]
+      // })
+      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(`https://pocketterco.com.br/liturgia/${date}`)
 
@@ -31,11 +34,11 @@ export class WebscrapService implements IBaseWebscrap {
 
       // Retrieve "Antífona de entrada"
       const antifonaEntradaelement = await page.$('#antifonaEntradaMissal')
-      const antifonaEntradaAsText = await page.evaluate(el => el.textContent, antifonaEntradaelement)
+      const antifonaEntradaAsText = await page.evaluate((el: any) => el.textContent, antifonaEntradaelement)
 
       // Retrieve "Primeira Leitura", "Salmo", "Segunda Leitura" and "Evangelho"
       const writtingsElements = await page.$$('.fonte-georgia')
-      const elements = await Promise.all(writtingsElements.map(async elm => page.evaluate(el => el.textContent, elm)))
+      const elements = await Promise.all(writtingsElements.map(async elm => page.evaluate((el: any) => el.textContent, elm)))
       const filteredElements = elements.map((el: string) => el.trim()).filter(
         (el: string) =>
           el.startsWith('Primeira Leitura') ||
@@ -46,7 +49,7 @@ export class WebscrapService implements IBaseWebscrap {
 
       // Retrieve "Aleluia" and "Antífona de ofertório"
       const moreElements = await page.$$('.bloco-oracao')
-      const extraElements = await Promise.all(moreElements.map(async elm => page.evaluate(el => el.textContent, elm)))
+      const extraElements = await Promise.all(moreElements.map(async (elm: any) => page.evaluate((el: any) => el.textContent, elm)))
       const filteredExtraElements = extraElements.map((el: string) => el.trim()).filter(
         (el: string) =>
           el.startsWith('℟. Aleluia, Aleluia, Aleluia.') ||
@@ -55,7 +58,7 @@ export class WebscrapService implements IBaseWebscrap {
 
       // Retrieve "Antifona de Comunhão"
       const antifonaComunhaoElement = await page.$('#antifonaComunhaoMissal')
-      const antifonaComunhaoAsText = await page.evaluate(el => el.textContent, antifonaComunhaoElement)
+      const antifonaComunhaoAsText = await page.evaluate((el: any) => el.textContent, antifonaComunhaoElement)
       
       // Add "Antifona de Entrada" if it was found
       if (antifonaEntradaAsText) results.push({
@@ -99,6 +102,7 @@ export class WebscrapService implements IBaseWebscrap {
       return baseResponse(200, 'URL Successfully scraped', results)
       
     } catch (err) {
+      if (browser) await browser.close()
       return baseResponse(500, err.message || 'A Webscrap error ocourred. Try again later.')
     }
   }
@@ -109,33 +113,35 @@ export class WebscrapService implements IBaseWebscrap {
    * @returns Song as text inside base reponse
    */
   public async scrapCifraClubSong (url: string): Promise<IBaseResponse> {
+    let browser = null
     try {
 
       // Retrieve div content from cifra club
-      const browser = await puppeteer.launch({
-        args : [
-          '--no-sandbox',
-          '--disable-setuid-sandbox'
-        ]
-      })
+      // const browser = await puppeteer.launch({
+      //   args : [
+      //     '--no-sandbox',
+      //     '--disable-setuid-sandbox'
+      //   ]
+      // })
+      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(url)
 
       // Retrieve song body
       const songElement = await page.$('.cifra_cnt pre')
-      const songAsText = await page.evaluate(el => el.textContent, songElement)
+      const songAsText = await page.evaluate((el: any) => el.textContent, songElement)
 
       // Retrieve song title
       const titleElement = await page.$('.t1')
-      const titleAsText = await page.evaluate(el => el.textContent, titleElement)
+      const titleAsText = await page.evaluate((el: any) => el.textContent, titleElement)
 
       // Retrieve song writter
       const writterElement = await page.$('.t3')
-      const writterAsText = await page.evaluate(el => el.textContent, writterElement)
+      const writterAsText = await page.evaluate((el: any) => el.textContent, writterElement)
 
       // Retrieve song writter
       const toneElement = await page.$('#cifra_tom a')
-      const toneAsText = await page.evaluate(el => el.textContent, toneElement)
+      const toneAsText = await page.evaluate((el: any) => el.textContent, toneElement)
 
       // Close browser
       await browser.close()
@@ -150,6 +156,7 @@ export class WebscrapService implements IBaseWebscrap {
       })
 
     } catch (err) {
+      if (browser) await browser.close()
       return baseResponse(500, err.message || 'A Webscrap error ocourred. Try again later.')
     }
   }
@@ -160,33 +167,35 @@ export class WebscrapService implements IBaseWebscrap {
    * @returns Song as text inside base reponse
    */
    public async scrapCifrasSong (url: string): Promise<IBaseResponse> {
+    let browser = null
     try {
 
-      // Retrieve div content from cifra club
-      const browser = await puppeteer.launch({
-        args : [
-          '--no-sandbox',
-          '--disable-setuid-sandbox'
-        ]
-      })
+      // Retrieve div content from cifras
+      // const browser = await puppeteer.launch({
+      //   args : [
+      //     '--no-sandbox',
+      //     '--disable-setuid-sandbox'
+      //   ]
+      // })
+      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(url)
 
       // Retrieve song body
       const songElement = await page.$('#core')
-      const songAsText = await page.evaluate(el => el.textContent, songElement)
+      const songAsText = await page.evaluate((el: any) => el.textContent, songElement)
 
       // Retrieve song title
       const titleElement = await page.$('.info-art h1')
-      const titleAsText = await page.evaluate(el => el.textContent, titleElement)
+      const titleAsText = await page.evaluate((el: any) => el.textContent, titleElement)
 
       // Retrieve song writter
       const writterElement = await page.$('.info-art h2')
-      const writterAsText = await page.evaluate(el => el.textContent, writterElement)
+      const writterAsText = await page.evaluate((el: any) => el.textContent, writterElement)
 
       // Retrieve song writter
       const toneElement = await page.$('#tom_atual')
-      const toneAsText = await page.evaluate(el => el.textContent, toneElement)
+      const toneAsText = await page.evaluate((el: any) => el.textContent, toneElement)
 
       // Close browser
       await browser.close()
@@ -201,6 +210,7 @@ export class WebscrapService implements IBaseWebscrap {
       })
 
     } catch (err) {
+      if (browser) await browser.close()
       return baseResponse(500, err.message || 'A Webscrap error ocourred. Try again later.')
     }
   }

@@ -18,6 +18,8 @@ const configs = {
     // API
     PREFIX: process.env.APP_PREFIX || 'v1',
     API_EXPLORER_PATH: process.env.APP_API_EXPLORER_PATH || '/api',
+    // BROWSERLESS
+    BROWSERLESS_KEY: process.env.BROWSERLESS_KEY || '',
     // Server
     HOST: process.env.APP_HOST || '127.0.0.1',
     PORT: process.env.PORT || process.env.APP_PORT || 8080,
