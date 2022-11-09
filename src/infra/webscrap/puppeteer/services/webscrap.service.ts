@@ -1,6 +1,6 @@
 // Service Dependencies
 import puppeteer from 'puppeteer'
-import { options } from 'main/config'
+// import { options } from 'main/config'
 
 // Dependencies
 import { Injectable } from '@nestjs/common'
@@ -19,13 +19,13 @@ export class WebscrapService implements IBaseWebscrap {
     try {
 
       // Retrieve div content from pocket terço
-      // const browser = await puppeteer.launch({
-      //   args : [
-      //     '--no-sandbox',
-      //     '--disable-setuid-sandbox'
-      //   ]
-      // })
-      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
+      const browser = await puppeteer.launch({
+        args : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      })
+      //browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(`https://pocketterco.com.br/liturgia/${date}`)
 
@@ -117,13 +117,13 @@ export class WebscrapService implements IBaseWebscrap {
     try {
 
       // Retrieve div content from cifra club
-      // const browser = await puppeteer.launch({
-      //   args : [
-      //     '--no-sandbox',
-      //     '--disable-setuid-sandbox'
-      //   ]
-      // })
-      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
+      const browser = await puppeteer.launch({
+        args : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      })
+      //browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(url)
 
@@ -171,13 +171,13 @@ export class WebscrapService implements IBaseWebscrap {
     try {
 
       // Retrieve div content from cifras
-      // const browser = await puppeteer.launch({
-      //   args : [
-      //     '--no-sandbox',
-      //     '--disable-setuid-sandbox'
-      //   ]
-      // })
-      browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
+      const browser = await puppeteer.launch({
+        args : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      })
+      //browser = await puppeteer.connect({ browserWSEndpoint: `wss://chrome.browserless.io?token=${options.BROWSERLESS_KEY}` })
       const page  = await browser.newPage()
       await page.goto(url)
 
