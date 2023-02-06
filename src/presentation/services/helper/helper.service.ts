@@ -1,6 +1,6 @@
 // Dependencies
 import { Injectable } from '@nestjs/common'
-import { CommandBus } from '@nestjs/cqrs'
+import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { baseResponse, IBaseResponse } from '@/domain/shared'
 
 // Inputs
@@ -12,6 +12,7 @@ import {
 // Commands and queries
 import {
   DailyLiturgyCommand,
+  IsServiceAvailableQuery,
   ScrapSongCommand,
   TokenPayload
 } from '@/data/protocols'
@@ -20,7 +21,8 @@ import {
 export class HelperService {
   // Dependencies Injection
   constructor(
-    private readonly commandBus: CommandBus
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus
   ) {}
 
   // Scrap Song
@@ -33,5 +35,11 @@ export class HelperService {
   async dailyLiturgy(params: DailyLiturgyInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new DailyLiturgyCommand(params, payload))
     return baseResponse(200, 'Liturgia diária obtida.', response || [])
+  }
+
+  // Service status
+  async isServiceAvailable(): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new IsServiceAvailableQuery())
+    return baseResponse(200, 'Service status response', response || { status: 'offline' })
   }
 }

@@ -2,7 +2,10 @@
 import { Module } from '@nestjs/common'
 
 // Commands & Queries
-import { HelperCommandHandlers } from '@/data/usecases'
+import {
+  HelperCommandHandlers,
+  HelperQueriesHandlers
+} from '@/data/usecases'
 
 // Services
 import { WebscrapService } from '@/infra/webscrap'
@@ -20,7 +23,8 @@ import { HelperControllers } from '@/presentation/controllers'
   providers: [
     WebscrapService,
     ...HelperServices,
-    ...HelperCommandHandlers
+    ...HelperCommandHandlers,
+    ...HelperQueriesHandlers
   ]
 })
 export class HelperModule {}

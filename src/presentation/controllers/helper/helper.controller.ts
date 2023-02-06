@@ -1,5 +1,5 @@
 // Dependencies
-import { Injectable, Controller, Body, Post } from '@nestjs/common'
+import { Injectable, Controller, Body, Post, Get } from '@nestjs/common'
 import { HelperService } from '../../services/helper'
 import { IBaseResponse } from '@/domain/shared'
 
@@ -7,7 +7,7 @@ import { IBaseResponse } from '@/domain/shared'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
-import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
+import { Roles, Role, JwtUserDecorator, SkipAuth } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
 
 // Inputs
@@ -69,5 +69,19 @@ export class HelperController {
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.helperService.dailyLiturgy(params, payload)
+  }
+
+  @Get('/service_status')
+  @SkipAuth()
+  @ApiOperation({
+    summary: 'Service status',
+    description: 'Returns if API service is online.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the service status as string'
+  })
+  async isServiceAvailable() {
+    return this.helperService.isServiceAvailable()
   }
 }
