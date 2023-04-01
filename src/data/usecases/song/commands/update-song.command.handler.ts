@@ -111,15 +111,15 @@ export class UpdateSongHandler implements ICommandHandler<UpdateSongCommand> {
 
   // Updates song from band
   async updateSong(command: UpdateSongCommand, updatedCategory?: Category): Promise<Song | null> {
-    const { id, params: { title, writter, body, category, isPublic, tone } } = command
+    const { id, params: { embeddedUrl, title, writter, body, category, isPublic, tone } } = command
     if (!title && !writter && !body && !category && !tone)
       throw new HttpException(
         'Nenhum dado foi informado para realizar a atualização da música!',
         HttpStatus.BAD_REQUEST
       )
     const payload = updatedCategory 
-      ? { title, writter, body, tone, category: updatedCategory._id.toString() } 
-      : {  title, writter, body, tone }
+      ? { embeddedUrl, title, writter, body, tone, category: updatedCategory._id.toString() } 
+      : { embeddedUrl, title, writter, body, tone }
     if (isPublic !== undefined) payload['isPublic'] = isPublic
     const r = await this.songRepository.update(payload, id)
     return r

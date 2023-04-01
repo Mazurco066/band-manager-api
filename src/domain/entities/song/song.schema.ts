@@ -28,6 +28,9 @@ export class Song {
   @Prop({ required: true, type: String })
   body!: string
 
+  @Prop({ required: false, type: String, default: '' })
+  embeddedUrl?: string
+
   @Prop({ type: String, ref: 'Band' })
   band!: string
 

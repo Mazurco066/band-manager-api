@@ -1,5 +1,5 @@
 // Dependencies
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsBoolean, IsOptional } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsUUID, IsBoolean, IsOptional, IsUrl } from 'class-validator'
 
 // API Documentation
 import { ApiProperty } from '@nestjs/swagger'
@@ -28,6 +28,18 @@ export class AddSongInput {
   @IsNotEmpty({ message: 'Campo "body" não deve ser vazio' })
   @ApiProperty({ type: String, required: true, example: 'Haha my song body' })
 	body!: string
+
+  @IsOptional()
+  @IsString({ message: 'Campo "embeddedUrl" deve ser do tipo String' })
+  @IsUrl({
+    require_host: false,
+    require_protocol: true,
+    require_tld: false,
+    require_port: false,
+    allow_protocol_relative_urls: true
+  }, { message: 'Campo "embeddedUrl" deve ser uma url válida' })
+  @ApiProperty({ type: String, required: false, example: 'https://www.youtube.com/embed/BEp_6v5feO4' })
+  embeddedUrl?: string
 
   @IsNotEmpty({ message: 'Campo "category" não deve ser vazio' })
 	@IsUUID('4', { message: 'Campo "category" deve ser do tipo UUID versão 4' })
