@@ -21,11 +21,16 @@ export class ListPublicSongsHandler implements IQueryHandler<ListPublicSongsQuer
 
   // Execute action handler
   async execute(command: ListPublicSongsQuery): Promise<{
+    limit: number,
+    offset: number,
     total: number,
     data: Song[]
   }> {
     // Destruct params
-    const { payload: { account } } = command
+    const {
+      params: { limit = '0', offset = '0' },
+      payload: { account }
+    } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -41,7 +46,12 @@ export class ListPublicSongsHandler implements IQueryHandler<ListPublicSongsQuer
     ])
   
     // Returning
-    return { total, data: songs }
+    return {
+      limit: Number(limit),
+      offset: Number(offset),
+      total,
+      data: songs
+    }
   }
 
   // Fetch account from database
