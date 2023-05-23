@@ -12,8 +12,8 @@ services:
       - '3001:3001'
     volumes:
       - .:/usr/src/app
-    depends_on:
-      - mongo
+    # depends_on:
+      # - mongo
   # Mongodb database service
-  mongo:
-    image: mongo
+  # mongo:
+    # image: mongo
