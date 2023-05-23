@@ -1,5 +1,5 @@
 # Development enviroment
-FROM node:alpine As development
+FROM node:16-alpine As development
 
 WORKDIR /usr/src/app
 
