@@ -10,6 +10,15 @@ COPY nest-cli.json nest-cli.json
 
 # RUN npm i -g yarn
 
+# Install Puppeteer dependencies
+RUN apk add --no-cache \
+    udev \
+    ttf-freefont \
+    chromium
+
+# Configure Puppeteer to run in non-headless mode
+ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
+
 RUN yarn install
 
 COPY . .
@@ -30,6 +39,15 @@ COPY yarn.lock ./
 # RUN npm i -g yarn
 
 RUN yarn install --prod
+
+# Install Puppeteer dependencies
+RUN apk add --no-cache \
+    udev \
+    ttf-freefont \
+    chromium
+
+# Configure Puppeteer to run in non-headless mode
+ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 
 COPY --from=development /usr/src/app/dist ./dist
 

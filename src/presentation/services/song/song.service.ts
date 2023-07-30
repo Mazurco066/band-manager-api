@@ -62,6 +62,8 @@ export class SongService {
   async listSongs(bandId: string, params: ListSongsInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListSongsQuery(bandId, params, payload))
     const safeResponse = {
+      limit: response.limit,
+      offset: response.offset,
       total: response.total,
       data: sanitizeJson(response.data, songOmitKeys)
     }
