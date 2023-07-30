@@ -9,6 +9,7 @@ import {
 
 // Services
 import { WebscrapService } from '@/infra/webscrap'
+import { ChatGptService } from '@/infra/openai'
 import { HelperServices } from "@/presentation/services"
 
 // Controllers
@@ -21,6 +22,7 @@ import { HelperControllers } from '@/presentation/controllers'
     ...HelperControllers
   ],
   providers: [
+    ChatGptService,
     WebscrapService,
     ...HelperServices,
     ...HelperCommandHandlers,

@@ -33,7 +33,9 @@ const configs = {
     SENDGRID_KEY: process.env.SENDGRID_KEY || '',
     // INTEGRATIONS
     FRONTEND_URL: process.env.FRONTEND_URL,
-    BACKEND_URL: process.env.BACKEND_URL
+    BACKEND_URL: process.env.BACKEND_URL,
+    // CHAT GPT
+    OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY || ''
   },
   development: {},
   production: {
