@@ -51,4 +51,6 @@ ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 
 COPY --from=development /usr/src/app/dist ./dist
 
+EXPOSE 8080
+
 CMD ["node", "dist/main"]
