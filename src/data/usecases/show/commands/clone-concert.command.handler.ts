@@ -99,7 +99,7 @@ export class CloneConcertHandler implements ICommandHandler<CloneConcertCommand>
     const newShow = await this.showRepository.save({
       band,
       date: new Date(date),
-      title,
+      title: `${title} - Copy`,
       description,
       songs,
     })
