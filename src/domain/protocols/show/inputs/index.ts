@@ -1,5 +1,6 @@
 export * from './add-observation.input'
 export * from './add-show.input'
+export * from './clone-concert.input'
 export * from './link-song.input'
 export * from './list-shows.input'
 export * from './unlink-song.input'

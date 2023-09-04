@@ -1,5 +1,6 @@
 export * from './add-observation.command.impl'
 export * from './add-show.command.impl'
+export * from './clone-concert.command.impl'
 export * from './link-song.command.impl'
 export * from './remove-observation.command.impl'
 export * from './remove-show.command.impl'

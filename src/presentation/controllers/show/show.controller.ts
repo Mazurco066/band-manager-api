@@ -14,6 +14,7 @@ import { TokenPayload } from '@/data/protocols'
 import {
   AddObservationInput,
   AddShowInput,
+  CloneConcertInput,
   LinkSongInput,
   ListShowsInput,
   ReorderShowInput,
@@ -142,6 +143,30 @@ export class ShowController {
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.showService.addShow(params, payload)
+  }
+
+  /**
+   * Clone show into band
+   * @param params - Desired date
+   * @param payload - Token payload
+   * @returns - Base response containing show
+   */
+  @Post('/:id')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Clone concert',
+    description: 'Duplicates a concert into the same band'
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns the duplicated concert.'
+  })
+  async cloneConcert(
+    @Param('id') id: string,
+    @Body() params: CloneConcertInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.showService.cloneConcert(id, params, payload)
   }
 
   /**

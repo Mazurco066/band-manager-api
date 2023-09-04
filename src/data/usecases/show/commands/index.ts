@@ -1,5 +1,6 @@
 import { AddObservationHandler  } from './add-observation.command.handler'
 import { AddShowHandler } from './add-show.command.handler'
+import { CloneConcertHandler } from './clone-concert.command.handler'
 import { LinkSongHandler } from './link-song.command.handler'
 import { RemoveObservationHandler } from './remove-observation.command.handler'
 import { RemoveShowHandler } from './remove-show.command.handler'
@@ -11,6 +12,7 @@ import { UpdateShowHandler } from './update-show.command.handler'
 export const ShowCommandHandlers = [
   AddObservationHandler,
   AddShowHandler,
+  CloneConcertHandler,
   LinkSongHandler,
   RemoveObservationHandler,
   RemoveShowHandler,
