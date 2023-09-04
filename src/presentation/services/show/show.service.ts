@@ -7,6 +7,7 @@ import { baseResponse, IBaseResponse, sanitizeJson } from '@/domain/shared'
 import {
   AddObservationInput,
   AddShowInput,
+  CloneConcertInput,
   LinkSongInput,
   ListShowsInput,
   ReorderShowInput,
@@ -19,6 +20,7 @@ import {
 import {
   AddObservationCommand,
   AddShowCommand,
+  CloneConcertCommand,
   LinkSongCommand,
   ListShowsQuery,
   ListShowsByAccountQuery,
@@ -96,6 +98,13 @@ export class ShowService {
     const response = await this.commandBus.execute(new AddShowCommand(params, payload))
     const safeResponse = sanitizeJson(response, showMutationOmitKeys)
     return baseResponse(201, 'Show salvo com sucesso!', safeResponse)
+  }
+
+  // Clone show
+  async cloneConcert(id: string, params: CloneConcertInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.commandBus.execute(new CloneConcertCommand(id, params, payload))
+    const safeResponse = sanitizeJson(response, showMutationOmitKeys)
+    return baseResponse(200, 'Apresentação duplicada com sucesso!', safeResponse)
   }
 
   // Add show observation
