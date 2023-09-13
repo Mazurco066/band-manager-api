@@ -17,6 +17,41 @@ import {
   ListCategoriesInput
 } from '@/domain/protocols'
 
+@ApiTags('Categories V2')
+@Controller('api/v2/categories')
+@Injectable()
+export class CategoryControllerV2 {
+  // Dependencies Injection
+  constructor(
+    private readonly categoryService: CategoryService
+  ) {}
+
+  /**
+   * List all categories from band
+   * @param bandId - Band id 
+   * @param params - Filter 
+   * @param payload - Token payload
+   * @returns - Base response containing categories
+   */
+  @Get('/get/:bandId')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'List categories',
+    description: 'List categories from a band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of categories.'
+  })
+  async categories(
+    @Param('bandId') bandId: string,
+    @Query() params: ListCategoriesInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.categoryService.listCategoriesV2(bandId, params, payload)
+  }
+}
+
 @ApiTags('Categories')
 @Controller('api/v1/categories')
 @Injectable()

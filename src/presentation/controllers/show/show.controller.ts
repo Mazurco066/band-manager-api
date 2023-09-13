@@ -23,6 +23,41 @@ import {
   UpdateShowInput
 } from '@/domain/protocols'
 
+@ApiTags('Shows V2')
+@Controller('api/v2/shows')
+@Injectable()
+export class ShowControllerV2 {
+  // Dependencies Injection
+  constructor(
+    private readonly showService: ShowService
+  ) {}
+
+  /**
+   * List shows
+   * @param bandId - Band id
+   * @param params - Filters
+   * @param payload - Token payloads
+   * @returns - Base response containing shows
+   */
+  @Get('/list/:bandId')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'List band shows',
+    description: 'List all shows from a band'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of shows.'
+  })
+  async listShows(
+    @Param('bandId') bandId: string,
+    @Query() params: ListShowsInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.showService.listShowsV2(bandId, params, payload)
+  }
+}
+
 @ApiTags('Shows')
 @Controller('api/v1/shows')
 @Injectable()

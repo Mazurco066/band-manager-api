@@ -24,9 +24,14 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
   ) {}
 
   // Execute action handler
-  async execute(command: ListShowsQuery): Promise<Show[]> {
+  async execute(command: ListShowsQuery): Promise<{
+    limit: number,
+    offset: number,
+    total: number,
+    data: Show[]
+  }> {
     // Destruct params
-    const { bandId, payload: { account } } = command
+    const { bandId, params: { offset = '0', limit = '0' }, payload: { account } } = command
 
     // Step 1 - Retrieve current Account and band
     const [ currentAccount, currentBand ] = await Promise.all([
@@ -46,7 +51,16 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Load songs from a band
-    return await this.listShows(command, currentBand)
+    const [ shows, totalCount ] = await Promise.all([
+      this.listShows(command, currentBand),
+      this.countShows(currentBand)
+    ])
+    return {
+      limit: Number(limit),
+      offset: Number(offset),
+      total: totalCount,
+      data: shows
+    }
   }
 
   // Fetch account from database
@@ -85,5 +99,10 @@ export class ListShowsHandler implements IQueryHandler<ListShowsQuery> {
       { offset: parseInt(offset.toString()), limit: parseInt(limit.toString()) }
     )
     return r
+  }
+
+  // Count songs
+  async countShows(band: Band): Promise<number> {
+    return await this.showRepository.countByBand(band._id.toString())
   }
 }
