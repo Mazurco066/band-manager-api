@@ -82,4 +82,8 @@ export class CategoryRepository implements ICategoryRepository {
       throw new MongoError({ ...ex })
     }
   }
+
+  async countByBand(bandId: string): Promise<number> {
+    return await this.connection.countDocuments({ band: bandId })
+  }
 }

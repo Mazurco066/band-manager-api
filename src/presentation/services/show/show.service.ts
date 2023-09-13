@@ -89,7 +89,19 @@ export class ShowService {
   // List shows
   async listShows(bandId: string, params: ListShowsInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListShowsQuery(bandId, params, payload))
-    const safeResponse = sanitizeJson(response, showOmitKeys)
+    const safeResponse = sanitizeJson(response.data, showOmitKeys)
+    return baseResponse(200, 'Shows recuperados com sucesso!', safeResponse)
+  }
+
+  // List shows (v2)
+  async listShowsV2(bandId: string, params: ListShowsInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListShowsQuery(bandId, params, payload))
+    const safeResponse = {
+      limit: response.limit,
+      offset: response.offset,
+      total: response.total,
+      data: sanitizeJson(response.data, showOmitKeys)
+    }
     return baseResponse(200, 'Shows recuperados com sucesso!', safeResponse)
   }
 

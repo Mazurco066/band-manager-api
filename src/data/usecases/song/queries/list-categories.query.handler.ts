@@ -24,9 +24,14 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
   ) {}
 
   // Execute action handler
-  async execute(command: ListCategoriesQuery): Promise<Category[]> {
+  async execute(command: ListCategoriesQuery): Promise<{
+    limit: number,
+    offset: number,
+    total: number,
+    data: Category[]
+  }> {
     // Destruct params
-    const { bandId, payload: { account } } = command
+    const { bandId, params: { limit = '0', offset = '0' }, payload: { account } } = command
 
     // Step 1 - Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -46,7 +51,16 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
     this.validateRole(command, currentBand, currentAccount)
 
     // Step 4 - Load categories from a band
-    return await this.listCategories(command, currentBand)
+    const [ categories, totalCount ] = await Promise.all([
+      this.listCategories(command, currentBand),
+      this.countCategories(currentBand)
+    ])
+    return {
+      limit: Number(limit),
+      offset: Number(offset),
+      total: totalCount,
+      data: categories
+    }
   }
 
   // Fetch account from database
@@ -85,5 +99,10 @@ export class ListCategoriesHandler implements IQueryHandler<ListCategoriesQuery>
       { offset: parseInt(offset.toString()), limit: parseInt(limit.toString()) }
     )
     return r
+  }
+
+  // Count songs
+  async countCategories(band: Band): Promise<number> {
+    return await this.categoryRepository.countByBand(band._id.toString())
   }
 }

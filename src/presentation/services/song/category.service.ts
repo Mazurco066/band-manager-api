@@ -55,7 +55,19 @@ export class CategoryService {
   // List Categories
   async listCategories(bandId: string, params: ListCategoriesInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListCategoriesQuery(bandId, params, payload))
-    const safeResponse = sanitizeJson(response, categoryOmitKeys)
+    const safeResponse = sanitizeJson(response.data, categoryOmitKeys)
+    return baseResponse(200, 'Categorias recuperadas com sucesso!', safeResponse)
+  }
+
+  // List Categories (V2)
+  async listCategoriesV2(bandId: string, params: ListCategoriesInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListCategoriesQuery(bandId, params, payload))
+    const safeResponse = {
+      limit: response.limit,
+      offset: response.offset,
+      total: response.total,
+      data: sanitizeJson(response.data, categoryOmitKeys)
+    }
     return baseResponse(200, 'Categorias recuperadas com sucesso!', safeResponse)
   }
 
