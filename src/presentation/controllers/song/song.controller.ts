@@ -18,6 +18,35 @@ import {
   ListPublicSongsInput
 } from '@/domain/protocols'
 
+@ApiTags('Songs V2')
+@Controller('api/v2/songs')
+@Injectable()
+export class SongControllerV2 {
+  // Dependencies Injection
+  constructor(
+    private readonly songService: SongService
+  ) {}
+
+  @Get('/list/:bandId/:categoryId')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'List songs by a given category',
+    description: 'List songs from a band by category'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of songs.'
+  })
+  async listSongsByCategory(
+    @Param('bandId') bandId: string,
+    @Param('categoryId') categoryId: string,
+    @Query() params: ListSongsInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ) {
+    return this.songService.listSongsByCategory(bandId, categoryId, params, payload)
+  }
+}
+
 @ApiTags('Songs')
 @Controller('api/v1/songs')
 @Injectable()

@@ -17,6 +17,7 @@ import {
   RemoveSongCommand,
   UpdateSongCommand,
   LoadSongQuery,
+  ListSongsByCategoryQuery,
   ListSongsQuery,
   ListPublicSongsQuery,
   TokenPayload
@@ -61,6 +62,18 @@ export class SongService {
   // List songs
   async listSongs(bandId: string, params: ListSongsInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListSongsQuery(bandId, params, payload))
+    const safeResponse = {
+      limit: response.limit,
+      offset: response.offset,
+      total: response.total,
+      data: sanitizeJson(response.data, songOmitKeys)
+    }
+    return baseResponse(200, 'Músicas recuperadas com sucesso!', safeResponse)
+  }
+
+  // List songs by category (v2)
+  async listSongsByCategory(bandId: string, categoryId: string, params: ListSongsInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListSongsByCategoryQuery(bandId, categoryId, params, payload))
     const safeResponse = {
       limit: response.limit,
       offset: response.offset,

@@ -113,6 +113,13 @@ export class SongRepository implements ISongRepository {
     })
   }
 
+  async countByCategory(bandId: string, categoryId: string): Promise<number> {
+    return await this.connection.countDocuments({
+      category: categoryId,
+      band: bandId
+    })
+  }
+
   async customCount(bandId: string, filter: string): Promise<number> {
     return await this.connection.countDocuments({
       $or: [
