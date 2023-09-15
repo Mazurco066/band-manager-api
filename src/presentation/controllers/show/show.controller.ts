@@ -17,6 +17,7 @@ import {
   CloneConcertInput,
   LinkSongInput,
   ListShowsInput,
+  ListShowsV2Input,
   ReorderShowInput,
   UnlinkSongInput,
   UpdateObservationInput,
@@ -51,7 +52,7 @@ export class ShowControllerV2 {
   })
   async listShows(
     @Param('bandId') bandId: string,
-    @Query() params: ListShowsInput,
+    @Query() params: ListShowsV2Input,
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.showService.listShowsV2(bandId, params, payload)

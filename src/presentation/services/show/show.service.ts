@@ -10,6 +10,7 @@ import {
   CloneConcertInput,
   LinkSongInput,
   ListShowsInput,
+  ListShowsV2Input,
   ReorderShowInput,
   UnlinkSongInput,
   UpdateObservationInput,
@@ -23,6 +24,7 @@ import {
   CloneConcertCommand,
   LinkSongCommand,
   ListShowsQuery,
+  ListShowsQueryV2,
   ListShowsByAccountQuery,
   LoadShowQuery,
   RemoveObservationCommand,
@@ -94,13 +96,13 @@ export class ShowService {
   }
 
   // List shows (v2)
-  async listShowsV2(bandId: string, params: ListShowsInput, payload: TokenPayload): Promise<IBaseResponse> {
-    const response = await this.queryBus.execute(new ListShowsQuery(bandId, params, payload))
+  async listShowsV2(bandId: string, params: ListShowsV2Input, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListShowsQueryV2(bandId, params, payload))
     const safeResponse = {
       limit: response.limit,
       offset: response.offset,
       total: response.total,
-      data: sanitizeJson(response.data, showOmitKeys)
+      data: sanitizeJson(response.data, [...showOmitKeys, 'songs'])
     }
     return baseResponse(200, 'Shows recuperados com sucesso!', safeResponse)
   }

@@ -37,6 +37,25 @@ export class ShowRepository implements IShowRepository {
     return r
   }
 
+  async findPopulatedWithoutSongs(
+    params: Filter,
+    titleFilter: string,
+    pagingOptions?: Paging,
+    sorting?: string
+  ): Promise<Show[] | null> {
+    const r = await this.connection
+      .find({
+        ...params,
+        title: new RegExp(titleFilter, 'i')
+      })
+      .sort(sorting || { 'date': -1 })
+      .limit(pagingOptions?.limit || 0)
+      .skip(pagingOptions?.offset || 0)
+      .populate('band')
+      .lean()
+    return r
+  }
+
   async findShowsByBandPopulated(ids: string[], pagingOptions?: Paging, sorting?: string): Promise<Show[] | null> {
     const r = await this.connection
       .find({ band: { $in: ids } })
@@ -146,7 +165,10 @@ export class ShowRepository implements IShowRepository {
     }
   }
 
-  async countByBand(bandId: string): Promise<number> {
-    return await this.connection.countDocuments({ band: bandId })
+  async countByBand(bandId: string, titleFilter?: string): Promise<number> {
+    return await this.connection.countDocuments({
+      band: bandId,
+      title: new RegExp(titleFilter || '', 'i')
+    })
   }
 }
