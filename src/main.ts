@@ -52,7 +52,7 @@ const app = async () => {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Playliter API')
       .setDescription('Rest API for playliter app')
-      .setVersion('1.7.0')
+      .setVersion('1.7.1')
       .build()
     const document = SwaggerModule.createDocument(app, swaggerConfig)
     SwaggerModule.setup('api', app, document)

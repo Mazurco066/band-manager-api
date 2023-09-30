@@ -14,7 +14,8 @@ import {
   DailyLiturgyCommand,
   IsServiceAvailableQuery,
   ScrapSongCommand,
-  TokenPayload
+  TokenPayload,
+  UploadFileCommand
 } from '@/data/protocols'
 
 @Injectable()
@@ -29,6 +30,12 @@ export class HelperService {
   async scrapSong(params: ScrapSongInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new ScrapSongCommand(params, payload))
     return baseResponse(200, 'Uma música foi encontrada na busca.', response)
+  }
+
+  // Upload image
+  async uploadFile(file: Express.Multer.File, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.commandBus.execute(new UploadFileCommand(file, payload))
+    return baseResponse(200, 'Image successfully uploaded', response)
   }
 
   // Daily liturgy

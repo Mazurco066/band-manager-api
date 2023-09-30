@@ -1,5 +1,6 @@
 // Dependencies
-import { Injectable, Controller, Body, Post, Get } from '@nestjs/common'
+import { UploadedFile, UseInterceptors, Injectable, Controller, Body, Post, Get } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { HelperService } from '../../services/helper'
 import { IBaseResponse } from '@/domain/shared'
 
@@ -69,6 +70,24 @@ export class HelperController {
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.helperService.dailyLiturgy(params, payload)
+  }
+
+  @Post('/upload_file')
+  @Roles(Role.player, Role.master)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({
+    summary: 'Upload image',
+    description: 'Uploaded image to playliter cdn.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the uploaded image uri.'
+  })
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @JwtUserDecorator() payload: TokenPayload
+  ) {
+    return this.helperService.uploadFile(file, payload)
   }
 
   @Get('/service_status')
