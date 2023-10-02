@@ -25,7 +25,7 @@ export class UpdateBandHandler implements ICommandHandler<UpdateBandCommand> {
   // Execute action handler
   async execute(command: UpdateBandCommand): Promise<Band> {
     // Destruct params
-    const { id, params: { description, title }, payload: { account } } = command
+    const { id, payload: { account } } = command
 
     // Step 1 Retrieve current Account
     const currentAccount = await this.fetchAccount(account)
@@ -79,13 +79,14 @@ export class UpdateBandHandler implements ICommandHandler<UpdateBandCommand> {
 
   // Updates data from band
   async updateBand(command: UpdateBandCommand): Promise<Band | null> {
-    const { id, params: { title, description } } = command
+    const { id, params: { title, description, logo } } = command
     if (!title && !description)
       throw new HttpException(
         'Nenhum dado foi informado para realizar a atualização da banda!',
         HttpStatus.BAD_REQUEST
       )
-    const r = await this.bandRepository.update({ title, description }, id)
+    const updateParams = logo ? { title, description, logo } : { title, description }
+    const r = await this.bandRepository.update(updateParams, id)
     return r
   }
 }

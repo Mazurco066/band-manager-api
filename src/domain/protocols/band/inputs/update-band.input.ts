@@ -18,4 +18,11 @@ export class UpdateBandInput {
   @MaxLength(256, { message: 'Campo "description" deve conter no máximo 256 caracteres' })
   @ApiProperty({ type: String, required: true, example: 'My band description' })
 	description?: string
+
+  @IsOptional()
+	@IsString({ message: 'Campo "logo" deve ser do tipo String' })
+  @MinLength(2, { message: 'Campo "logo" deve conter no mínimo 2 caracteres' })
+  @MaxLength(640, { message: 'Campo "logo" deve conter no máximo 256 caracteres' })
+  @ApiProperty({ type: String, required: true, example: 'https://cdn.com.br/logo.png' })
+	logo?: string
 }
