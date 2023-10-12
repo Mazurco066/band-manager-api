@@ -53,7 +53,7 @@ export class AuthenticateHandler implements ICommandHandler<AuthenticateCommand>
   // Check if account exists
   async checkAccountByEmail(command: AuthenticateCommand): Promise<Account> {
     const { params: { username } } = command
-    const r = await this.accountRepository.findOne({ username })
+    const r = await this.accountRepository.findByUsernameOrEmail(username)
     if (!r) throw new HttpException(
       'Esse usuário não pertence a nenhuma conta cadastrada',
       HttpStatus.NOT_FOUND
