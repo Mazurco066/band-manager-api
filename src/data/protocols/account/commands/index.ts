@@ -1,4 +1,5 @@
 export * from './add-account.command.impl'
+export * from './deactivate-account.command.impl'
 export * from './remove-account.command.impl'
 export * from './resend-verification.command.impl'
 export * from './update-account.command.impl'

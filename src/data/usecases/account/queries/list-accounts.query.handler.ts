@@ -1,5 +1,4 @@
 // Dependencies
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
 
 // Commands
@@ -28,7 +27,9 @@ export class ListAccountsHandler implements IQueryHandler<ListAccountsQuery> {
   // Fetch account from database
   async fetchAccounts(command: ListAccountsQuery): Promise<Account[] | null> {
     const { params: { limit = '0', offset = '0' } } = command
-    const accounts = await this.accountRepository.findPaginated({}, {
+    const accounts = await this.accountRepository.findPaginated({
+      isActive: true
+    }, {
       limit: parseInt(limit.toString()),
       offset: parseInt(offset.toString()) 
     })

@@ -9,7 +9,7 @@
  * { name: "Name" }
  */
 export type Filter = {
-  [key in string | number]: string | number
+  [key in string | number]: string | number | boolean
 }
 
 
