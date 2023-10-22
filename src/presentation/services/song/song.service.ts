@@ -14,6 +14,7 @@ import {
 // Commands and queries
 import {
   AddSongCommand,
+  RemoveAccountAndBandDataCommand,
   RemoveSongCommand,
   UpdateSongCommand,
   LoadSongQuery,
@@ -24,6 +25,12 @@ import {
 } from '@/data/protocols'
 
 // Default class omits
+const accountOmitKeys = [
+  '_id',
+  '__v',
+  'password'
+]
+
 const songOmitKeys = [
   '_id',
   '__v',
@@ -114,5 +121,12 @@ export class SongService {
     const response = await this.commandBus.execute(new RemoveSongCommand(id, payload))
     const safeResponse = sanitizeJson(response, songMutationOmitKeys)
     return baseResponse(200, 'Música removida com sucesso!', safeResponse)
+  }
+
+  // Remove account and band data
+  async removeAccountAndBandData(payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.commandBus.execute(new RemoveAccountAndBandDataCommand(payload))
+    const safeResponse = sanitizeJson(response, accountOmitKeys)
+    return baseResponse(200, 'Dados da conta, banda e músicas removidos com sucesso!', safeResponse)
   }
 }
