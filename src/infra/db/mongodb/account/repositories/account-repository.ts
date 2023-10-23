@@ -34,6 +34,17 @@ export class AccountRepository implements IAccountRepository {
     return r ? r.toObject() : r
   }
 
+  async findByUsernameOrEmail(param: string): Promise<Account | null> {
+    const r = await this.connection.findOne({
+      $or: [
+        { username: param },
+        { email: param }
+      ],
+      isActive: true
+    })
+    return r ? r.toObject() : r
+  }
+
   async delete(params: Filter): Promise<boolean> {
     try {
 
