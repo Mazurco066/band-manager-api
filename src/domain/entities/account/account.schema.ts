@@ -43,6 +43,9 @@ export class Account {
 
   @Prop({ type: String, required: true })
   password!: string
+
+  @Prop({ type: Boolean, required: false, default: true })
+  isActive?: boolean
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account)

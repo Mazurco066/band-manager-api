@@ -39,7 +39,8 @@ export class AccountRepository implements IAccountRepository {
       $or: [
         { username: param },
         { email: param }
-      ]
+      ],
+      isActive: true
     })
     return r ? r.toObject() : r
   }

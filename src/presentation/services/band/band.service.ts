@@ -25,6 +25,7 @@ import {
   UpdateBandCommand,
   ListBandsQuery,
   LoadBandByIdQuery,
+  TransferOwnershipCommand,
   TokenPayload
 } from '@/data/protocols'
 
@@ -122,5 +123,12 @@ export class BandService {
     const response = await this.commandBus.execute(new RemoveMemberCommand(id, params, payload))
     const safeResponse = sanitizeJson(response, bandMutationOmitKeys)
     return baseResponse(200, 'O Membro foi removido com sucesso!', safeResponse)
+  }
+
+  // Transfer ownership
+  async transferOwnership(id: string, params: PromoteMemberInput, payload: TokenPayload): Promise<IBaseResponse> {
+    const response = await this.commandBus.execute(new TransferOwnershipCommand(id, params, payload))
+    const safeResponse = sanitizeJson(response, bandMutationOmitKeys)
+    return baseResponse(200, 'O Membro foi promovido a lider com sucesso!', safeResponse)
   }
 }

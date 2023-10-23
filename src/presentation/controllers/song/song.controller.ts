@@ -45,6 +45,22 @@ export class SongControllerV2 {
   ) {
     return this.songService.listSongsByCategory(bandId, categoryId, params, payload)
   }
+
+  @Delete('/wipe_account_data')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Wipe data from authenticated account',
+    description: 'Wipe data from authenticated account (Be carefull when using this endpoint. Its was developed to serve as delete account to fit google play store security requests).'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns deleted account'
+  })
+  async wipeAccountData(
+    @JwtUserDecorator() payload: TokenPayload
+  ) {
+    return this.songService.removeAccountAndBandData(payload)
+  }
 }
 
 @ApiTags('Songs')

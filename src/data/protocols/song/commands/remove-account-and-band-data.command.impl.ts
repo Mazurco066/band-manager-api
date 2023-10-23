@@ -5,9 +5,8 @@ import { ICommand } from '@nestjs/cqrs'
 import { TokenPayload } from '@/data/protocols'
 
 // Add account command
-export class RemoveAccountCommand implements ICommand {
+export class RemoveAccountAndBandDataCommand implements ICommand {
   constructor(
-    public readonly id: string,
     public readonly payload: TokenPayload
   ) {}
 }
