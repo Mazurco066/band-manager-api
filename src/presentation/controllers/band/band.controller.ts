@@ -198,6 +198,31 @@ export class BandController {
   }
 
   /**
+   * Transfers ownership from one member to another
+   * @param id - Band id
+   * @param params - Account data
+   * @param payload - Token payload
+   * @returns - Base response containing band
+   */
+  @Post('/transfer_ownership/:id')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Transfer ownership',
+    description: 'Transfers ownership from one member to another'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated band.'
+  })
+  async transferOwnership(
+    @Param('id') id: string,
+    @Body() params: PromoteMemberInput,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.bandService.transferOwnership(id, params, payload)
+  }
+
+  /**
    * Removes a member from band
    * @param id - Band id
    * @param params - Account data

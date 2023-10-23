@@ -131,6 +131,25 @@ export class BandRepository implements IBandRepository {
     }
   }
 
+  async transferOwnership(bandId: string, newOwner: string, currentOwner: string, admins: string[]): Promise<Band> {
+    try {
+      const r = await this.connection.findOneAndUpdate({ id: bandId }, {
+        $set: {
+          owner: newOwner,
+          admins: [ ...admins, currentOwner ]
+        }
+      }, {
+        new: true,
+        useFindAndModify: false
+      })
+      return r.toObject()
+
+    } catch(ex) {
+      console.error(ex)
+      throw new MongoError({ ...ex })
+    }
+  }
+
   async removeMember(admins: string[], members: string[], id: string): Promise<Band> {
     try {
       const r = await this.connection.findOneAndUpdate({ id }, {
