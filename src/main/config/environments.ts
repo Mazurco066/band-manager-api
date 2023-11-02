@@ -27,7 +27,7 @@ const configs = {
     MONGO_URI: process.env.MONGO_URI || 'mongodb://root:bandmanager@localhost:27017',
     // JWT
     SECRET: process.env.APP_SECRET || 'DEV',
-    EXPIRATION: process.env.APP_EXPIRATION || '3d',
+    EXPIRATION: process.env.APP_EXPIRATION || '90d',
     // SENDGRID SERVICES
     SENDGRID_SENDER: process.env.SENDGRID_SENDER || '',
     SENDGRID_KEY: process.env.SENDGRID_KEY || '',
