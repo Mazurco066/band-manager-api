@@ -1,11 +1,12 @@
 // Dependencies
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
+
 // Commands
 import { ScrapSongCommand } from '@/data/protocols'
 
 // Services
-import { WebscrapService } from '@/infra/webscrap'
+import { PythonWebscrapService } from '@/infra/webscrap'
 
 // Return interface
 interface ScrapReturn {
@@ -19,7 +20,7 @@ interface ScrapReturn {
 export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
   // Dependencies injection
   constructor(
-    private readonly webscrapService: WebscrapService
+    private readonly webscrapService: PythonWebscrapService
   ) {}
 
   // Execute action handler
@@ -37,7 +38,7 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
         HttpStatus.INTERNAL_SERVER_ERROR
       )
       return {
-        loot: r.data?.text || '',
+        loot: r.data?.loot || '',
         tone: r.data?.tone || '',
         writter: r.data?.writter || '',
         title: r.data?.title || ''
@@ -52,7 +53,7 @@ export class ScrapSongHandler implements ICommandHandler<ScrapSongCommand> {
         HttpStatus.INTERNAL_SERVER_ERROR
       )
       return {
-        loot: r.data?.text || '',
+        loot: r.data?.loot || '',
         tone: r.data?.tone || '',
         writter: r.data?.writter || '',
         title: r.data?.title || ''
