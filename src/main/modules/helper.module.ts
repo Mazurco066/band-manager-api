@@ -8,7 +8,7 @@ import {
 } from '@/data/usecases'
 
 // Services
-import { WebscrapService } from '@/infra/webscrap'
+import { PythonWebscrapService } from '@/infra/webscrap'
 import { ChatGptService } from '@/infra/openai'
 import { HelperServices } from "@/presentation/services"
 
@@ -23,7 +23,7 @@ import { HelperControllers } from '@/presentation/controllers'
   ],
   providers: [
     ChatGptService,
-    WebscrapService,
+    PythonWebscrapService,
     ...HelperServices,
     ...HelperCommandHandlers,
     ...HelperQueriesHandlers

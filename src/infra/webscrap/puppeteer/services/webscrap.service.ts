@@ -150,7 +150,7 @@ export class WebscrapService implements IBaseWebscrap {
       // Return scrapped data
       return baseResponse(200, 'URL Successfully scraped', {
         writter: writterAsText,
-        text: songAsText,
+        loot: songAsText,
         tone: toneAsText,
         title: titleAsText
       })
@@ -204,7 +204,7 @@ export class WebscrapService implements IBaseWebscrap {
       // Return scrapped data
       return baseResponse(200, 'URL Successfully scraped', {
         writter: writterAsText,
-        text: songAsText,
+        loot: songAsText,
         tone: toneAsText,
         title: titleAsText
       })
