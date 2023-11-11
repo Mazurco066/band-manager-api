@@ -119,7 +119,7 @@ export class PythonWebscrapService implements IBaseWebscrap {
 
       // Retrieve track from given uri
       const response: AxiosResponse<SongScrapReturn> = await axios.post(
-        'http://localhost:8000/scrap_song_cifra_club',
+        'https://playliter-webscraper.vercel.app/scrap_song_cifra_club',
         { uri: url }
       )
       
@@ -146,7 +146,7 @@ export class PythonWebscrapService implements IBaseWebscrap {
 
       // Retrieve track from given uri
       const response: AxiosResponse<SongScrapReturn> = await axios.post(
-        'http://localhost:8000/scrap_song_cifras',
+        'https://playliter-webscraper.vercel.app/scrap_song_cifras',
         { uri: url }
       )
     
