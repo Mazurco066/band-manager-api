@@ -61,7 +61,7 @@ export class PythonWebscrapService implements IBaseWebscrap {
   public async scrapDailyLiturgy (date: string): Promise<IBaseResponse> {
     try {
       // Retrieve liturgy from given date
-      const response: AxiosResponse<LiturgiaData> = await axios.get('https://liturgia.up.railway.app', {
+      const response: AxiosResponse<LiturgiaData> = await axios.get('https://liturgiadiaria.site', {
         params: {
           dia: date.split('/')[0],
           mes: date.split('/')[1]
