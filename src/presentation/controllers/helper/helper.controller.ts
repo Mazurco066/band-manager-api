@@ -1,5 +1,5 @@
 // Dependencies
-import { UploadedFile, UseInterceptors, Injectable, Controller, Body, Post, Get } from '@nestjs/common'
+import { UploadedFile, UseInterceptors, Injectable, Controller, Body, Post, Get, Param } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { HelperService } from '../../services/helper'
 import { IBaseResponse } from '@/domain/shared'
@@ -70,6 +70,29 @@ export class HelperController {
     @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
     return this.helperService.dailyLiturgy(params, payload)
+  }
+
+  /**
+   * Retrieve liturgy color
+   * @param id - Show id
+   * @param payload - Token payload
+   * @returns - Base response containing color
+   */
+  @Get('/liturgy_color/:id')
+  @Roles(Role.player, Role.master)
+  @ApiOperation({
+    summary: 'Get liturgy color',
+    description: 'Get liturgy color'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the color that matches the current concert liturgy.'
+  })
+  async getLiturgyColor(
+    @Param('id') id: string,
+    @JwtUserDecorator() payload: TokenPayload
+  ): Promise<IBaseResponse> {
+    return this.helperService.liturgyColor(id, payload)
   }
 
   @Post('/upload_file')
