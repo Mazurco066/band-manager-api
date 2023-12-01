@@ -15,9 +15,16 @@ import { HelperServices } from "@/presentation/services"
 // Controllers
 import { HelperControllers } from '@/presentation/controllers'
 
+// Modules
+import { AccountModule } from './account.module'
+import { ShowModule } from './show.module'
+
 // Helper module
 @Module({
-  imports: [],
+  imports: [
+    AccountModule,
+    ShowModule
+  ],
   controllers: [
     ...HelperControllers
   ],

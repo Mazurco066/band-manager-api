@@ -12,6 +12,7 @@ import {
 // Commands and queries
 import {
   DailyLiturgyCommand,
+  GetLiturgyColorQuery,
   IsServiceAvailableQuery,
   ScrapSongCommand,
   TokenPayload,
@@ -42,6 +43,12 @@ export class HelperService {
   async dailyLiturgy(params: DailyLiturgyInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.commandBus.execute(new DailyLiturgyCommand(params, payload))
     return baseResponse(200, 'Liturgia diária obtida.', response || [])
+  }
+
+  // Liturgy color
+  async liturgyColor(id: string, payload: TokenPayload): Promise<IBaseResponse> {
+    const reponse = await this.queryBus.execute(new GetLiturgyColorQuery(id, payload))
+    return baseResponse(200, 'Cor da liturgia obtida', reponse)
   }
 
   // Service status
