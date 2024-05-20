@@ -17,6 +17,7 @@ import {
   RemoveAccountAndBandDataCommand,
   RemoveSongCommand,
   UpdateSongCommand,
+  LoadPublicSongQuery,
   LoadSongQuery,
   ListSongsByCategoryQuery,
   ListSongsQuery,
@@ -66,6 +67,13 @@ export class SongService {
     return baseResponse(200, 'Música recuperada com sucesso!', safeResponse)
   }
 
+  // Load public song by id
+  async loadPublicSongById(id: string): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new LoadPublicSongQuery(id))
+    const safeResponse = sanitizeJson(response, songOmitKeys)
+    return baseResponse(200, 'Música recuperada com sucesso!', safeResponse)
+  }
+
   // List songs
   async listSongs(bandId: string, params: ListSongsInput, payload: TokenPayload): Promise<IBaseResponse> {
     const response = await this.queryBus.execute(new ListSongsQuery(bandId, params, payload))
@@ -91,8 +99,8 @@ export class SongService {
   }
 
   // List public songs
-  async listPublicSongs(params: ListPublicSongsInput, payload: TokenPayload): Promise<IBaseResponse> {
-    const response = await this.queryBus.execute(new ListPublicSongsQuery(params, payload))
+  async listPublicSongs(params: ListPublicSongsInput): Promise<IBaseResponse> {
+    const response = await this.queryBus.execute(new ListPublicSongsQuery(params))
     const safeResponse = {
       limit: response.limit,
       offset: response.offset,

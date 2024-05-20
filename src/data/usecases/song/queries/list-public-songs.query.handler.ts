@@ -1,5 +1,5 @@
 // Dependencies
-import { HttpException, HttpStatus, Inject } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
 
 // Commands
@@ -29,17 +29,9 @@ export class ListPublicSongsHandler implements IQueryHandler<ListPublicSongsQuer
     // Destruct params
     const {
       params: { limit = '0', offset = '0' },
-      payload: { account }
     } = command
 
-    // Step 1 - Retrieve current Account
-    const currentAccount = await this.fetchAccount(account)
-    if (!currentAccount) throw new HttpException(
-      `Conta de id ${account} não encontrada!`,
-      HttpStatus.NOT_FOUND
-    )
-
-    // Step 4 - Load songs from a band
+    // Step 1 - Load songs from a band
     const [ songs, total ] = await Promise.all([
       this.listSongs(command),
       this.countSongs(command)
