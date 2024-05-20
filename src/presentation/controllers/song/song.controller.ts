@@ -7,7 +7,7 @@ import { IBaseResponse } from '@/domain/shared'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 // Authorization
-import { Roles, Role, JwtUserDecorator } from '@/main/decorators'
+import { Roles, Role, JwtUserDecorator, SkipAuth } from '@/main/decorators'
 import { TokenPayload } from '@/data/protocols'
 
 // Inputs
@@ -60,6 +60,22 @@ export class SongControllerV2 {
     @JwtUserDecorator() payload: TokenPayload
   ) {
     return this.songService.removeAccountAndBandData(payload)
+  }
+
+  @Get('/:id')
+  @ApiOperation({
+    summary: 'Get song',
+    description: 'Get song by id'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the song that matches the requested id and is public.'
+  })
+  @SkipAuth()
+  async publicSong(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse> {
+    return this.songService.loadPublicSongById(id)
   }
 }
 
@@ -208,10 +224,10 @@ export class SongController {
     status: 200,
     description: 'Returns a list of songs.'
   })
+  @SkipAuth()
   async publicSongs(
     @Query() params: ListPublicSongsInput,
-    @JwtUserDecorator() payload: TokenPayload
   ): Promise<IBaseResponse> {
-    return this.songService.listPublicSongs(params, payload)
+    return this.songService.listPublicSongs(params)
   }
 }
